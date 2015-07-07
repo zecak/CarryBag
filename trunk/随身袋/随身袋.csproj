@@ -35,7 +35,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="EasyFramework">
-      <HintPath>..\packages\EasyFramework.1.2.4\lib\EasyFramework.dll</HintPath>
+      <HintPath>..\packages\EasyFramework.1.2.1\lib\EasyFramework.dll</HintPath>
     </Reference>
     <Reference Include="MahApps.Metro">
       <HintPath>..\packages\MahApps.Metro.1.1.2.0\lib\net40\MahApps.Metro.dll</HintPath>
