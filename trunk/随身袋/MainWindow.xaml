@@ -35,13 +35,15 @@
                     </DockPanel>
                     <Controls:MetroAnimatedSingleRowTabControl Name="tabMain" Controls:TabControlHelper.IsUnderlined="True" TabStripPlacement="Top" >
                         <TabItem Header="软件" Controls:ControlsHelper.HeaderFontSize="18">
-                            <Grid>
+                            
+                            <DockPanel>
                                 <StackPanel>
+                                    
                                     <Expander Header="编程开发">
                                         <WrapPanel>
                                             <Border Style="{StaticResource LinkBorder}">
                                                 <Label Width="64" Height="64" Style="{StaticResource LinkLabel}">
-                                                    <Image Source="Res/logo.png"></Image>
+                                                    <Image Source="Res/logo.png" ToolTip="标题"></Image>
                                                 </Label>
                                             </Border>
                                             <Border Style="{StaticResource LinkBorder}">
@@ -68,7 +70,7 @@
                                         <Button></Button>
                                     </Expander>
                                 </StackPanel>
-                            </Grid>
+                            </DockPanel>
                         </TabItem>
 
                     </Controls:MetroAnimatedSingleRowTabControl>
