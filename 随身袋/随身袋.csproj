@@ -79,7 +79,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Models\RootCategory.cs" />
-    <Compile Include="Models\SubCategory.cs" />
+    <Compile Include="Models\AppLink.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>

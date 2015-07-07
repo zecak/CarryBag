@@ -13,6 +13,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Speech.Recognition;
 using MahApps.Metro.Controls;
+using 随身袋.Models;
 
 namespace 随身袋
 {
@@ -67,14 +68,69 @@ namespace 随身袋
         private void MetroWindow_Loaded(object sender, RoutedEventArgs e)
         {
 
-            foreach (var c in Helper.Global.Categorys)
+            foreach (var c in Helper.Global.Categorys.FindAll(m=>m.PID==Guid.Empty))
             {
                 var tabItem = new TabItem() { Header = c.Name };
+                tabItem.Tag = c;
                 ControlsHelper.SetHeaderFontSize(tabItem, 18);
+
+                var stackPanel=new StackPanel();
+
+                foreach (var subc in Helper.Global.Categorys.FindAll(m=>m.PID==c.ID))
+                {
+                    var expander = new Expander() {Header=subc.Name };
+                    expander.Tag = subc;
+
+                    var wrapPanel = new WrapPanel();
+
+                    foreach (var link in Helper.Global.Applinks.FindAll(m=>m.PID==subc.ID))
+                    {
+                        var border = new Border() { Style = (Style)this.FindResource("LinkBorder") };
+                        var label = new Label() { Width = 64, Height = 64, Style = (Style)this.FindResource("LinkLabel") };
+                        if (string.IsNullOrWhiteSpace(link.ImgSrc)) { link.ImgSrc = "Res/logo.png"; }
+                        var image = new Image() { Source = new BitmapImage(new Uri(link.ImgSrc, UriKind.Relative)) };
+                        image.Tag = link;
+                        image.MouseLeftButtonDown += image_MouseLeftButtonDown;
+                        label.Content = image;
+                        border.Child = label;
+                        wrapPanel.Children.Add(border);
+                    }
+                    
+
+                    expander.Content = wrapPanel;
+                    stackPanel.Children.Add(expander);
+                }
+               
+
+                tabItem.Content = stackPanel;
+
                 tabMain.Items.Add(tabItem);
             }
 
             
+        }
+
+        void image_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            var img = sender as Image;
+            var link=img.Tag as AppLink;
+            if(link!=null)
+            {
+                switch (link.AppType)
+                {
+                    case LinkType.Sys:
+                        break;
+                    case LinkType.App:
+                        break;
+                    case LinkType.Web:
+
+                        break;
+                    case LinkType.Oth:
+                        break;
+                    default:
+                        break;
+                }
+            }
         }
     }
 }
