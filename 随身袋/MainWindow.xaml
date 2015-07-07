@@ -26,23 +26,36 @@
                     <Button Height="50"></Button>
                 </DockPanel>
                 <DockPanel>
-                    <Controls:MetroAnimatedSingleRowTabControl Controls:TabControlHelper.IsUnderlined="True" TabStripPlacement="Left">
-                        <TabItem Header="工具">
+                    <DockPanel DockPanel.Dock="Top">
+                        <TextBox></TextBox>
+                    </DockPanel>
+                    <Controls:MetroAnimatedSingleRowTabControl Controls:TabControlHelper.IsUnderlined="True" TabStripPlacement="Top" >
+                        <TabItem Header="软件" Controls:ControlsHelper.HeaderFontSize="18">
                             <Grid>
-                                
+                                <StackPanel>
+                                    <Expander Header="编程开发">
+                                        <Button></Button>
+                                    </Expander>
+                                    <Expander>
+                                        <Button></Button>
+                                    </Expander>
+                                    <Expander>
+                                        <Button></Button>
+                                    </Expander>
+                                </StackPanel>
                             </Grid>
                         </TabItem>
-                        <TabItem Header="网址">
+                        <TabItem Header="网址" Controls:ControlsHelper.HeaderFontSize="18">
                             <Grid>
 
                             </Grid>
                         </TabItem>
-                        <TabItem Header="系统">
+                        <TabItem Header="系统" Controls:ControlsHelper.HeaderFontSize="18">
                             <Grid>
 
                             </Grid>
                         </TabItem>
-                        <TabItem Header="其它">
+                        <TabItem Header="其它" Controls:ControlsHelper.HeaderFontSize="18">
                             <Grid>
 
                             </Grid>

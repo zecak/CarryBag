@@ -21,19 +21,19 @@ namespace 随身袋
     /// </summary>
     public partial class MainWindow
     {
-        private SpeechRecognitionEngine SRE = new SpeechRecognitionEngine();
+        //private SpeechRecognitionEngine SRE = new SpeechRecognitionEngine();
         public MainWindow()
         {
             InitializeComponent();
 
-             SRE.SetInputToDefaultAudioDevice();         //<=======默认的语音输入设备，你可以设定为去识别一个WAV文件。
-                        GrammarBuilder GB = new GrammarBuilder();
-                        GB.Append("选择");
-                        GB.Append(new Choices(new string[] { "红色", "绿色" }));
-                        Grammar G = new Grammar(GB);
-                        G.SpeechRecognized += new EventHandler<SpeechRecognizedEventArgs>(G_SpeechRecognized);
-                        SRE.LoadGrammar(G);
-                        SRE.RecognizeAsync(RecognizeMode.Multiple); //<=======异步调用识别引擎，允许多次识别（否则程序只响应你的一句话）
+             //SRE.SetInputToDefaultAudioDevice();         //<=======默认的语音输入设备，你可以设定为去识别一个WAV文件。
+             //           GrammarBuilder GB = new GrammarBuilder();
+             //           GB.Append("选择");
+             //           GB.Append(new Choices(new string[] { "红色", "绿色" }));
+             //           Grammar G = new Grammar(GB);
+             //           G.SpeechRecognized += new EventHandler<SpeechRecognizedEventArgs>(G_SpeechRecognized);
+             //           SRE.LoadGrammar(G);
+             //           SRE.RecognizeAsync(RecognizeMode.Multiple); //<=======异步调用识别引擎，允许多次识别（否则程序只响应你的一句话）
         }
 
         void G_SpeechRecognized(object sender, SpeechRecognizedEventArgs e)
