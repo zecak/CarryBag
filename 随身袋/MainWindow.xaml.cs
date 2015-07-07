@@ -26,6 +26,8 @@ namespace 随身袋
         {
             InitializeComponent();
 
+            Helper.Global.Init();
+
              //SRE.SetInputToDefaultAudioDevice();         //<=======默认的语音输入设备，你可以设定为去识别一个WAV文件。
              //           GrammarBuilder GB = new GrammarBuilder();
              //           GB.Append("选择");
@@ -54,6 +56,25 @@ namespace 随身袋
         {
             if (e.ClosingTabItem.Header.ToString().StartsWith("sizes"))
                 e.Cancel = true;
+        }
+
+        //private void Expander_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        //{
+        //    var obj = e.Source as Expander;
+        //    obj.IsExpanded = !obj.IsExpanded;
+        //}
+
+        private void MetroWindow_Loaded(object sender, RoutedEventArgs e)
+        {
+
+            foreach (var c in Helper.Global.Categorys)
+            {
+                var tabItem = new TabItem() { Header = c.Name };
+                ControlsHelper.SetHeaderFontSize(tabItem, 18);
+                tabMain.Items.Add(tabItem);
+            }
+
+            
         }
     }
 }
