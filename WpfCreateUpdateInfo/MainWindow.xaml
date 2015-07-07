@@ -1,0 +1,46 @@
+﻿<Window x:Class="WpfCreateUpdateInfo.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="MainWindow" Height="450" Width="625" Loaded="Window_Loaded">
+    <Grid>
+        <StackPanel>
+            <DockPanel>
+                <Label>程序目录：</Label>
+                <TextBox Name="txtDir">..\..\..\MyClient\ICClient\bin\NET40\Release\ac</TextBox>
+            </DockPanel>
+            <DockPanel>
+                <Label>程序名称：</Label>
+                <TextBox Name="txtAppName"></TextBox>
+            </DockPanel>
+            <DockPanel>
+                <Label>当前版本:</Label>
+                <TextBox Name="txtCVer"></TextBox>
+            </DockPanel>
+            <DockPanel>
+                <Label>最低版本:</Label>
+                <TextBox Name="txtMinVer"></TextBox>
+            </DockPanel>
+            <DockPanel>
+                <Label>更新日期:</Label>
+                <TextBox Name="txtUpdateTime"></TextBox>
+            </DockPanel>
+            <DockPanel>
+                <Label>包大小:</Label>
+                <TextBox Name="txtPackageSize"></TextBox>
+            </DockPanel>
+            <DockPanel>
+                <Label>包名称:</Label>
+                <TextBox Name="txtPackageName">update.zip</TextBox>
+            </DockPanel>
+            <DockPanel>
+                <Label>描述:</Label>
+                <ScrollViewer Height="180" Grid.Row="1" ScrollViewer.VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
+                    <TextBlock Name="txtDes" TextWrapping="Wrap" ></TextBlock>
+                </ScrollViewer>
+            </DockPanel>
+            <DockPanel>
+                <Button Name="btnSave" Click="btnSave_Click">保存</Button>
+            </DockPanel>
+        </StackPanel>
+    </Grid>
+</Window>
