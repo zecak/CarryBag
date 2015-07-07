@@ -9,7 +9,7 @@
                       ShowTitleBar="True"
                       GlowBrush="{DynamicResource AccentColorBrush}"
                       mc:Ignorable="d"
-        Title="随身袋" Height="540" Width="320" FontFamily="Microsoft YaHei">
+        Title="随身袋" Height="540" Width="320" FontFamily="Microsoft YaHei" Loaded="MetroWindow_Loaded">
     <Controls:MetroWindow.RightWindowCommands>
         <Controls:WindowCommands>
             <Button ToolTip="关于" Content="关于"  />
@@ -23,20 +23,45 @@
                     <Button Name="btn_test" Height="100"></Button>
                 </DockPanel>
                 <DockPanel DockPanel.Dock="Bottom">
-                    <Button Height="50"></Button>
+                    <DockPanel>
+                        <ToolBarPanel Orientation="Horizontal">
+                            <Button>添加</Button>
+                        </ToolBarPanel>
+                    </DockPanel>
                 </DockPanel>
                 <DockPanel>
                     <DockPanel DockPanel.Dock="Top">
                         <TextBox></TextBox>
                     </DockPanel>
-                    <Controls:MetroAnimatedSingleRowTabControl Controls:TabControlHelper.IsUnderlined="True" TabStripPlacement="Top" >
+                    <Controls:MetroAnimatedSingleRowTabControl Name="tabMain" Controls:TabControlHelper.IsUnderlined="True" TabStripPlacement="Top" >
                         <TabItem Header="软件" Controls:ControlsHelper.HeaderFontSize="18">
                             <Grid>
                                 <StackPanel>
                                     <Expander Header="编程开发">
-                                        <Button></Button>
+                                        <WrapPanel>
+                                            <Border Style="{StaticResource LinkBorder}">
+                                                <Label Width="64" Height="64" Style="{StaticResource LinkLabel}">
+                                                    <Image Source="Res/logo.png"></Image>
+                                                </Label>
+                                            </Border>
+                                            <Border Style="{StaticResource LinkBorder}">
+                                                <Label Width="64" Height="64" Style="{StaticResource LinkLabel}">
+                                                    <Image Source="Res/logo.png"></Image>
+                                                </Label>
+                                            </Border>
+                                            <Border Style="{StaticResource LinkBorder}">
+                                                <Label Width="64" Height="64" Style="{StaticResource LinkLabel}">
+                                                    <Image Source="Res/logo.png"></Image>
+                                                </Label>
+                                            </Border>
+                                            <Border Style="{StaticResource LinkBorder}">
+                                                <Label Width="64" Height="64" Style="{StaticResource LinkLabel}">
+                                                    <Image Source="Res/logo.png"></Image>
+                                                </Label>
+                                            </Border>
+                                        </WrapPanel>
                                     </Expander>
-                                    <Expander>
+                                    <Expander >
                                         <Button></Button>
                                     </Expander>
                                     <Expander>
@@ -45,21 +70,7 @@
                                 </StackPanel>
                             </Grid>
                         </TabItem>
-                        <TabItem Header="网址" Controls:ControlsHelper.HeaderFontSize="18">
-                            <Grid>
 
-                            </Grid>
-                        </TabItem>
-                        <TabItem Header="系统" Controls:ControlsHelper.HeaderFontSize="18">
-                            <Grid>
-
-                            </Grid>
-                        </TabItem>
-                        <TabItem Header="其它" Controls:ControlsHelper.HeaderFontSize="18">
-                            <Grid>
-
-                            </Grid>
-                        </TabItem>
                     </Controls:MetroAnimatedSingleRowTabControl>
                 </DockPanel>
             </DockPanel>
