@@ -16,6 +16,25 @@
             <Button ToolTip="帮助" Content="帮助"  />
         </Controls:WindowCommands>
     </Controls:MetroWindow.RightWindowCommands>
+    <Controls:MetroWindow.Flyouts>
+        <Controls:FlyoutsControl>
+            <Controls:Flyout Name="Flyout_Add" Header="" Position="Bottom">
+                <StackPanel Height="80" Margin="5,5,5,5" HorizontalAlignment="Right" Orientation="Horizontal">
+                    <ComboBox>
+                        <ComboBoxItem>123</ComboBoxItem>
+                    </ComboBox>
+                    <TextBox></TextBox>
+                    <Button Content="+" Width="40"
+                            Height="40"
+                            FontFamily="微软雅黑"
+                            FontSize="18"
+                            Style="{DynamicResource MetroCircleButtonStyle}">
+                        
+                    </Button>
+                </StackPanel>
+            </Controls:Flyout>
+        </Controls:FlyoutsControl>
+    </Controls:MetroWindow.Flyouts>
     <Controls:MetroContentControl>
         <Grid>
             <DockPanel>
@@ -25,7 +44,7 @@
                 <DockPanel DockPanel.Dock="Bottom">
                     <DockPanel>
                         <ToolBarPanel Orientation="Horizontal">
-                            <Button>添加</Button>
+                            <Button Click="Button_Click" Width="32" Height="32" FontFamily="微软雅黑" FontSize="18" Style="{DynamicResource MetroCircleButtonStyle}">+</Button>
                         </ToolBarPanel>
                     </DockPanel>
                 </DockPanel>
@@ -34,45 +53,7 @@
                         <TextBox></TextBox>
                     </DockPanel>
                     <Controls:MetroAnimatedSingleRowTabControl Name="tabMain" Controls:TabControlHelper.IsUnderlined="True" TabStripPlacement="Top" >
-                        <TabItem Header="软件" Controls:ControlsHelper.HeaderFontSize="18">
-                            
-                            <DockPanel>
-                                <StackPanel>
-                                    
-                                    <Expander Header="编程开发">
-                                        <WrapPanel>
-                                            <Border Style="{StaticResource LinkBorder}">
-                                                <Label Width="64" Height="64" Style="{StaticResource LinkLabel}">
-                                                    <Image Source="Res/logo.png" ToolTip="标题"></Image>
-                                                </Label>
-                                            </Border>
-                                            <Border Style="{StaticResource LinkBorder}">
-                                                <Label Width="64" Height="64" Style="{StaticResource LinkLabel}">
-                                                    <Image Source="Res/logo.png"></Image>
-                                                </Label>
-                                            </Border>
-                                            <Border Style="{StaticResource LinkBorder}">
-                                                <Label Width="64" Height="64" Style="{StaticResource LinkLabel}">
-                                                    <Image Source="Res/logo.png"></Image>
-                                                </Label>
-                                            </Border>
-                                            <Border Style="{StaticResource LinkBorder}">
-                                                <Label Width="64" Height="64" Style="{StaticResource LinkLabel}">
-                                                    <Image Source="Res/logo.png"></Image>
-                                                </Label>
-                                            </Border>
-                                        </WrapPanel>
-                                    </Expander>
-                                    <Expander >
-                                        <Button></Button>
-                                    </Expander>
-                                    <Expander>
-                                        <Button></Button>
-                                    </Expander>
-                                </StackPanel>
-                            </DockPanel>
-                        </TabItem>
-
+                        
                     </Controls:MetroAnimatedSingleRowTabControl>
                 </DockPanel>
             </DockPanel>

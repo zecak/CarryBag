@@ -67,7 +67,7 @@ namespace 随身袋
 
         private void MetroWindow_Loaded(object sender, RoutedEventArgs e)
         {
-
+            
             foreach (var c in Helper.Global.Categorys.FindAll(m=>m.PID==Guid.Empty))
             {
                 var tabItem = new TabItem() { Header = c.Name };
@@ -78,7 +78,7 @@ namespace 随身袋
 
                 foreach (var subc in Helper.Global.Categorys.FindAll(m=>m.PID==c.ID))
                 {
-                    var expander = new Expander() {Header=subc.Name };
+                    var expander = new Expander() {Header=subc.Name,IsExpanded=true };
                     expander.Tag = subc;
 
                     var wrapPanel = new WrapPanel();
@@ -88,7 +88,7 @@ namespace 随身袋
                         var border = new Border() { Style = (Style)this.FindResource("LinkBorder") };
                         var label = new Label() { Width = 64, Height = 64, Style = (Style)this.FindResource("LinkLabel") };
                         if (string.IsNullOrWhiteSpace(link.ImgSrc)) { link.ImgSrc = "Res/logo.png"; }
-                        var image = new Image() { Source = new BitmapImage(new Uri(link.ImgSrc, UriKind.Relative)) };
+                        var image = new Image() { Source = new BitmapImage(new Uri(link.ImgSrc, UriKind.Relative)), ToolTip = link.Name };
                         image.Tag = link;
                         image.MouseLeftButtonDown += image_MouseLeftButtonDown;
                         label.Content = image;
@@ -119,11 +119,13 @@ namespace 随身袋
                 switch (link.AppType)
                 {
                     case LinkType.Sys:
+                        System.Diagnostics.Process.Start(link.FileName);
                         break;
                     case LinkType.App:
+                        System.Diagnostics.Process.Start(link.FileName);
                         break;
                     case LinkType.Web:
-
+                        System.Diagnostics.Process.Start(link.FileName);
                         break;
                     case LinkType.Oth:
                         break;
@@ -132,5 +134,11 @@ namespace 随身袋
                 }
             }
         }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            Flyout_Add.IsOpen = true;
+        }
+
     }
 }
