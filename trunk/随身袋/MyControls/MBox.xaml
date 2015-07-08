@@ -1,0 +1,14 @@
+﻿<Controls:MetroWindow  x:Class="随身袋.MyControls.MBox"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                        xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
+                      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                      xmlns:Dialog="clr-namespace:MahApps.Metro.Controls.Dialogs;assembly=MahApps.Metro"
+                       GlowBrush="{DynamicResource AccentColorBrush}"
+                      mc:Ignorable="d"
+        Title="MBox" Height="200" Width="300">
+    <Grid>
+        
+    </Grid>
+</Controls:MetroWindow>

@@ -22,6 +22,7 @@ namespace 随身袋.Models
         public string AppRootPath { get; set; }
         public string AppPath { get; set; }
         public string FileName { get; set; }
+        public string Args { get; set; }
 
         public string ImgSrc { get; set; }
 

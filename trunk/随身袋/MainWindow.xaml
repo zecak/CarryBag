@@ -18,20 +18,16 @@
     </Controls:MetroWindow.RightWindowCommands>
     <Controls:MetroWindow.Flyouts>
         <Controls:FlyoutsControl>
-            <Controls:Flyout Name="Flyout_Add" Header="" Position="Bottom">
-                <StackPanel Height="80" Margin="5,5,5,5" HorizontalAlignment="Right" Orientation="Horizontal">
-                    <ComboBox>
-                        <ComboBoxItem>123</ComboBoxItem>
-                    </ComboBox>
-                    <TextBox></TextBox>
-                    <Button Content="+" Width="40"
-                            Height="40"
-                            FontFamily="微软雅黑"
-                            FontSize="18"
-                            Style="{DynamicResource MetroCircleButtonStyle}">
-                        
-                    </Button>
-                </StackPanel>
+            <Controls:Flyout Name="Flyout_Add" Header="创建类别" Position="Left" IsModal="True" Theme="Accent" Width="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=Controls:MetroWindow}, Path=ActualWidth}">
+                <DockPanel>
+                    <StackPanel Margin="5,5,5,5">
+                        <ComboBox Name="cbx_root" SelectedIndex="0" SelectedValuePath="ID" DisplayMemberPath="Name">
+                            
+                        </ComboBox>
+                        <TextBox Name="txt_SubCName" Controls:TextBoxHelper.Watermark="类别名称"></TextBox>
+                        <Button Name="btn_AddSubC" Click="btn_AddSubC_Click">创建</Button>
+                    </StackPanel>
+                </DockPanel>
             </Controls:Flyout>
         </Controls:FlyoutsControl>
     </Controls:MetroWindow.Flyouts>
@@ -50,7 +46,7 @@
                 </DockPanel>
                 <DockPanel>
                     <DockPanel DockPanel.Dock="Top">
-                        <TextBox></TextBox>
+                        <TextBox Controls:TextBoxHelper.Watermark="搜索内容"></TextBox>
                     </DockPanel>
                     <Controls:MetroAnimatedSingleRowTabControl Name="tabMain" Controls:TabControlHelper.IsUnderlined="True" TabStripPlacement="Top" >
                         
