@@ -16,16 +16,11 @@ namespace 随身袋.MyControls
     /// <summary>
     /// MBox.xaml 的交互逻辑
     /// </summary>
-    public partial class MBox 
+    public partial class MBox
     {
         public MBox()
         {
             InitializeComponent();
-        }
-         public new string Title
-        {
-            get { return this.lblTitle.Text; }
-            set { this.lblTitle.Text = value; }
         }
 
         public string Message
@@ -33,24 +28,32 @@ namespace 随身袋.MyControls
             get { return this.lblMsg.Text; }
             set { this.lblMsg.Text = value; }
         }
-        public static bool Show(string title, string msg)
+        public static bool? Show(string msg,Window win=null)
+        {
+            var msgBox = new MBox();
+            msgBox.Message = msg;
+            msgBox.Owner = win;
+            return msgBox.ShowDialog();
+        }
+        public static bool? Show(string msg, string title, Window win = null)
         {
             var msgBox = new MBox();
             msgBox.Title = title;
             msgBox.Message = msg;
+            msgBox.Owner = win;
             return msgBox.ShowDialog();
         }
-        private void Yes_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
-      {
-          this.DialogResult = true;
-          this.Close();
-      }
 
+        private void Button_OK_Click(object sender, RoutedEventArgs e)
+        {
+            this.DialogResult = true;
+            this.Close();
+        }
 
-      private void No_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
-      {
-          this.DialogResult = false;
-	            this.Close();
-	        }
+        private void Button_Canel_Click(object sender, RoutedEventArgs e)
+        {
+            this.DialogResult = false;
+            this.Close();
+        }
     }
 }
