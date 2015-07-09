@@ -121,9 +121,11 @@
       <Name>AutoUpdater</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
   <ItemGroup>
     <Resource Include="Res\logo.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Res\header1.jpg" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

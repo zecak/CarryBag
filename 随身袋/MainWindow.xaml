@@ -9,7 +9,7 @@
                       ShowTitleBar="True"
                       GlowBrush="{DynamicResource AccentColorBrush}"
                       mc:Ignorable="d"
-        Title="随身袋" Height="540" Width="320" FontFamily="Microsoft YaHei" Loaded="MetroWindow_Loaded">
+        Title="随身袋 v1.0" Height="540" Width="320" Loaded="MetroWindow_Loaded">
     <Controls:MetroWindow.RightWindowCommands>
         <Controls:WindowCommands>
             <Button ToolTip="关于" Content="关于"  />
@@ -18,26 +18,69 @@
     </Controls:MetroWindow.RightWindowCommands>
     <Controls:MetroWindow.Flyouts>
         <Controls:FlyoutsControl>
+            <Controls:Flyout Name="Flyout_AddFileLink" Header="创建快捷方式" Position="Left" IsModal="True" Theme="Accent" Width="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=Controls:MetroWindow}, Path=ActualWidth}">
+                <DockPanel>
+                    <StackPanel Margin="5,5,5,5">
+                        <TextBox Name="txt_LinkName" Controls:TextBoxHelper.Watermark="程序名称,必填" Margin="5" Controls:TextBoxHelper.IsWaitingForData="True"></TextBox>
+                        <DockPanel>
+                            <Button Name="btn_LinkPath" DockPanel.Dock="Right" Margin="5" Click="btn_LinkPath_Click">浏览目录..</Button>
+                            <Button Name="btn_LinkFileName" DockPanel.Dock="Right" Margin="5" Click="btn_LinkFileName_Click">浏览文件..</Button>
+                            <TextBox Name="txt_LinkFileName" Controls:TextBoxHelper.Watermark="程序位置,必填" Margin="5" Controls:TextBoxHelper.IsWaitingForData="True"></TextBox>
+                        </DockPanel>
+                        <TextBox Name="txt_Args" Controls:TextBoxHelper.Watermark="运行参数,可不填" Margin="5" Controls:TextBoxHelper.IsWaitingForData="True"></TextBox>
+                        <DockPanel>
+                            <Button Name="btn_LinkImage" DockPanel.Dock="Right" Margin="5" Click="btn_LinkImage_Click">浏览..</Button>
+                            <TextBox Name="txt_ImgSrc" Controls:TextBoxHelper.Watermark="图片位置,不填显示默认" Margin="5" Controls:TextBoxHelper.IsWaitingForData="True"></TextBox>
+                        </DockPanel>
+                        <TextBox Name="txt_Tags" Controls:TextBoxHelper.Watermark="标签,方便搜索" Margin="5" Controls:TextBoxHelper.IsWaitingForData="True"></TextBox>
+                        <DockPanel>
+                            <Label Margin="5">排序</Label>
+                            <Controls:NumericUpDown Value="1" TextAlignment="Center" Minimum="0" Margin="5" />
+                        </DockPanel>
+                        
+                        <Button Name="btn_AddFileLink" Click="btn_AddFileLink_Click" Margin="5">创建</Button>
+                    </StackPanel>
+                </DockPanel>
+            </Controls:Flyout>
             <Controls:Flyout Name="Flyout_Add" Header="创建类别" Position="Left" IsModal="True" Theme="Accent" Width="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=Controls:MetroWindow}, Path=ActualWidth}">
                 <DockPanel>
                     <StackPanel Margin="5,5,5,5">
-                        <ComboBox Name="cbx_root" SelectedIndex="0" SelectedValuePath="ID" DisplayMemberPath="Name">
+                        <ComboBox Name="cbx_root" SelectedIndex="0" SelectedValuePath="ID" DisplayMemberPath="Name" Margin="5">
                             
                         </ComboBox>
-                        <TextBox Name="txt_SubCName" Controls:TextBoxHelper.Watermark="类别名称"></TextBox>
-                        <Button Name="btn_AddSubC" Click="btn_AddSubC_Click">创建</Button>
+                        <TextBox Name="txt_SubCName" Controls:TextBoxHelper.Watermark="类别名称,必填" Margin="5" Controls:TextBoxHelper.IsWaitingForData="True"></TextBox>
+                        <DockPanel>
+                            <Label Margin="5">排序</Label>
+                            <Controls:NumericUpDown Name="nud_SortNum" Value="1" TextAlignment="Center" Minimum="0" Margin="5"/>
+                        </DockPanel>
+                        
+                        <Button Name="btn_AddSubC" Click="btn_AddSubC_Click" Margin="5">创建</Button>
                     </StackPanel>
                 </DockPanel>
             </Controls:Flyout>
             <Controls:Flyout Name="Flyout_Edit" Header="修改类别" Position="Left" IsModal="True" Theme="Accent" Width="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=Controls:MetroWindow}, Path=ActualWidth}">
                 <DockPanel>
                     <StackPanel Margin="5,5,5,5">
-                        <ComboBox Name="cbx_root_edit" IsEnabled="False" SelectedValuePath="ID" DisplayMemberPath="Name">
+                        <ComboBox Name="cbx_root_edit" IsEnabled="False" SelectedValuePath="ID" DisplayMemberPath="Name" Margin="5">
 
                         </ComboBox>
-                        <TextBox Name="txt_SubCName_edit" Controls:TextBoxHelper.Watermark="类别名称"></TextBox>
-                        <TextBox Name="txt_SortNum" Visibility="Hidden"></TextBox>
-                        <Button Name="btn_AddSubC_edit" Click="btn_AddSubC_edit_Click">保存</Button>
+                        <TextBox Name="txt_SubCName_edit" Controls:TextBoxHelper.Watermark="类别名称" Margin="5" Controls:TextBoxHelper.IsWaitingForData="True"></TextBox>
+                        <DockPanel>
+                            <Label Margin="5">排序</Label>
+                            <Controls:NumericUpDown Name="nud_SortNum_edit" TextAlignment="Center" Minimum="0" Margin="5"/>
+                        </DockPanel>
+                       
+                        <Button Name="btn_AddSubC_edit" Click="btn_AddSubC_edit_Click" Margin="5">保存</Button>
+                    </StackPanel>
+                </DockPanel>
+            </Controls:Flyout>
+            <Controls:Flyout Name="Flyout_Move" Header="调整类别" Position="Left" IsModal="True" Theme="Accent" Width="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=Controls:MetroWindow}, Path=ActualWidth}">
+                <DockPanel>
+                    <StackPanel Margin="5,5,5,5">
+                        <ComboBox Name="cbx_root_Move" SelectedValuePath="ID" DisplayMemberPath="Name" Margin="5">
+
+                        </ComboBox>
+                        <Button Name="btn_AddSubC_Move" Click="btn_AddSubC_Move_Click" Margin="5">保存</Button>
                     </StackPanel>
                 </DockPanel>
             </Controls:Flyout>
@@ -47,18 +90,18 @@
         <Grid>
             <DockPanel>
                 <DockPanel DockPanel.Dock="Top">
-                    <Button Name="btn_test" Height="100"></Button>
+                    <Image Height="120"/>
                 </DockPanel>
-                <DockPanel DockPanel.Dock="Bottom">
+                <DockPanel DockPanel.Dock="Bottom" Margin="5" >
                     <DockPanel>
                         <ToolBarPanel Orientation="Horizontal">
                             <Button Click="Button_Click" Width="32" Height="32" FontFamily="微软雅黑" FontSize="18" Style="{DynamicResource MetroCircleButtonStyle}">+</Button>
                         </ToolBarPanel>
                     </DockPanel>
                 </DockPanel>
-                <DockPanel>
-                    <DockPanel DockPanel.Dock="Top">
-                        <TextBox Controls:TextBoxHelper.Watermark="搜索内容"></TextBox>
+                <DockPanel Margin="0 5 0 5">
+                    <DockPanel DockPanel.Dock="Top" >
+                        <TextBox Controls:TextBoxHelper.Watermark="搜索内容" Controls:TextBoxHelper.IsWaitingForData="True"></TextBox>
                     </DockPanel>
                     <Controls:MetroAnimatedSingleRowTabControl Name="tabMain" Controls:TabControlHelper.IsUnderlined="True" TabStripPlacement="Top" >
                         
