@@ -91,7 +91,7 @@ namespace 随身袋
 
                 foreach (var subc in Helper.Global.Categorys.FindAll(m => m.PID == c.ID))
                 {
-                    var expander = new Expander() { Name = subc.Name, Header = subc.Name, IsExpanded = true};
+                    var expander = new Expander() { Name = subc.Name, Header = subc.Name, IsExpanded = true };
                     expander.Tag = subc;
 
                     expander.ContextMenu = SubCMenu;
@@ -145,8 +145,8 @@ namespace 随身袋
         void mitem_del_Click(object sender, RoutedEventArgs e)
         {
             var exp = SubCMenu.PlacementTarget as Expander;
-            var mbr = MBox.Show("确定删除该分类信息么?", "提示",this);
-            if (mbr ==true)
+            var mbr = MBox.Show("确定删除该分类信息么?", "提示", this);
+            if (mbr == true)
             {
                 //var exp = SubCMenu.PlacementTarget as Expander;
                 var c = exp.Tag as RootCategory;
@@ -195,7 +195,7 @@ namespace 随身袋
         {
             if (string.IsNullOrWhiteSpace(txt_SubCName.Text)) { txt_SubCName.Focus(); return; }
             var only = Helper.Global.Categorys.FirstOrDefault(m => m.Name.ToUpper() == txt_SubCName.Text.ToUpper());
-            if(only!=null)
+            if (only != null)
             {
                 txt_SubCName.Text = "";
                 TextBoxHelper.SetWatermark(txt_SubCName, "名称已存在!");
@@ -237,7 +237,7 @@ namespace 随身袋
             expander.ContextMenu = SubCMenu;
 
             Helper.Global.SaveCategorys();
-            
+
             Flyout_Edit.IsOpen = false;
         }
 
@@ -264,12 +264,22 @@ namespace 随身袋
 
         private void btn_LinkPath_Click(object sender, RoutedEventArgs e)
         {
-            //OpenFileDialog 
+            
         }
 
         private void btn_LinkFileName_Click(object sender, RoutedEventArgs e)
         {
-
+            var openFileDialog = new Microsoft.Win32.OpenFileDialog()
+            {
+                Filter = "执行文件|*.exe|所有文件|*.*",
+                InitialDirectory = AppDomain.CurrentDomain.BaseDirectory,
+                
+            };
+            var result = openFileDialog.ShowDialog();
+            if (result == true)
+            {
+                txt_LinkFileName.Text = openFileDialog.FileName;
+            }
         }
 
         private void btn_LinkImage_Click(object sender, RoutedEventArgs e)
