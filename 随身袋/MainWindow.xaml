@@ -21,12 +21,12 @@
             <Controls:Flyout Name="Flyout_AddFileLink" Header="创建快捷方式" Position="Left" IsModal="True" Theme="Accent" Width="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=Controls:MetroWindow}, Path=ActualWidth}">
                 <DockPanel>
                     <StackPanel Margin="5,5,5,5">
-                        <TextBox Name="txt_LinkName" Controls:TextBoxHelper.Watermark="程序名称,必填" Margin="5" Controls:TextBoxHelper.IsWaitingForData="True"></TextBox>
+                        <CheckBox Name="chb_IsRelative" IsChecked="True" Margin="5">相对位置</CheckBox>
                         <DockPanel>
-                            <Button Name="btn_LinkPath" DockPanel.Dock="Right" Margin="5" Click="btn_LinkPath_Click">浏览目录..</Button>
                             <Button Name="btn_LinkFileName" DockPanel.Dock="Right" Margin="5" Click="btn_LinkFileName_Click">浏览文件..</Button>
                             <TextBox Name="txt_LinkFileName" Controls:TextBoxHelper.Watermark="程序位置,必填" Margin="5" Controls:TextBoxHelper.IsWaitingForData="True"></TextBox>
                         </DockPanel>
+                        <TextBox Name="txt_LinkName" Controls:TextBoxHelper.Watermark="程序名称,必填" Margin="5" Controls:TextBoxHelper.IsWaitingForData="True"></TextBox>
                         <TextBox Name="txt_Args" Controls:TextBoxHelper.Watermark="运行参数,可不填" Margin="5" Controls:TextBoxHelper.IsWaitingForData="True"></TextBox>
                         <DockPanel>
                             <Button Name="btn_LinkImage" DockPanel.Dock="Right" Margin="5" Click="btn_LinkImage_Click">浏览..</Button>
@@ -90,7 +90,7 @@
         <Grid>
             <DockPanel>
                 <DockPanel DockPanel.Dock="Top">
-                    <Image Height="120"/>
+                    <Image Height="80"/>
                 </DockPanel>
                 <DockPanel DockPanel.Dock="Bottom" Margin="5" >
                     <DockPanel>

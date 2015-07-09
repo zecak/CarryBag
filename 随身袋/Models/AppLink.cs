@@ -22,10 +22,21 @@ namespace 随身袋.Models
         /// </summary>
         public string AppPath { get; set; }
 
-        
         public string FileName { get; set; }
+
+        /// <summary>
+        /// 是否相对的
+        /// </summary>
+        public bool IsRelative { get; set; }
+
+        /// <summary>
+        /// 运行参数
+        /// </summary>
         public string Args { get; set; }
 
+        /// <summary>
+        /// 自定义链接图片
+        /// </summary>
         public string ImgSrc { get; set; }
 
         /// <summary>

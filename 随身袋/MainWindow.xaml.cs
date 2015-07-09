@@ -62,6 +62,8 @@ namespace 随身袋
 
         private void MetroWindow_Loaded(object sender, RoutedEventArgs e)
         {
+
+
             var mitem_filelink = new MenuItem() { Header = "添加快捷方式" };
             mitem_filelink.Click += mitem_filelink_Click;
             var mitem_upd = new MenuItem() { Header = "修改" };
@@ -131,6 +133,11 @@ namespace 随身袋
             Flyout_AddFileLink.IsOpen = true;
         }
 
+        /// <summary>
+        /// 移动操作,加载类别
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         void mitem_mov_Click(object sender, RoutedEventArgs e)
         {
             var exp = SubCMenu.PlacementTarget as Expander;
@@ -142,13 +149,17 @@ namespace 随身袋
             Flyout_Move.IsOpen = true;
         }
 
+        /// <summary>
+        /// 删除类别
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         void mitem_del_Click(object sender, RoutedEventArgs e)
         {
             var exp = SubCMenu.PlacementTarget as Expander;
-            var mbr = MBox.Show("确定删除该分类信息么?", "提示", this);
+            var mbr = MBox.Show("确定删除该类别信息么?", "提示", this);
             if (mbr == true)
             {
-                //var exp = SubCMenu.PlacementTarget as Expander;
                 var c = exp.Tag as RootCategory;
                 var p_c = Helper.Global.Categorys.FirstOrDefault(m => m.ID == c.PID);
                 var spanel = this.tabMain.FindChild<StackPanel>(p_c.Name);//查找可见的子控件
@@ -162,6 +173,11 @@ namespace 随身袋
 
         }
 
+        /// <summary>
+        /// 修改操作,加载类别
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         void mitem_upd_Click(object sender, RoutedEventArgs e)
         {
             var exp = SubCMenu.PlacementTarget as Expander;
@@ -176,13 +192,26 @@ namespace 随身袋
 
         }
 
+        /// <summary>
+        /// 单击打开链接文件
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         void image_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             var img = sender as Image;
             var link = img.Tag as AppLink;
             if (link != null)
             {
-                System.Diagnostics.Process.Start(link.FileName, link.Args);
+                if (link.IsRelative==true)
+                {
+                    System.Diagnostics.Process.Start(System.IO.Path.Combine(Helper.Global.AppBagPath,link.FileName), link.Args);
+                }
+                else
+                {
+                    System.Diagnostics.Process.Start(link.FileName, link.Args);
+                }
+                
             }
         }
 
@@ -262,23 +291,25 @@ namespace 随身袋
 
         }
 
-        private void btn_LinkPath_Click(object sender, RoutedEventArgs e)
-        {
-            
-        }
-
         private void btn_LinkFileName_Click(object sender, RoutedEventArgs e)
         {
             var openFileDialog = new Microsoft.Win32.OpenFileDialog()
             {
                 Filter = "执行文件|*.exe|所有文件|*.*",
                 InitialDirectory = AppDomain.CurrentDomain.BaseDirectory,
-                
             };
             var result = openFileDialog.ShowDialog();
             if (result == true)
             {
-                txt_LinkFileName.Text = openFileDialog.FileName;
+                if (chb_IsRelative.IsChecked==true)
+                {
+                    txt_LinkFileName.Text = openFileDialog.FileName.Replace(AppDomain.CurrentDomain.BaseDirectory, "");
+                }
+                else
+                {
+                    txt_LinkFileName.Text = System.IO.Path.GetFullPath(openFileDialog.FileName);
+                }
+                txt_LinkName.Text = System.IO.Path.GetFileNameWithoutExtension(openFileDialog.FileName);
             }
         }
 
