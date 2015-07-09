@@ -5,13 +5,7 @@ using System.Text;
 
 namespace 随身袋.Models
 {
-    public enum LinkType
-    {
-        Sys=0,
-        App=1,
-        Web=2,
-        Oth=3,
-    }
+
     public class AppLink
     {
         public Guid ID { get; set; }
@@ -28,6 +22,7 @@ namespace 随身袋.Models
         /// </summary>
         public string AppPath { get; set; }
 
+        
         public string FileName { get; set; }
         public string Args { get; set; }
 
@@ -38,8 +33,6 @@ namespace 随身袋.Models
         /// </summary>
         public int SortNum { get; set; }
 
-
-        public LinkType AppType { get; set; }
 
         /// <summary>
         /// 标签

@@ -23,7 +23,7 @@ namespace 随身袋.Helper
                     new RootCategory(){ ID=Guid.NewGuid(), Name="网址", PID=Guid.Empty, SortNum=2}, 
                     new RootCategory(){ ID=Guid.NewGuid(), Name="系统", PID=Guid.Empty, SortNum=3}, 
                     new RootCategory(){ ID=Guid.NewGuid(), Name="目录", PID=Guid.Empty, SortNum=4}, 
-                    new RootCategory(){ ID=Guid.NewGuid(), Name="其他", PID=Guid.Empty, SortNum=5}, 
+                    new RootCategory(){ ID=Guid.NewGuid(), Name="娱乐", PID=Guid.Empty, SortNum=5}, 
                 };
                 XMLSer(SettingFileName, categorys);
             }
@@ -36,7 +36,7 @@ namespace 随身袋.Helper
                 Categorys.Add(subcategory);
                 XMLSer(SettingFileName, Categorys);
                 applinks = new List<AppLink>() { 
-                    new AppLink(){ ID=Guid.NewGuid(),AppType= LinkType.Web, Name="泽卡可", PID=subcategory.ID, SortNum=1, FileName="http://www.zecak.com"  }, 
+                    new AppLink(){ ID=Guid.NewGuid(), Name="泽卡可", PID=subcategory.ID, SortNum=1, FileName="http://www.zecak.com"  }, 
 
                 };
                 XMLSer(ApplinkFileName, applinks);
@@ -56,7 +56,7 @@ namespace 随身袋.Helper
                     new RootCategory(){ ID=Guid.NewGuid(), Name="网址", PID=Guid.Empty, SortNum=2}, 
                     new RootCategory(){ ID=Guid.NewGuid(), Name="系统", PID=Guid.Empty, SortNum=3}, 
                     new RootCategory(){ ID=Guid.NewGuid(), Name="目录", PID=Guid.Empty, SortNum=4}, 
-                    new RootCategory(){ ID=Guid.NewGuid(), Name="其他", PID=Guid.Empty, SortNum=5}, 
+                    new RootCategory(){ ID=Guid.NewGuid(), Name="娱乐", PID=Guid.Empty, SortNum=5}, 
                     };
                     XMLSer(SettingFileName, categorys);
                 }
@@ -88,7 +88,7 @@ namespace 随身袋.Helper
                     categorys.Add(subcategory);
                     XMLSer(SettingFileName, categorys);
                     applinks = new List<AppLink>() { 
-                    new AppLink(){ ID=Guid.NewGuid(),AppType= LinkType.Web, Name="泽卡可", PID=subcategory.ID, SortNum=1, FileName="http://www.zecak.com"  }, 
+                    new AppLink(){ ID=Guid.NewGuid(), Name="泽卡可", PID=subcategory.ID, SortNum=1, FileName="http://www.zecak.com"  }, 
 
                     };
                     XMLSer(ApplinkFileName, applinks);

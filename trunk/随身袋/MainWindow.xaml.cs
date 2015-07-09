@@ -47,10 +47,10 @@ namespace 随身袋
             switch (e.Result.Text)
             {
                 case "选择红色":
-                    btn_test.Content = e.Result.Text;
+                    //btn_test.Content = e.Result.Text;
                     break;
                 case "选择绿色":
-                    btn_test.Content = e.Result.Text;
+                    //btn_test.Content = e.Result.Text;
                     break;
             }
         }
@@ -58,15 +58,26 @@ namespace 随身袋
 
         ContextMenu SubCMenu = new ContextMenu();
 
+        ContextMenu SubCMenu_App = new ContextMenu();
+
         private void MetroWindow_Loaded(object sender, RoutedEventArgs e)
         {
-            //SubCMenu.Items.Add(new MenuItem() { Header="添加文件"});
+            var mitem_filelink = new MenuItem() { Header = "添加快捷方式" };
+            mitem_filelink.Click += mitem_filelink_Click;
             var mitem_upd = new MenuItem() { Header = "修改" };
             mitem_upd.Click += mitem_upd_Click;
+            var mitem_mov = new MenuItem() { Header = "移动" };
+            mitem_mov.Click += mitem_mov_Click;
             var mitem_del = new MenuItem() { Header = "删除" };
             mitem_del.Click += mitem_del_Click;
+
+            SubCMenu.Items.Add(mitem_filelink);
             SubCMenu.Items.Add(mitem_upd);
+            SubCMenu.Items.Add(mitem_mov);
+            SubCMenu.Items.Add(new Separator());
             SubCMenu.Items.Add(mitem_del);
+
+            SubCMenu_App.Items.Add(new MenuItem() { Header = "添加文件" });
 
             cbx_root.ItemsSource = Helper.Global.Categorys.FindAll(m => m.PID == Guid.Empty);
             foreach (var c in Helper.Global.Categorys.FindAll(m => m.PID == Guid.Empty))
@@ -80,13 +91,13 @@ namespace 随身袋
 
                 foreach (var subc in Helper.Global.Categorys.FindAll(m => m.PID == c.ID))
                 {
-                    var expander = new Expander() { Name = subc.Name, Header = subc.Name, IsExpanded = true };
+                    var expander = new Expander() { Name = subc.Name, Header = subc.Name, IsExpanded = true};
                     expander.Tag = subc;
 
                     expander.ContextMenu = SubCMenu;
 
                     var wrapPanel = new WrapPanel();
-
+                    wrapPanel.ContextMenu = SubCMenu_App;
                     foreach (var link in Helper.Global.AppLinks.FindAll(m => m.PID == subc.ID))
                     {
                         var border = new Border() { Name = link.Name, Style = (Style)this.FindResource("LinkBorder") };
@@ -113,6 +124,24 @@ namespace 随身袋
 
         }
 
+        void mitem_filelink_Click(object sender, RoutedEventArgs e)
+        {
+            var exp = SubCMenu.PlacementTarget as Expander;
+
+            Flyout_AddFileLink.IsOpen = true;
+        }
+
+        void mitem_mov_Click(object sender, RoutedEventArgs e)
+        {
+            var exp = SubCMenu.PlacementTarget as Expander;
+            cbx_root_Move.ItemsSource = Helper.Global.Categorys.FindAll(m => m.PID == Guid.Empty);
+            var c = exp.Tag as RootCategory;
+            var p_c = Helper.Global.Categorys.FirstOrDefault(m => m.ID == c.PID);
+            cbx_root_Move.SelectedItem = p_c;
+            btn_AddSubC_Move.Tag = c.ID;
+            Flyout_Move.IsOpen = true;
+        }
+
         void mitem_del_Click(object sender, RoutedEventArgs e)
         {
             var exp = SubCMenu.PlacementTarget as Expander;
@@ -122,7 +151,7 @@ namespace 随身袋
                 //var exp = SubCMenu.PlacementTarget as Expander;
                 var c = exp.Tag as RootCategory;
                 var p_c = Helper.Global.Categorys.FirstOrDefault(m => m.ID == c.PID);
-                var spanel = this.tabMain.FindChild<StackPanel>(p_c.Name);
+                var spanel = this.tabMain.FindChild<StackPanel>(p_c.Name);//查找可见的子控件
                 if (spanel != null)
                 {
                     spanel.Children.Remove(exp);
@@ -142,7 +171,7 @@ namespace 随身袋
             cbx_root_edit.SelectedItem = p_c;
             txt_SubCName_edit.Tag = c.ID;
             txt_SubCName_edit.Text = c.Name;
-            txt_SortNum.Text = c.SortNum.ToString();
+            nud_SortNum_edit.Value = c.SortNum;
             Flyout_Edit.IsOpen = true;
 
         }
@@ -153,22 +182,7 @@ namespace 随身袋
             var link = img.Tag as AppLink;
             if (link != null)
             {
-                switch (link.AppType)
-                {
-                    case LinkType.Sys:
-                        System.Diagnostics.Process.Start(link.FileName, link.Args);
-                        break;
-                    case LinkType.App:
-                        System.Diagnostics.Process.Start(link.FileName, link.Args);
-                        break;
-                    case LinkType.Web:
-                        System.Diagnostics.Process.Start(link.FileName);
-                        break;
-                    case LinkType.Oth:
-                        break;
-                    default:
-                        break;
-                }
+                System.Diagnostics.Process.Start(link.FileName, link.Args);
             }
         }
 
@@ -179,23 +193,25 @@ namespace 随身袋
 
         private void btn_AddSubC_Click(object sender, RoutedEventArgs e)
         {
-            var only=Helper.Global.Categorys.FirstOrDefault(m => m.Name == txt_SubCName.Text);
+            if (string.IsNullOrWhiteSpace(txt_SubCName.Text)) { txt_SubCName.Focus(); return; }
+            var only = Helper.Global.Categorys.FirstOrDefault(m => m.Name.ToUpper() == txt_SubCName.Text.ToUpper());
             if(only!=null)
             {
                 txt_SubCName.Text = "";
                 TextBoxHelper.SetWatermark(txt_SubCName, "名称已存在!");
                 return;
             }
-            var subc = new RootCategory() { ID = Guid.NewGuid(), Name = txt_SubCName.Text, PID = (Guid)cbx_root.SelectedValue, SortNum = 1 };
+            var subc = new RootCategory() { ID = Guid.NewGuid(), Name = txt_SubCName.Text, PID = (Guid)cbx_root.SelectedValue, SortNum = (int)nud_SortNum.Value };
             Helper.Global.Categorys.Add(subc);
             Helper.Global.SaveCategorys();
 
 
-            var stackPanel = this.tabMain.FindChild<StackPanel>(cbx_root.Text);
+            var stackPanel = this.tabMain.FindChild<StackPanel>(cbx_root.Text);//查找可见的子控件
             var expander = new Expander() { Name = subc.Name, Header = subc.Name, IsExpanded = true };
             expander.Tag = subc;
             expander.ContextMenu = SubCMenu;
             var wrapPanel = new WrapPanel();
+            wrapPanel.ContextMenu = SubCMenu_App;
             expander.Content = wrapPanel;
             stackPanel.Children.Add(expander);
 
@@ -209,11 +225,11 @@ namespace 随身袋
             //此方法,暂不支持更换类别
             var subc = Helper.Global.Categorys.FirstOrDefault(m => m.ID == ((Guid)txt_SubCName_edit.Tag));
 
-            var expander = this.tabMain.FindChild<Expander>(subc.Name);
+            var expander = this.tabMain.FindChild<Expander>(subc.Name);//查找可见的子控件
 
             subc.Name = txt_SubCName_edit.Text;
             subc.PID = (Guid)cbx_root_edit.SelectedValue;
-            subc.SortNum = Convert.ToInt32(txt_SortNum.Text);
+            subc.SortNum = Convert.ToInt32(nud_SortNum_edit.Value);
 
             expander.Name = subc.Name;
             expander.Header = subc.Name;
@@ -223,6 +239,42 @@ namespace 随身袋
             Helper.Global.SaveCategorys();
             
             Flyout_Edit.IsOpen = false;
+        }
+
+        private void btn_AddSubC_Move_Click(object sender, RoutedEventArgs e)
+        {
+            var id = (Guid)btn_AddSubC_Move.Tag;
+            var subc = Helper.Global.Categorys.FirstOrDefault(m => m.ID == id);
+            subc.PID = (Guid)cbx_root_Move.SelectedValue;
+
+            var stackPanel_temp = this.tabMain.SelectedContent as StackPanel;//查找可见的子控件
+            var stackPanel = this.tabMain.FindChildren<StackPanel>().FirstOrDefault(sp => sp.Name == cbx_root_Move.Text); //查找所有子控件
+            var expander = this.tabMain.FindChild<Expander>(subc.Name);
+            stackPanel_temp.Children.Remove(expander);
+            stackPanel.Children.Add(expander);
+
+            Helper.Global.SaveCategorys();
+            Flyout_Move.IsOpen = false;
+        }
+
+        private void btn_AddFileLink_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void btn_LinkPath_Click(object sender, RoutedEventArgs e)
+        {
+            //OpenFileDialog 
+        }
+
+        private void btn_LinkFileName_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void btn_LinkImage_Click(object sender, RoutedEventArgs e)
+        {
+
         }
 
     }
