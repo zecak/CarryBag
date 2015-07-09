@@ -15,6 +15,7 @@ using System.Speech.Recognition;
 using MahApps.Metro.Controls;
 using 随身袋.Models;
 using System.Collections.ObjectModel;
+using 随身袋.MyControls;
 
 namespace 随身袋
 {
@@ -54,11 +55,6 @@ namespace 随身袋
             }
         }
 
-        private void MetroTabControl_TabItemClosingEvent(object sender, BaseMetroTabControl.TabItemClosingEventArgs e)
-        {
-            if (e.ClosingTabItem.Header.ToString().StartsWith("sizes"))
-                e.Cancel = true;
-        }
 
         ContextMenu SubCMenu = new ContextMenu();
 
@@ -119,18 +115,18 @@ namespace 随身袋
 
         void mitem_del_Click(object sender, RoutedEventArgs e)
         {
-            
-            var mbr = MessageBox.Show("确定删除该分类信息么?", "提示", MessageBoxButton.OKCancel);
-            if (mbr == MessageBoxResult.OK)
+            var exp = SubCMenu.PlacementTarget as Expander;
+            var mbr = MBox.Show("确定删除该分类信息么?", "提示",this);
+            if (mbr ==true)
             {
-                var exp = SubCMenu.PlacementTarget as Expander;
+                //var exp = SubCMenu.PlacementTarget as Expander;
                 var c = exp.Tag as RootCategory;
                 var p_c = Helper.Global.Categorys.FirstOrDefault(m => m.ID == c.PID);
                 var spanel = this.tabMain.FindChild<StackPanel>(p_c.Name);
                 if (spanel != null)
                 {
                     spanel.Children.Remove(exp);
-                    Helper.Global.Categorys.Remove(p_c);
+                    Helper.Global.Categorys.Remove(c);
                     Helper.Global.SaveCategorys();
                 }
             }
@@ -139,7 +135,16 @@ namespace 随身袋
 
         void mitem_upd_Click(object sender, RoutedEventArgs e)
         {
-            //throw new NotImplementedException();
+            var exp = SubCMenu.PlacementTarget as Expander;
+            cbx_root_edit.ItemsSource = Helper.Global.Categorys.FindAll(m => m.PID == Guid.Empty);
+            var c = exp.Tag as RootCategory;
+            var p_c = Helper.Global.Categorys.FirstOrDefault(m => m.ID == c.PID);
+            cbx_root_edit.SelectedItem = p_c;
+            txt_SubCName_edit.Tag = c.ID;
+            txt_SubCName_edit.Text = c.Name;
+            txt_SortNum.Text = c.SortNum.ToString();
+            Flyout_Edit.IsOpen = true;
+
         }
 
         void image_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
@@ -174,6 +179,13 @@ namespace 随身袋
 
         private void btn_AddSubC_Click(object sender, RoutedEventArgs e)
         {
+            var only=Helper.Global.Categorys.FirstOrDefault(m => m.Name == txt_SubCName.Text);
+            if(only!=null)
+            {
+                txt_SubCName.Text = "";
+                TextBoxHelper.SetWatermark(txt_SubCName, "名称已存在!");
+                return;
+            }
             var subc = new RootCategory() { ID = Guid.NewGuid(), Name = txt_SubCName.Text, PID = (Guid)cbx_root.SelectedValue, SortNum = 1 };
             Helper.Global.Categorys.Add(subc);
             Helper.Global.SaveCategorys();
@@ -182,6 +194,7 @@ namespace 随身袋
             var stackPanel = this.tabMain.FindChild<StackPanel>(cbx_root.Text);
             var expander = new Expander() { Name = subc.Name, Header = subc.Name, IsExpanded = true };
             expander.Tag = subc;
+            expander.ContextMenu = SubCMenu;
             var wrapPanel = new WrapPanel();
             expander.Content = wrapPanel;
             stackPanel.Children.Add(expander);
@@ -189,6 +202,27 @@ namespace 随身袋
 
             txt_SubCName.Text = "";
             Flyout_Add.IsOpen = false;
+        }
+
+        private void btn_AddSubC_edit_Click(object sender, RoutedEventArgs e)
+        {
+            //此方法,暂不支持更换类别
+            var subc = Helper.Global.Categorys.FirstOrDefault(m => m.ID == ((Guid)txt_SubCName_edit.Tag));
+
+            var expander = this.tabMain.FindChild<Expander>(subc.Name);
+
+            subc.Name = txt_SubCName_edit.Text;
+            subc.PID = (Guid)cbx_root_edit.SelectedValue;
+            subc.SortNum = Convert.ToInt32(txt_SortNum.Text);
+
+            expander.Name = subc.Name;
+            expander.Header = subc.Name;
+            expander.Tag = subc;
+            expander.ContextMenu = SubCMenu;
+
+            Helper.Global.SaveCategorys();
+            
+            Flyout_Edit.IsOpen = false;
         }
 
     }

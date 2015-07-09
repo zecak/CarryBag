@@ -22,7 +22,8 @@ namespace 随身袋.Helper
                     new RootCategory(){ ID=Guid.NewGuid(), Name="软件", PID=Guid.Empty, SortNum=1}, 
                     new RootCategory(){ ID=Guid.NewGuid(), Name="网址", PID=Guid.Empty, SortNum=2}, 
                     new RootCategory(){ ID=Guid.NewGuid(), Name="系统", PID=Guid.Empty, SortNum=3}, 
-                    new RootCategory(){ ID=Guid.NewGuid(), Name="其他", PID=Guid.Empty, SortNum=4}, 
+                    new RootCategory(){ ID=Guid.NewGuid(), Name="目录", PID=Guid.Empty, SortNum=4}, 
+                    new RootCategory(){ ID=Guid.NewGuid(), Name="其他", PID=Guid.Empty, SortNum=5}, 
                 };
                 XMLSer(SettingFileName, categorys);
             }
@@ -54,7 +55,8 @@ namespace 随身袋.Helper
                     new RootCategory(){ ID=Guid.NewGuid(), Name="软件", PID=Guid.Empty, SortNum=1}, 
                     new RootCategory(){ ID=Guid.NewGuid(), Name="网址", PID=Guid.Empty, SortNum=2}, 
                     new RootCategory(){ ID=Guid.NewGuid(), Name="系统", PID=Guid.Empty, SortNum=3}, 
-                    new RootCategory(){ ID=Guid.NewGuid(), Name="其他", PID=Guid.Empty, SortNum=4}, 
+                    new RootCategory(){ ID=Guid.NewGuid(), Name="目录", PID=Guid.Empty, SortNum=4}, 
+                    new RootCategory(){ ID=Guid.NewGuid(), Name="其他", PID=Guid.Empty, SortNum=5}, 
                     };
                     XMLSer(SettingFileName, categorys);
                 }

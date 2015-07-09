@@ -7,8 +7,16 @@
                       xmlns:Dialog="clr-namespace:MahApps.Metro.Controls.Dialogs;assembly=MahApps.Metro"
                        GlowBrush="{DynamicResource AccentColorBrush}"
                       mc:Ignorable="d"
-        Title="MBox" Height="200" Width="300">
+        Title="提示" Height="160" Width="300" ShowMaxRestoreButton="False" ShowMinButton="False" ShowSystemMenuOnRightClick="False" ResizeMode="NoResize" WindowStartupLocation="CenterOwner">
     <Grid>
+        <DockPanel LastChildFill="False">
+            <TextBlock Name="lblMsg" DockPanel.Dock="Top" Margin="0,20,0,0" HorizontalAlignment="Center" VerticalAlignment="Center" TextWrapping="Wrap" Height="60" ></TextBlock>
+            <DockPanel DockPanel.Dock="Bottom">
+                <Button DockPanel.Dock="Left" Width="100" Margin="5" Click="Button_Canel_Click">取消</Button>
+                <Button DockPanel.Dock="Left" Margin="5" Click="Button_OK_Click">确定</Button>
+            </DockPanel>
+        </DockPanel>
+        
         
     </Grid>
 </Controls:MetroWindow>

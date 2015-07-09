@@ -29,6 +29,18 @@
                     </StackPanel>
                 </DockPanel>
             </Controls:Flyout>
+            <Controls:Flyout Name="Flyout_Edit" Header="修改类别" Position="Left" IsModal="True" Theme="Accent" Width="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=Controls:MetroWindow}, Path=ActualWidth}">
+                <DockPanel>
+                    <StackPanel Margin="5,5,5,5">
+                        <ComboBox Name="cbx_root_edit" IsEnabled="False" SelectedValuePath="ID" DisplayMemberPath="Name">
+
+                        </ComboBox>
+                        <TextBox Name="txt_SubCName_edit" Controls:TextBoxHelper.Watermark="类别名称"></TextBox>
+                        <TextBox Name="txt_SortNum" Visibility="Hidden"></TextBox>
+                        <Button Name="btn_AddSubC_edit" Click="btn_AddSubC_edit_Click">保存</Button>
+                    </StackPanel>
+                </DockPanel>
+            </Controls:Flyout>
         </Controls:FlyoutsControl>
     </Controls:MetroWindow.Flyouts>
     <Controls:MetroContentControl>
