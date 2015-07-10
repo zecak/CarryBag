@@ -13,14 +13,6 @@ namespace 随身袋.Models
 
         public Guid PID { get; set; }
 
-        /// <summary>
-        /// 程序根目录
-        /// </summary>
-        public string AppRootPath { get; set; }
-        /// <summary>
-        /// 程序所在目录
-        /// </summary>
-        public string AppPath { get; set; }
 
         public string FileName { get; set; }
 
@@ -33,11 +25,6 @@ namespace 随身袋.Models
         /// 运行参数
         /// </summary>
         public string Args { get; set; }
-
-        /// <summary>
-        /// 自定义链接图片
-        /// </summary>
-        public string ImgSrc { get; set; }
 
         /// <summary>
         /// 排序

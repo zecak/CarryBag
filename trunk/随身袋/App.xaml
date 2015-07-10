@@ -44,29 +44,15 @@
                 <!--<Setter Property="FontFamily" Value="新宋体"></Setter>-->
             </Style>
 
-            <!--<Style TargetType="{x:Type ListBox}">
-                --><!-- 定义ListBox自身外观, 比如: 圆角边框--><!--
-                <Setter Property="Template">
-                    <Setter.Value>
-                        <ControlTemplate TargetType="ListBox">
-                            <Border CornerRadius="5" BorderBrush="Black" BorderThickness="2">
-                                <ScrollViewer HorizontalScrollBarVisibility="Hidden">
-                                    <ItemsPresenter/>
-                                </ScrollViewer>
-                            </Border>
-                        </ControlTemplate>
-                    </Setter.Value>
-                </Setter>
-            </Style>-->
+            <Style x:Key="FontAwesome">
+                <Setter Property="TextElement.FontFamily" Value="Res/#FontAwesome" />
+                <Setter Property="TextBlock.Width" Value="32"></Setter>
+                <Setter Property="TextBlock.Height" Value="32"></Setter>
+                <Setter Property="TextBlock.TextAlignment" Value="Center"></Setter>
+                <Setter Property="TextBlock.FontSize" Value="60"></Setter>
+                <Setter Property="TextBlock.Foreground" Value="Green"></Setter>
+            </Style>
 
-            <!---DataGrid Cell Style  {x:Type DataGridCell}--><!--
-            <Style TargetType="{x:Type DataGridCell}" >
-                <Style.Triggers>
-                    <Trigger Property="IsSelected" Value="True">
-                        <Setter Property="Background" Value="{DynamicResource AccentColorBrush}"/>
-                    </Trigger>
-                </Style.Triggers>
-            </Style>-->
         </ResourceDictionary>
     </Application.Resources>
 </Application>
