@@ -9,7 +9,7 @@
                       ShowTitleBar="True"
                       GlowBrush="{DynamicResource AccentColorBrush}"
                       mc:Ignorable="d"
-        Title="随身袋 v1.0" Height="540" MinHeight="540" Width="280" MinWidth="280" Loaded="MetroWindow_Loaded">
+        Title="随身袋 v1.0" Height="600" MinHeight="540" Width="380" MinWidth="280" Loaded="MetroWindow_Loaded" SaveWindowPosition="True" Topmost="True" ShowInTaskbar="False" ShowMinButton="False" >
     <Controls:MetroWindow.RightWindowCommands>
         <Controls:WindowCommands>
             <Button ToolTip="关于" Content="关于"  />
@@ -103,9 +103,9 @@
                         </ToolBarPanel>
                     </DockPanel>
                 </DockPanel>
-                <DockPanel Margin="0 5 0 5">
+                <DockPanel Margin="2 5 2 5">
                     <DockPanel DockPanel.Dock="Top" >
-                        <TextBox Controls:TextBoxHelper.Watermark="搜索内容" Controls:TextBoxHelper.IsWaitingForData="True"></TextBox>
+                        <TextBox Controls:TextBoxHelper.Watermark="搜索内容" Controls:TextBoxHelper.IsWaitingForData="True" KeyDown="TextBox_KeyDown"></TextBox>
                     </DockPanel>
                     <Controls:MetroAnimatedSingleRowTabControl Name="tabMain" Controls:TabControlHelper.IsUnderlined="True" TabStripPlacement="Top" >
                         
