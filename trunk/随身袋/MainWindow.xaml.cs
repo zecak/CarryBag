@@ -28,9 +28,10 @@ namespace 随身袋
         public MainWindow()
         {
             InitializeComponent();
-
+            
             Helper.Global.Init();
 
+            Init();
             //SRE.SetInputToDefaultAudioDevice();         //<=======默认的语音输入设备，你可以设定为去识别一个WAV文件。
             //           GrammarBuilder GB = new GrammarBuilder();
             //           GB.Append("选择");
@@ -54,6 +55,42 @@ namespace 随身袋
                     break;
             }
         }
+
+        #region 系统托盘
+        bool IsCanClose = false;
+        System.Windows.Forms.NotifyIcon notifyIcon;
+        void Init()
+        {
+            this.Closing += MainWindow_Closing;
+
+            this.notifyIcon = new System.Windows.Forms.NotifyIcon();
+            this.notifyIcon.BalloonTipText = "你好, 欢迎使用随身袋!";
+            this.notifyIcon.Text = "随身袋!";
+            this.notifyIcon.Icon = System.Drawing.Icon.ExtractAssociatedIcon(AppDomain.CurrentDomain.FriendlyName);
+            this.notifyIcon.Visible = true;
+            this.notifyIcon.DoubleClick += new EventHandler(delegate { this.Show(); });
+
+            this.notifyIcon.ContextMenu = new System.Windows.Forms.ContextMenu();
+            
+            System.Windows.Forms.MenuItem closeItem = new System.Windows.Forms.MenuItem("退出");
+            closeItem.Click += new EventHandler(delegate { IsCanClose = true; this.Close(); });
+
+
+
+            this.notifyIcon.ContextMenu.MenuItems.Add(closeItem);
+            this.notifyIcon.ShowBalloonTip(1000);
+        }
+
+        void MainWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            if(!IsCanClose)
+            {
+                e.Cancel = true;
+                this.Hide();
+            }
+        }
+        #endregion
+
 
 
         ContextMenu SubCMenu = new ContextMenu();
@@ -405,6 +442,11 @@ namespace 随身袋
                 }
                 txt_LinkName.Text = System.IO.Path.GetFileNameWithoutExtension(openFileDialog.FileName);
             }
+        }
+
+        private void TextBox_KeyDown(object sender, KeyEventArgs e)
+        {
+            //搜索
         }
 
 
