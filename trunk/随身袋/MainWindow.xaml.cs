@@ -34,10 +34,10 @@ namespace 随身袋
 
             Init();
 
-            var config = SpeechRecognitionEngine.InstalledRecognizers().FirstOrDefault(m => m.Id == "MS-2052-80-DESK");
-            SRE = new SpeechRecognitionEngine(config);
+            var config = SpeechRecognitionEngine.InstalledRecognizers().FirstOrDefault(m => m.Id == "MS-2052-80-DESK");//中文引擎配置,必须的
+            SRE = new SpeechRecognitionEngine(config);//使用中文引擎
             SRE.SetInputToDefaultAudioDevice();//录音设备(麦克风)的[默认设备],注意是[默认设备],不然没效果
-            GrammarBuilder GB = new GrammarBuilder();
+            GrammarBuilder GB = new GrammarBuilder();//自然语法
             GB.Append("随身袋");
             GB.Append(new Choices(new string[] { "出来", "退下" }));
             Grammar G = new Grammar(GB);
