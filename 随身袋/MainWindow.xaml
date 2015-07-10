@@ -86,7 +86,7 @@
         <Grid>
             <DockPanel>
                 <DockPanel DockPanel.Dock="Top">
-                    <Label Width="64" Height="64" HorizontalContentAlignment="Center" VerticalContentAlignment="Center">
+                    <Label Name="btn_test" Width="64" Height="64" Background="White" HorizontalContentAlignment="Center" VerticalContentAlignment="Center">
                         <Image DockPanel.Dock="Top" Source="Res/logo.png" Width="32" Height="32" />
                     </Label>
                     

@@ -16,6 +16,7 @@ using MahApps.Metro.Controls;
 using 随身袋.Models;
 using System.Collections.ObjectModel;
 using 随身袋.MyControls;
+using System.Globalization;
 
 namespace 随身袋
 {
@@ -24,7 +25,7 @@ namespace 随身袋
     /// </summary>
     public partial class MainWindow
     {
-        //private SpeechRecognitionEngine SRE = new SpeechRecognitionEngine();
+        private SpeechRecognitionEngine SRE;
         public MainWindow()
         {
             InitializeComponent();
@@ -32,14 +33,18 @@ namespace 随身袋
             Helper.Global.Init();
 
             Init();
-            //SRE.SetInputToDefaultAudioDevice();         //<=======默认的语音输入设备，你可以设定为去识别一个WAV文件。
-            //           GrammarBuilder GB = new GrammarBuilder();
-            //           GB.Append("选择");
-            //           GB.Append(new Choices(new string[] { "红色", "绿色" }));
-            //           Grammar G = new Grammar(GB);
-            //           G.SpeechRecognized += new EventHandler<SpeechRecognizedEventArgs>(G_SpeechRecognized);
-            //           SRE.LoadGrammar(G);
-            //           SRE.RecognizeAsync(RecognizeMode.Multiple); //<=======异步调用识别引擎，允许多次识别（否则程序只响应你的一句话）
+
+            var config = SpeechRecognitionEngine.InstalledRecognizers().FirstOrDefault(m => m.Id == "MS-2052-80-DESK");
+            SRE = new SpeechRecognitionEngine(config);
+            SRE.SetInputToDefaultAudioDevice();//录音设备(麦克风)的[默认设备],注意是[默认设备],不然没效果
+            GrammarBuilder GB = new GrammarBuilder();
+            GB.Append("随身袋");
+            GB.Append(new Choices(new string[] { "出来", "退下" }));
+            Grammar G = new Grammar(GB);
+            G.SpeechRecognized += new EventHandler<SpeechRecognizedEventArgs>(G_SpeechRecognized);
+            SRE.LoadGrammar(G);
+            SRE.RecognizeAsync(RecognizeMode.Multiple); //<=======异步调用识别引擎，允许多次识别（否则程序只响应你的一句话）
+           
         }
 
         void G_SpeechRecognized(object sender, SpeechRecognizedEventArgs e)
@@ -47,11 +52,19 @@ namespace 随身袋
             //btn_test.Background = e.Result.Text;
             switch (e.Result.Text)
             {
-                case "选择红色":
-                    //btn_test.Content = e.Result.Text;
+                case "随身袋出来":
+                    this.Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Normal, new Action(() =>
+                    {
+                        this.Show();
+                    }));
+                    
                     break;
-                case "选择绿色":
-                    //btn_test.Content = e.Result.Text;
+                case "随身袋退下":
+                    this.Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Normal, new Action(() =>
+                    {
+                        this.Hide();
+                    }));
+                    
                     break;
             }
         }
