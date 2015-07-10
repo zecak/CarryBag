@@ -9,7 +9,7 @@
                       ShowTitleBar="True"
                       GlowBrush="{DynamicResource AccentColorBrush}"
                       mc:Ignorable="d"
-        Title="随身袋 v1.0" Height="540" Width="320" Loaded="MetroWindow_Loaded">
+        Title="随身袋 v1.0" Height="540" MinHeight="540" Width="280" MinWidth="280" Loaded="MetroWindow_Loaded">
     <Controls:MetroWindow.RightWindowCommands>
         <Controls:WindowCommands>
             <Button ToolTip="关于" Content="关于"  />
@@ -21,21 +21,17 @@
             <Controls:Flyout Name="Flyout_AddFileLink" Header="创建快捷方式" Position="Left" IsModal="True" Theme="Accent" Width="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=Controls:MetroWindow}, Path=ActualWidth}">
                 <DockPanel>
                     <StackPanel Margin="5,5,5,5">
-                        <CheckBox Name="chb_IsRelative" IsChecked="True" Margin="5">相对位置</CheckBox>
+                        <Controls:ToggleSwitch Name="chb_IsRelative" IsChecked="True" OnLabel="相对位置" OffLabel="绝对位置" Margin="5"/>
                         <DockPanel>
                             <Button Name="btn_LinkFileName" DockPanel.Dock="Right" Margin="5" Click="btn_LinkFileName_Click">浏览文件..</Button>
                             <TextBox Name="txt_LinkFileName" Controls:TextBoxHelper.Watermark="程序位置,必填" Margin="5" Controls:TextBoxHelper.IsWaitingForData="True"></TextBox>
                         </DockPanel>
                         <TextBox Name="txt_LinkName" Controls:TextBoxHelper.Watermark="程序名称,必填" Margin="5" Controls:TextBoxHelper.IsWaitingForData="True"></TextBox>
                         <TextBox Name="txt_Args" Controls:TextBoxHelper.Watermark="运行参数,可不填" Margin="5" Controls:TextBoxHelper.IsWaitingForData="True"></TextBox>
-                        <DockPanel>
-                            <Button Name="btn_LinkImage" DockPanel.Dock="Right" Margin="5" Click="btn_LinkImage_Click">浏览..</Button>
-                            <TextBox Name="txt_ImgSrc" Controls:TextBoxHelper.Watermark="图片位置,不填显示默认" Margin="5" Controls:TextBoxHelper.IsWaitingForData="True"></TextBox>
-                        </DockPanel>
                         <TextBox Name="txt_Tags" Controls:TextBoxHelper.Watermark="标签,方便搜索" Margin="5" Controls:TextBoxHelper.IsWaitingForData="True"></TextBox>
                         <DockPanel>
                             <Label Margin="5">排序</Label>
-                            <Controls:NumericUpDown Value="1" TextAlignment="Center" Minimum="0" Margin="5" />
+                            <Controls:NumericUpDown Name="nud_Sort" Value="1" TextAlignment="Center" Minimum="0" Margin="5" />
                         </DockPanel>
                         
                         <Button Name="btn_AddFileLink" Click="btn_AddFileLink_Click" Margin="5">创建</Button>
@@ -90,7 +86,15 @@
         <Grid>
             <DockPanel>
                 <DockPanel DockPanel.Dock="Top">
-                    <Image Height="80"/>
+                    <Label Width="64" Height="64" HorizontalContentAlignment="Center" VerticalContentAlignment="Center">
+                        <Image DockPanel.Dock="Top" Source="Res/logo.png" Width="32" Height="32" />
+                    </Label>
+                    
+                    <!--<WrapPanel Margin="12">
+                        <TextBlock Text="&#xf000;" Style="{StaticResource FontAwesome}" />
+                        <TextBlock Text="&#xf001;" Style="{DynamicResource FontAwesome}" />
+                        
+                    </WrapPanel>-->
                 </DockPanel>
                 <DockPanel DockPanel.Dock="Bottom" Margin="5" >
                     <DockPanel>
