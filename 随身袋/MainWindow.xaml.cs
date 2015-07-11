@@ -41,7 +41,7 @@ namespace 随身袋
             }
             catch (Exception ex)
             {
-                MBox.Show(ex.Message, this);
+                MessageBox.Show(ex.Message);
             }
         }
 
@@ -148,7 +148,7 @@ namespace 随身袋
             {
                 cbx_Import.ItemsSource = null;
             }
-            
+
             Flyout_Import.IsOpen = true;
         }
 
@@ -195,7 +195,7 @@ namespace 随身袋
             {
                 var c = exp.Tag as RootCategory;
                 var p_c = Helper.Global.Categorys.FirstOrDefault(m => m.ID == c.PID);
-                var spanel = this.tabMain.FindChild<StackPanel>(p_c.Name);//查找可见的子控件
+                var spanel = this.tabMain.FindChild<StackPanel>(Helper.Global.EncodeCtrlName(p_c.Name));//查找可见的子控件
                 if (spanel != null)
                 {
                     spanel.Children.Remove(exp);
@@ -268,11 +268,11 @@ namespace 随身袋
                 ControlsHelper.SetHeaderFontSize(tabItem, 18);
 
 
-                var stackPanel = new StackPanel() { Name = c.Name };
+                var stackPanel = new StackPanel() { Name = Helper.Global.EncodeCtrlName(c.Name) };
 
                 foreach (var subc in Helper.Global.Categorys.FindAll(m => m.PID == c.ID))
                 {
-                    var expander = new Expander() { Name = subc.Name, Header = subc.Name, IsExpanded = true };
+                    var expander = new Expander() { Name = Helper.Global.EncodeCtrlName(subc.Name), Header = subc.Name, IsExpanded = true };
                     expander.Tag = subc;
 
                     expander.ContextMenu = SubCMenu;
@@ -305,7 +305,7 @@ namespace 随身袋
         /// <returns></returns>
         Border GetImg(AppLink link)
         {
-            var border = new Border() { Name = link.Name, Style = (Style)this.FindResource("LinkBorder") };
+            var border = new Border() { Name = Helper.Global.EncodeCtrlName(link.Name), Style = (Style)this.FindResource("LinkBorder") };
             var label = new Label() { Width = 64, Height = 64, Style = (Style)this.FindResource("LinkLabel"), HorizontalContentAlignment = System.Windows.HorizontalAlignment.Center, VerticalContentAlignment = System.Windows.VerticalAlignment.Center };
             var image = new Image()
             {
@@ -381,8 +381,8 @@ namespace 随身袋
             Helper.Global.SaveCategorys();
 
 
-            var stackPanel = this.tabMain.FindChildren<StackPanel>().FirstOrDefault(m => m.Name == cbx_root.Text);//查找所有的子控件
-            var expander = new Expander() { Name = subc.Name, Header = subc.Name, IsExpanded = true };
+            var stackPanel = this.tabMain.FindChildren<StackPanel>().FirstOrDefault(m => m.Name == Helper.Global.EncodeCtrlName(cbx_root.Text));//查找所有的子控件
+            var expander = new Expander() { Name = Helper.Global.EncodeCtrlName(subc.Name), Header = subc.Name, IsExpanded = true };
             expander.Tag = subc;
             expander.ContextMenu = SubCMenu;
             var wrapPanel = new WrapPanel();
@@ -405,13 +405,13 @@ namespace 随身袋
             //此方法,暂不支持更换类别
             var subc = Helper.Global.Categorys.FirstOrDefault(m => m.ID == ((Guid)txt_SubCName_edit.Tag));
 
-            var expander = this.tabMain.FindChild<Expander>(subc.Name);//查找可见的子控件
+            var expander = this.tabMain.FindChild<Expander>(Helper.Global.EncodeCtrlName(subc.Name));//查找可见的子控件
 
             subc.Name = txt_SubCName_edit.Text;
             subc.PID = (Guid)cbx_root_edit.SelectedValue;
             subc.SortNum = Convert.ToInt32(nud_SortNum_edit.Value);
 
-            expander.Name = subc.Name;
+            expander.Name = Helper.Global.EncodeCtrlName(subc.Name);
             expander.Header = subc.Name;
             expander.Tag = subc;
             expander.ContextMenu = SubCMenu;
@@ -433,8 +433,8 @@ namespace 随身袋
             subc.PID = (Guid)cbx_root_Move.SelectedValue;
 
             var stackPanel_temp = this.tabMain.SelectedContent as StackPanel;//查找可见的子控件
-            var stackPanel = this.tabMain.FindChildren<StackPanel>().FirstOrDefault(sp => sp.Name == cbx_root_Move.Text); //查找所有子控件
-            var expander = this.tabMain.FindChild<Expander>(subc.Name);
+            var stackPanel = this.tabMain.FindChildren<StackPanel>().FirstOrDefault(sp => sp.Name == Helper.Global.EncodeCtrlName(cbx_root_Move.Text)); //查找所有子控件
+            var expander = this.tabMain.FindChild<Expander>(Helper.Global.EncodeCtrlName(subc.Name));
             stackPanel_temp.Children.Remove(expander);
             stackPanel.Children.Add(expander);
 
@@ -465,7 +465,7 @@ namespace 随身袋
             Helper.Global.AppLinks.Add(link);
             Helper.Global.SaveAppLinks();
 
-            var wrapPanel = this.tabMain.FindChild<Expander>(subc.Name).Content as WrapPanel;
+            var wrapPanel = this.tabMain.FindChild<Expander>(Helper.Global.EncodeCtrlName(subc.Name)).Content as WrapPanel;
             wrapPanel.Children.Add(GetImg(link));
 
             Flyout_AddFileLink.IsOpen = false;
@@ -519,13 +519,32 @@ namespace 随身袋
 
         private void btn_Import_Click(object sender, RoutedEventArgs e)
         {
-
+            var p_cate = btn_Import.Tag as RootCategory;
+            var dir = new System.IO.DirectoryInfo(System.IO.Path.Combine(Helper.Global.AppBagName, txt_Import.Text));
+            if (dir.Exists)
+            {
+                var wrapPanel = this.tabMain.FindChild<Expander>(Helper.Global.EncodeCtrlName(p_cate.Name)).Content as WrapPanel;
+                var files = dir.GetFiles("*.exe", System.IO.SearchOption.AllDirectories);
+                foreach (var file in files)
+                {
+                    var link = new AppLink() { ID = Guid.NewGuid(), IsRelative = true, SortNum = 99, Name = System.IO.Path.GetFileNameWithoutExtension(file.FullName), Tags = Name, FileName = file.FullName.Replace(AppDomain.CurrentDomain.BaseDirectory, ""), PID = p_cate.ID };
+                    var only = Helper.Global.AppLinks.FirstOrDefault(m => m.Name.ToUpper() == link.Name.ToUpper());
+                    if (only == null)
+                    {
+                        Helper.Global.AppLinks.Add(link);
+                        wrapPanel.Children.Add(GetImg(link));
+                    }
+                }
+                Helper.Global.SaveAppLinks();
+                Flyout_Import.IsOpen = true;
+            }
+            
         }
 
         private void txt_Import_TextChanged(object sender, TextChangedEventArgs e)
         {
-            var dir = new System.IO.DirectoryInfo(System.IO.Path.Combine(Helper.Global.AppBagName,txt_Import.Text));
-            if(dir.Exists)
+            var dir = new System.IO.DirectoryInfo(System.IO.Path.Combine(Helper.Global.AppBagName, txt_Import.Text));
+            if (dir.Exists)
             {
                 var cur_dirs = dir.GetDirectories();
                 cbx_Import.ItemsSource = cur_dirs;
