@@ -11,12 +11,12 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using System.Speech.Recognition;
 using MahApps.Metro.Controls;
 using 随身袋.Models;
 using System.Collections.ObjectModel;
 using 随身袋.MyControls;
 using System.Globalization;
+using 随身袋.Helper;
 
 namespace 随身袋
 {
@@ -25,46 +25,43 @@ namespace 随身袋
     /// </summary>
     public partial class MainWindow
     {
-        private SpeechRecognitionEngine SRE;
+        SREngine SRE;
         public MainWindow()
         {
             InitializeComponent();
-            
+
             Helper.Global.Init();
 
             Init();
 
-            var config = SpeechRecognitionEngine.InstalledRecognizers().FirstOrDefault(m => m.Id == "MS-2052-80-DESK");//中文引擎配置,必须的
-            SRE = new SpeechRecognitionEngine(config);//使用中文引擎
-            SRE.SetInputToDefaultAudioDevice();//录音设备(麦克风)的[默认设备],注意是[默认设备],不然没效果
-            GrammarBuilder GB = new GrammarBuilder();//自然语法
-            GB.Append("随身袋");
-            GB.Append(new Choices(new string[] { "出来", "退下" }));
-            Grammar G = new Grammar(GB);
-            G.SpeechRecognized += new EventHandler<SpeechRecognizedEventArgs>(G_SpeechRecognized);
-            SRE.LoadGrammar(G);
-            SRE.RecognizeAsync(RecognizeMode.Multiple); //<=======异步调用识别引擎，允许多次识别（否则程序只响应你的一句话）
-           
+            try
+            {
+                SRE = new SREngine("随身袋", new string[] { "出来", "退下" });
+                SRE.SpeRecSay += SRE_SpeRecSay;
+            }
+            catch (Exception ex)
+            {
+                MBox.Show(ex.Message, this);
+            }
         }
 
-        void G_SpeechRecognized(object sender, SpeechRecognizedEventArgs e)
+        void SRE_SpeRecSay(string saytext)
         {
-            //btn_test.Background = e.Result.Text;
-            switch (e.Result.Text)
+            switch (saytext)
             {
                 case "随身袋出来":
                     this.Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Normal, new Action(() =>
                     {
                         this.Show();
                     }));
-                    
+
                     break;
                 case "随身袋退下":
                     this.Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Normal, new Action(() =>
                     {
                         this.Hide();
                     }));
-                    
+
                     break;
             }
         }
@@ -84,7 +81,7 @@ namespace 随身袋
             this.notifyIcon.DoubleClick += new EventHandler(delegate { this.Show(); });
 
             this.notifyIcon.ContextMenu = new System.Windows.Forms.ContextMenu();
-            
+
             System.Windows.Forms.MenuItem closeItem = new System.Windows.Forms.MenuItem("退出");
             closeItem.Click += new EventHandler(delegate { IsCanClose = true; this.Close(); });
 
@@ -96,7 +93,7 @@ namespace 随身袋
 
         void MainWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            if(!IsCanClose)
+            if (!IsCanClose)
             {
                 e.Cancel = true;
                 this.Hide();
@@ -104,101 +101,56 @@ namespace 随身袋
         }
         #endregion
 
+        #region 类别菜单
 
 
         ContextMenu SubCMenu = new ContextMenu();
 
-        ContextMenu SubCMenu_App = new ContextMenu();
-
-        private void MetroWindow_Loaded(object sender, RoutedEventArgs e)
+        /// <summary>
+        /// 初始化类别菜单
+        /// </summary>
+        void SubCMenuInit()
         {
-
-
+            #region 类别菜单
             var mitem_filelink = new MenuItem() { Header = "添加快捷方式" };
             mitem_filelink.Click += mitem_filelink_Click;
-            var mitem_upd = new MenuItem() { Header = "修改" };
+            var mi_import = new MenuItem() { Header = "导入快捷方式" };
+            mi_import.Click += mi_import_Click;
+
+            var mitem_upd = new MenuItem() { Header = "修改类别" };
             mitem_upd.Click += mitem_upd_Click;
-            var mitem_mov = new MenuItem() { Header = "移动" };
+            var mitem_mov = new MenuItem() { Header = "移动类别" };
             mitem_mov.Click += mitem_mov_Click;
-            var mitem_del = new MenuItem() { Header = "删除" };
+            var mitem_del = new MenuItem() { Header = "删除类别" };
             mitem_del.Click += mitem_del_Click;
 
             SubCMenu.Items.Add(mitem_filelink);
+            SubCMenu.Items.Add(mi_import);
             SubCMenu.Items.Add(mitem_upd);
             SubCMenu.Items.Add(mitem_mov);
             SubCMenu.Items.Add(new Separator());
             SubCMenu.Items.Add(mitem_del);
-
-            SubCMenu_App.Items.Add(new MenuItem() { Header = "添加文件" });
-
-            cbx_root.ItemsSource = Helper.Global.Categorys.FindAll(m => m.PID == Guid.Empty);
-            foreach (var c in Helper.Global.Categorys.FindAll(m => m.PID == Guid.Empty))
-            {
-                var tabItem = new TabItem() { Header = c.Name };
-                tabItem.Tag = c;
-                ControlsHelper.SetHeaderFontSize(tabItem, 18);
-
-
-                var stackPanel = new StackPanel() { Name = c.Name };
-
-                foreach (var subc in Helper.Global.Categorys.FindAll(m => m.PID == c.ID))
-                {
-                    var expander = new Expander() { Name = subc.Name, Header = subc.Name, IsExpanded = true };
-                    expander.Tag = subc;
-
-                    expander.ContextMenu = SubCMenu;
-
-                    var wrapPanel = new WrapPanel();
-
-                    wrapPanel.ContextMenu = SubCMenu_App;
-                    foreach (var link in Helper.Global.AppLinks.FindAll(m => m.PID == subc.ID))
-                    {
-                        wrapPanel.Children.Add(GetImg(link));
-                    }
-
-                    expander.Content = wrapPanel;
-                    stackPanel.Children.Add(expander);
-                }
-
-                tabItem.Content = stackPanel;
-                tabMain.Items.Add(tabItem);
-            }
-
-
-
-
+            #endregion
         }
 
-        /// <summary>
-        /// 生成打包好的图片对象
-        /// </summary>
-        /// <param name="link"></param>
-        /// <returns></returns>
-        Border GetImg(AppLink link)
+        void mi_import_Click(object sender, RoutedEventArgs e)
         {
-            var border = new Border() { Name = link.Name, Style = (Style)this.FindResource("LinkBorder") };
-            var label = new Label() { Width = 64, Height = 64, Style = (Style)this.FindResource("LinkLabel"), HorizontalContentAlignment = System.Windows.HorizontalAlignment.Center, VerticalContentAlignment = System.Windows.VerticalAlignment.Center };
-            var image = new Image()
+            var exp = SubCMenu.PlacementTarget as Expander;
+            btn_Import.Tag = exp.Tag;
+
+            var dir = new System.IO.DirectoryInfo(Helper.Global.AppBagName);
+            if (dir.Exists)
             {
-                ToolTip = link.Name,
-                Width = 32,
-                Height = 32,
-            };
-            if (link.IsRelative)
-            {
-                image.Source = Helper.Global.GetIcon(Helper.Global.AppPath + link.FileName);
+                var cur_dirs = dir.GetDirectories();
+                cbx_Import.ItemsSource = cur_dirs;
             }
             else
             {
-                image.Source = Helper.Global.GetIcon(link.FileName);
+                cbx_Import.ItemsSource = null;
             }
-            image.Tag = link;
-            image.MouseLeftButtonDown += image_MouseLeftButtonDown;
-            label.Content = image;
-            border.Child = label;
-            return border;
+            
+            Flyout_Import.IsOpen = true;
         }
-
 
         /// <summary>
         /// 添加快捷方式,加载
@@ -272,6 +224,109 @@ namespace 随身袋
             Flyout_Edit.IsOpen = true;
 
         }
+        #endregion
+
+        #region 快捷方式菜单
+
+        ContextMenu SubCMenu_App = new ContextMenu();
+
+        /// <summary>
+        /// 初始化快捷方式菜单
+        /// </summary>
+        void SubCMenu_AppInit()
+        {
+            #region 快捷方式菜单
+            var item1 = new MenuItem() { Header = "打开" };
+
+            var item2 = new MenuItem() { Header = "修改" };
+
+            var item3 = new MenuItem() { Header = "移动" };
+
+            var item4 = new MenuItem() { Header = "删除" };
+
+            SubCMenu_App.Items.Add(item1);
+            SubCMenu_App.Items.Add(item2);
+            SubCMenu_App.Items.Add(item3);
+            SubCMenu_App.Items.Add(item4);
+            #endregion
+        }
+
+        #endregion
+
+
+        private void MetroWindow_Loaded(object sender, RoutedEventArgs e)
+        {
+            SubCMenuInit();
+            SubCMenu_AppInit();
+
+
+            cbx_root.ItemsSource = Helper.Global.Categorys.FindAll(m => m.PID == Guid.Empty);
+            foreach (var c in Helper.Global.Categorys.FindAll(m => m.PID == Guid.Empty))
+            {
+                var tabItem = new TabItem() { Header = c.Name };
+                tabItem.Tag = c;
+                ControlsHelper.SetHeaderFontSize(tabItem, 18);
+
+
+                var stackPanel = new StackPanel() { Name = c.Name };
+
+                foreach (var subc in Helper.Global.Categorys.FindAll(m => m.PID == c.ID))
+                {
+                    var expander = new Expander() { Name = subc.Name, Header = subc.Name, IsExpanded = true };
+                    expander.Tag = subc;
+
+                    expander.ContextMenu = SubCMenu;
+
+                    var wrapPanel = new WrapPanel();
+
+                    wrapPanel.ContextMenu = SubCMenu_App;
+                    foreach (var link in Helper.Global.AppLinks.FindAll(m => m.PID == subc.ID))
+                    {
+                        wrapPanel.Children.Add(GetImg(link));
+                    }
+
+                    expander.Content = wrapPanel;
+                    stackPanel.Children.Add(expander);
+                }
+
+                tabItem.Content = stackPanel;
+                tabMain.Items.Add(tabItem);
+            }
+
+
+
+
+        }
+
+        /// <summary>
+        /// 生成打包好的图片对象
+        /// </summary>
+        /// <param name="link"></param>
+        /// <returns></returns>
+        Border GetImg(AppLink link)
+        {
+            var border = new Border() { Name = link.Name, Style = (Style)this.FindResource("LinkBorder") };
+            var label = new Label() { Width = 64, Height = 64, Style = (Style)this.FindResource("LinkLabel"), HorizontalContentAlignment = System.Windows.HorizontalAlignment.Center, VerticalContentAlignment = System.Windows.VerticalAlignment.Center };
+            var image = new Image()
+            {
+                ToolTip = link.Name,
+                Width = 32,
+                Height = 32,
+            };
+            if (link.IsRelative)
+            {
+                image.Source = Helper.Global.GetIcon(Helper.Global.AppPath + link.FileName);
+            }
+            else
+            {
+                image.Source = Helper.Global.GetIcon(link.FileName);
+            }
+            image.Tag = link;
+            image.MouseLeftButtonDown += image_MouseLeftButtonDown;
+            label.Content = image;
+            border.Child = label;
+            return border;
+        }
 
         /// <summary>
         /// 单击打开链接文件
@@ -284,15 +339,15 @@ namespace 随身袋
             var link = img.Tag as AppLink;
             if (link != null)
             {
-                if (link.IsRelative==true)
+                if (link.IsRelative == true)
                 {
-                    System.Diagnostics.Process.Start(System.IO.Path.Combine(Helper.Global.AppPath,link.FileName), link.Args);
+                    System.Diagnostics.Process.Start(System.IO.Path.Combine(Helper.Global.AppPath, link.FileName), link.Args);
                 }
                 else
                 {
                     System.Diagnostics.Process.Start(link.FileName, link.Args);
                 }
-                
+
             }
         }
 
@@ -404,7 +459,7 @@ namespace 随身袋
                 return;
             }
 
-            var subc=btn_AddFileLink.Tag as RootCategory;
+            var subc = btn_AddFileLink.Tag as RootCategory;
             var link = new AppLink() { ID = Guid.NewGuid(), Name = txt_LinkName.Text, FileName = txt_LinkFileName.Text, Args = txt_Args.Text, IsRelative = chb_IsRelative.IsChecked == true, Tags = txt_Tags.Text, SortNum = (int)nud_Sort.Value, PID = subc.ID };
 
             Helper.Global.AppLinks.Add(link);
@@ -414,7 +469,7 @@ namespace 随身袋
             wrapPanel.Children.Add(GetImg(link));
 
             Flyout_AddFileLink.IsOpen = false;
-            txt_LinkName.Text = "" ;
+            txt_LinkName.Text = "";
             txt_LinkFileName.Text = "";
             btn_AddFileLink.Tag = null;
             txt_Args.Text = "";
@@ -434,7 +489,7 @@ namespace 随身袋
             {
                 Filter = "执行文件|*.exe|所有文件|*.*",
             };
-            if(chb_IsRelative.IsChecked==true)
+            if (chb_IsRelative.IsChecked == true)
             {
                 openFileDialog.InitialDirectory = AppDomain.CurrentDomain.BaseDirectory;
             }
@@ -445,7 +500,7 @@ namespace 随身袋
             var result = openFileDialog.ShowDialog();
             if (result == true)
             {
-                if (chb_IsRelative.IsChecked==true)
+                if (chb_IsRelative.IsChecked == true)
                 {
                     txt_LinkFileName.Text = openFileDialog.FileName.Replace(AppDomain.CurrentDomain.BaseDirectory, "");
                 }
@@ -460,6 +515,31 @@ namespace 随身袋
         private void TextBox_KeyDown(object sender, KeyEventArgs e)
         {
             //搜索
+        }
+
+        private void btn_Import_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void txt_Import_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            var dir = new System.IO.DirectoryInfo(System.IO.Path.Combine(Helper.Global.AppBagName,txt_Import.Text));
+            if(dir.Exists)
+            {
+                var cur_dirs = dir.GetDirectories();
+                cbx_Import.ItemsSource = cur_dirs;
+            }
+            else
+            {
+                cbx_Import.ItemsSource = null;
+            }
+        }
+
+
+        private void cbx_Import_DropDownClosed(object sender, EventArgs e)
+        {
+            txt_Import.Text = System.IO.Path.Combine(txt_Import.Text, cbx_Import.Text);
         }
 
 
