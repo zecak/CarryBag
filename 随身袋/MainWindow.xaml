@@ -18,6 +18,18 @@
     </Controls:MetroWindow.RightWindowCommands>
     <Controls:MetroWindow.Flyouts>
         <Controls:FlyoutsControl>
+            <Controls:Flyout Name="Flyout_Import" Header="导入快捷方式" Position="Left" IsModal="True" Theme="Accent" Width="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=Controls:MetroWindow}, Path=ActualWidth}">
+                <DockPanel>
+                    <StackPanel Margin="5,5,5,5">
+                        <ComboBox Name="cbx_Import" SelectedValuePath="Name" DisplayMemberPath="Name" Margin="5" DropDownClosed="cbx_Import_DropDownClosed">
+                            
+                        </ComboBox>
+                        <TextBox Name="txt_Import" Controls:TextBoxHelper.Watermark="要导入的相对位置" Margin="5" Controls:TextBoxHelper.IsWaitingForData="True" TextChanged="txt_Import_TextChanged"></TextBox>
+
+                        <Button Name="btn_Import" Click="btn_Import_Click" Margin="5">导入</Button>
+                    </StackPanel>
+                </DockPanel>
+            </Controls:Flyout>
             <Controls:Flyout Name="Flyout_AddFileLink" Header="创建快捷方式" Position="Left" IsModal="True" Theme="Accent" Width="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=Controls:MetroWindow}, Path=ActualWidth}">
                 <DockPanel>
                     <StackPanel Margin="5,5,5,5">
