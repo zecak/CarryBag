@@ -60,6 +60,16 @@ namespace 随身袋.Helper
             }
         }
 
+        public static string EncodeCtrlName(string name)
+        {
+            return EasyFramework.Security.Encrypt.EncryptHelper.EnBase64(name);
+        }
+
+        public static string DecodeCtrlName(string enname)
+        {
+            return EasyFramework.Security.Encrypt.EncryptHelper.DeBase64(enname);
+        }
+
         public static List<RootCategory> Categorys
         {
             get
