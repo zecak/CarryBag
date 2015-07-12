@@ -17,6 +17,7 @@ using System.Collections.ObjectModel;
 using 随身袋.MyControls;
 using System.Globalization;
 using 随身袋.Helper;
+using System.Windows.Threading;
 
 namespace 随身袋
 {
@@ -26,17 +27,21 @@ namespace 随身袋
     public partial class MainWindow
     {
         SREngine SRE;
+        DispatcherTimer autoTimer;
+        double listHeight = 300;
         public MainWindow()
         {
             InitializeComponent();
 
             var autoHide = new WindowAutoHide(this);
 
-            var menu_sys = new ContextMenu();
-            var menu_1 = new MenuItem() { Header = "退出" };
-            menu_1.Click += (delegate { App.Current.Shutdown(); });
-            menu_sys.Items.Add(menu_1);
-            var windowSysMin = new WindowSysMin(this, menu_sys);
+            var windowSysMin = new WindowSysMin(this);
+
+
+            autoTimer = new DispatcherTimer();
+            autoTimer.Interval = TimeSpan.FromMilliseconds(1000);
+            autoTimer.Tick += autoTimer_Tick;
+            autoTimer.Start();
 
             Helper.Global.Init();
 
@@ -49,6 +54,16 @@ namespace 随身袋
             {
                 MessageBox.Show(ex.Message);
             }
+
+            加载类别();
+
+
+        }
+
+        void autoTimer_Tick(object sender, EventArgs e)
+        {
+            lblTime.ToolTip = "农历" + NLCalendar.GetCalendar(DateTime.Now);
+            lblTime.Content = System.Globalization.CultureInfo.CurrentCulture.DateTimeFormat.GetDayName(DateTime.Now.DayOfWeek) + " " + DateTime.Now.ToLongDateString();
         }
 
 
@@ -74,14 +89,52 @@ namespace 随身袋
             }
         }
 
-        #region 系统托盘
-
-        private void MetroWindow_StateChanged(object sender, EventArgs e)
+        void 加载类别()
         {
-           
+            SubCMenuInit();
+            SubCMenu_AppInit();
+
+
+            cbx_root.ItemsSource = Helper.Global.Categorys.FindAll(m => m.PID == Guid.Empty);
+            foreach (var c in Helper.Global.Categorys.FindAll(m => m.PID == Guid.Empty))
+            {
+                var tabItem = new TabItem() { Header = c.Name };
+                tabItem.Tag = c;
+                ControlsHelper.SetHeaderFontSize(tabItem, 18);
+
+
+                var stackPanel = new StackPanel() { Name = Helper.Global.EncodeCtrlName(c.Name) };
+
+                foreach (var subc in Helper.Global.Categorys.FindAll(m => m.PID == c.ID))
+                {
+                    var expander = new Expander() { Name = Helper.Global.EncodeCtrlName(subc.Name), Header = subc.Name, IsExpanded = true };
+                    expander.Tag = subc;
+
+                    expander.ContextMenu = SubCMenu;
+
+                    var wrapPanel = new ListBox();
+
+                    //wrapPanel.Style = (Style)this.FindResource("ListPanel");
+                    wrapPanel.Height = listHeight;
+                    Helper.ListBoxSelector.SetEnabled(wrapPanel, true);
+
+                    wrapPanel.ContextMenu = SubCMenu_App;
+                    foreach (var link in Helper.Global.AppLinks.FindAll(m => m.PID == subc.ID))
+                    {
+                        wrapPanel.Items.Add(GetImg(link));
+                    }
+
+
+
+                    expander.Content = wrapPanel;
+                    stackPanel.Children.Add(expander);
+                }
+
+                tabItem.Content = stackPanel;
+                tabMain.Items.Add(tabItem);
+            }
 
         }
-        #endregion
 
         #region 类别菜单
 
@@ -217,20 +270,78 @@ namespace 随身袋
         /// </summary>
         void SubCMenu_AppInit()
         {
+            SubCMenu_App.ContextMenuOpening += SubCMenu_App_ContextMenuOpening;
+
             #region 快捷方式菜单
-            var item1 = new MenuItem() { Header = "打开" };
+            var item_open = new MenuItem() { Header = "打开" };
+            item_open.Click += item_open_Click;
 
-            var item2 = new MenuItem() { Header = "修改" };
+            var item_update = new MenuItem() { Header = "修改" };
+            item_update.Click += item_update_Click;
 
-            var item3 = new MenuItem() { Header = "移动" };
+            var item_move = new MenuItem() { Header = "移动" };
+            item_move.Click += item_move_Click;
 
-            var item4 = new MenuItem() { Header = "删除" };
+            var item_del = new MenuItem() { Header = "删除" };
+            item_del.Click += item_del_Click;
 
-            SubCMenu_App.Items.Add(item1);
-            SubCMenu_App.Items.Add(item2);
-            SubCMenu_App.Items.Add(item3);
-            SubCMenu_App.Items.Add(item4);
+            SubCMenu_App.Items.Add(item_open);
+            SubCMenu_App.Items.Add(item_update);
+            SubCMenu_App.Items.Add(item_move);
+            SubCMenu_App.Items.Add(new Separator());
+            SubCMenu_App.Items.Add(item_del);
             #endregion
+        }
+
+        void item_del_Click(object sender, RoutedEventArgs e)
+        {
+            var listbox = SubCMenu_App.PlacementTarget as ListBox;
+            var list = listbox.SelectedItems.OfType<Border>().ToList();
+            foreach (var b in list)
+            {
+                var link = b.Tag as AppLink;
+                if (link != null)
+                {
+                    Global.AppLinks.Remove(link);
+                    listbox.Items.Remove(b);
+                }
+            }
+            Global.SaveAppLinks();
+
+        }
+
+        void item_move_Click(object sender, RoutedEventArgs e)
+        {
+            throw new NotImplementedException();
+        }
+
+        void item_update_Click(object sender, RoutedEventArgs e)
+        {
+            throw new NotImplementedException();
+        }
+
+        void item_open_Click(object sender, RoutedEventArgs e)
+        {
+            var listbox = SubCMenu_App.PlacementTarget as ListBox;
+            var b = listbox.SelectedItem as Border;
+            var link = b.Tag as AppLink;
+            if (link != null)
+            {
+                if (link.IsRelative == true)
+                {
+                    System.Diagnostics.Process.Start(System.IO.Path.Combine(Helper.Global.AppPath, link.FileName), link.Args);
+                }
+                else
+                {
+                    System.Diagnostics.Process.Start(link.FileName, link.Args);
+                }
+
+            }
+        }
+
+        void SubCMenu_App_ContextMenuOpening(object sender, ContextMenuEventArgs e)
+        {
+
         }
 
         #endregion
@@ -238,43 +349,6 @@ namespace 随身袋
 
         private void MetroWindow_Loaded(object sender, RoutedEventArgs e)
         {
-            SubCMenuInit();
-            SubCMenu_AppInit();
-
-
-            cbx_root.ItemsSource = Helper.Global.Categorys.FindAll(m => m.PID == Guid.Empty);
-            foreach (var c in Helper.Global.Categorys.FindAll(m => m.PID == Guid.Empty))
-            {
-                var tabItem = new TabItem() { Header = c.Name };
-                tabItem.Tag = c;
-                ControlsHelper.SetHeaderFontSize(tabItem, 18);
-
-
-                var stackPanel = new StackPanel() { Name = Helper.Global.EncodeCtrlName(c.Name) };
-
-                foreach (var subc in Helper.Global.Categorys.FindAll(m => m.PID == c.ID))
-                {
-                    var expander = new Expander() { Name = Helper.Global.EncodeCtrlName(subc.Name), Header = subc.Name, IsExpanded = true };
-                    expander.Tag = subc;
-
-                    expander.ContextMenu = SubCMenu;
-
-                    var wrapPanel = new WrapPanel();
-
-                    wrapPanel.ContextMenu = SubCMenu_App;
-                    foreach (var link in Helper.Global.AppLinks.FindAll(m => m.PID == subc.ID))
-                    {
-                        wrapPanel.Children.Add(GetImg(link));
-                    }
-
-                    expander.Content = wrapPanel;
-                    stackPanel.Children.Add(expander);
-                }
-
-                tabItem.Content = stackPanel;
-                tabMain.Items.Add(tabItem);
-            }
-
 
 
 
@@ -287,8 +361,8 @@ namespace 随身袋
         /// <returns></returns>
         Border GetImg(AppLink link)
         {
-            var border = new Border() { Name = Helper.Global.EncodeCtrlName(link.Name), Style = (Style)this.FindResource("LinkBorder"), ToolTip = link.Name+"\r\n"+link.FileName };
-            var label = new Label() { Width = 64, Height = 64, Style = (Style)this.FindResource("LinkLabel"), HorizontalContentAlignment = System.Windows.HorizontalAlignment.Center, VerticalContentAlignment = System.Windows.VerticalAlignment.Center, ToolTip = border.ToolTip };
+            var border = new Border() { Name = Helper.Global.EncodeCtrlName(link.Name), Style = (Style)this.FindResource("LinkBorder"), ToolTip = link.Name + "\r\n" + link.FileName, Tag = link };
+            var label = new Label() { Width = 64, Height = 64, Style = (Style)this.FindResource("LinkLabel"), HorizontalContentAlignment = System.Windows.HorizontalAlignment.Center, VerticalContentAlignment = System.Windows.VerticalAlignment.Center, ToolTip = border.ToolTip, Tag = link };
             var image = new Image()
             {
                 ToolTip = border.ToolTip,
@@ -367,7 +441,10 @@ namespace 随身袋
             var expander = new Expander() { Name = Helper.Global.EncodeCtrlName(subc.Name), Header = subc.Name, IsExpanded = true };
             expander.Tag = subc;
             expander.ContextMenu = SubCMenu;
-            var wrapPanel = new WrapPanel();
+            var wrapPanel = new ListBox();
+            //wrapPanel.Style = (Style)this.FindResource("ListPanel");
+            wrapPanel.Height = listHeight;
+            Helper.ListBoxSelector.SetEnabled(wrapPanel, true);
             wrapPanel.ContextMenu = SubCMenu_App;
             expander.Content = wrapPanel;
             stackPanel.Children.Add(expander);
@@ -447,8 +524,8 @@ namespace 随身袋
             Helper.Global.AppLinks.Add(link);
             Helper.Global.SaveAppLinks();
 
-            var wrapPanel = this.tabMain.FindChild<Expander>(Helper.Global.EncodeCtrlName(subc.Name)).Content as WrapPanel;
-            wrapPanel.Children.Add(GetImg(link));
+            var wrapPanel = this.tabMain.FindChild<Expander>(Helper.Global.EncodeCtrlName(subc.Name)).Content as ListBox;
+            wrapPanel.Items.Add(GetImg(link));
 
             Flyout_AddFileLink.IsOpen = false;
             txt_LinkName.Text = "";
@@ -505,7 +582,7 @@ namespace 随身袋
             var dir = new System.IO.DirectoryInfo(System.IO.Path.Combine(Helper.Global.AppBagName, txt_Import.Text));
             if (dir.Exists)
             {
-                var wrapPanel = this.tabMain.FindChild<Expander>(Helper.Global.EncodeCtrlName(p_cate.Name)).Content as WrapPanel;
+                var wrapPanel = this.tabMain.FindChild<Expander>(Helper.Global.EncodeCtrlName(p_cate.Name)).Content as ListBox;
                 var files = dir.GetFiles("*.exe", System.IO.SearchOption.AllDirectories);
                 foreach (var file in files)
                 {
@@ -514,13 +591,13 @@ namespace 随身袋
                     if (only == null)
                     {
                         Helper.Global.AppLinks.Add(link);
-                        wrapPanel.Children.Add(GetImg(link));
+                        wrapPanel.Items.Add(GetImg(link));
                     }
                 }
                 Helper.Global.SaveAppLinks();
                 Flyout_Import.IsOpen = false;
             }
-            
+
         }
 
         private void txt_Import_TextChanged(object sender, TextChangedEventArgs e)
@@ -542,7 +619,7 @@ namespace 随身袋
         {
             txt_Import.Text = System.IO.Path.Combine(txt_Import.Text, cbx_Import.Text);
         }
-        
+
 
 
 

@@ -10,10 +10,8 @@ namespace 随身袋.Helper
     {
 
         System.Windows.Forms.NotifyIcon notifyIcon;
-        WindowState ws;
         WindowState wsl;
         Window window;
-        System.Windows.Controls.ContextMenu contextMenu;
         bool IsCanClose = false;
         public WindowSysMin(Window wind)
         {
@@ -25,25 +23,12 @@ namespace 随身袋.Helper
 
             Init();
         }
-        public WindowSysMin(Window wind,System.Windows.Controls.ContextMenu menu)
-        {
-            window = wind;
-            window.Closing += window_Closing;
-            window.StateChanged += window_StateChanged;
-
-            contextMenu = menu;
-
-            //保证窗体显示在上方。
-            wsl = window.WindowState;
-
-            Init();
-        }
 
         void window_StateChanged(object sender, EventArgs e)
         {
-            ws = window.WindowState;
-            if (ws == WindowState.Minimized)
+            if (window.WindowState == WindowState.Minimized)
             {
+                window.WindowState = WindowState.Normal;
                 window.Hide();
             }
         }
@@ -65,37 +50,29 @@ namespace 随身袋.Helper
             this.notifyIcon.Visible = true;
             this.notifyIcon.DoubleClick += new EventHandler(delegate
             {
-                window.Topmost = true;
-                window.Show();
                 window.WindowState = wsl;
+                window.Show();
+               
             });
 
-            this.notifyIcon.MouseClick += notifyIcon_MouseClick;
 
-            //this.notifyIcon.ContextMenu = new System.Windows.Forms.ContextMenu();
-
-            //System.Windows.Forms.MenuItem closeItem = new System.Windows.Forms.MenuItem("退出");
-            //closeItem.Click += new EventHandler(delegate { IsCanClose = true; window.Close(); });
-
-            //this.notifyIcon.ContextMenu.MenuItems.Add(closeItem);
+            this.notifyIcon.ContextMenu = new System.Windows.Forms.ContextMenu();
+            AddMenuItem("打开随身袋", delegate
+            {
+                window.WindowState = wsl;
+                window.Show();
+            });
+            this.notifyIcon.ContextMenu.MenuItems.Add("-");
+            AddMenuItem("退出",delegate { IsCanClose = true; window.Close(); });
             //this.notifyIcon.ShowBalloonTip(1000);
         }
-        public delegate void OnContextMenu();
-        public event OnContextMenu RightContextMenuShow;
-        void notifyIcon_MouseClick(object sender, System.Windows.Forms.MouseEventArgs e)
-        {
-            if (e.Button == System.Windows.Forms.MouseButtons.Right)
-            {
-                if (RightContextMenuShow != null)
-                {
-                    RightContextMenuShow();
-                }
-                if (contextMenu!=null)
-                {
-                    contextMenu.IsOpen = true;
-                }
-            }
 
+        public void AddMenuItem(string name,Action action)
+        {
+            System.Windows.Forms.MenuItem item = new System.Windows.Forms.MenuItem(name);
+            item.Click += new EventHandler(delegate { action.Invoke(); });
+
+            this.notifyIcon.ContextMenu.MenuItems.Add(item);
         }
     }
 }
