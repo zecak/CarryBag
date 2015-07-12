@@ -30,9 +30,15 @@ namespace 随身袋
         {
             InitializeComponent();
 
-            Helper.Global.Init();
+            var autoHide = new WindowAutoHide(this);
 
-            Init();
+            var menu_sys = new ContextMenu();
+            var menu_1 = new MenuItem() { Header = "退出" };
+            menu_1.Click += (delegate { App.Current.Shutdown(); });
+            menu_sys.Items.Add(menu_1);
+            var windowSysMin = new WindowSysMin(this, menu_sys);
+
+            Helper.Global.Init();
 
             try
             {
@@ -44,6 +50,8 @@ namespace 随身袋
                 MessageBox.Show(ex.Message);
             }
         }
+
+
 
         void SRE_SpeRecSay(string saytext)
         {
@@ -67,37 +75,11 @@ namespace 随身袋
         }
 
         #region 系统托盘
-        bool IsCanClose = false;
-        System.Windows.Forms.NotifyIcon notifyIcon;
-        void Init()
+
+        private void MetroWindow_StateChanged(object sender, EventArgs e)
         {
-            this.Closing += MainWindow_Closing;
+           
 
-            this.notifyIcon = new System.Windows.Forms.NotifyIcon();
-            this.notifyIcon.BalloonTipText = "你好, 欢迎使用随身袋!";
-            this.notifyIcon.Text = "随身袋!";
-            this.notifyIcon.Icon = System.Drawing.Icon.ExtractAssociatedIcon(AppDomain.CurrentDomain.FriendlyName);
-            this.notifyIcon.Visible = true;
-            this.notifyIcon.DoubleClick += new EventHandler(delegate { this.Show(); });
-
-            this.notifyIcon.ContextMenu = new System.Windows.Forms.ContextMenu();
-
-            System.Windows.Forms.MenuItem closeItem = new System.Windows.Forms.MenuItem("退出");
-            closeItem.Click += new EventHandler(delegate { IsCanClose = true; this.Close(); });
-
-
-
-            this.notifyIcon.ContextMenu.MenuItems.Add(closeItem);
-            this.notifyIcon.ShowBalloonTip(1000);
-        }
-
-        void MainWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
-        {
-            if (!IsCanClose)
-            {
-                e.Cancel = true;
-                this.Hide();
-            }
         }
         #endregion
 
@@ -305,11 +287,11 @@ namespace 随身袋
         /// <returns></returns>
         Border GetImg(AppLink link)
         {
-            var border = new Border() { Name = Helper.Global.EncodeCtrlName(link.Name), Style = (Style)this.FindResource("LinkBorder") };
-            var label = new Label() { Width = 64, Height = 64, Style = (Style)this.FindResource("LinkLabel"), HorizontalContentAlignment = System.Windows.HorizontalAlignment.Center, VerticalContentAlignment = System.Windows.VerticalAlignment.Center };
+            var border = new Border() { Name = Helper.Global.EncodeCtrlName(link.Name), Style = (Style)this.FindResource("LinkBorder"), ToolTip = link.Name+"\r\n"+link.FileName };
+            var label = new Label() { Width = 64, Height = 64, Style = (Style)this.FindResource("LinkLabel"), HorizontalContentAlignment = System.Windows.HorizontalAlignment.Center, VerticalContentAlignment = System.Windows.VerticalAlignment.Center, ToolTip = border.ToolTip };
             var image = new Image()
             {
-                ToolTip = link.Name,
+                ToolTip = border.ToolTip,
                 Width = 32,
                 Height = 32,
             };
@@ -536,7 +518,7 @@ namespace 随身袋
                     }
                 }
                 Helper.Global.SaveAppLinks();
-                Flyout_Import.IsOpen = true;
+                Flyout_Import.IsOpen = false;
             }
             
         }
@@ -560,6 +542,7 @@ namespace 随身袋
         {
             txt_Import.Text = System.IO.Path.Combine(txt_Import.Text, cbx_Import.Text);
         }
+        
 
 
 

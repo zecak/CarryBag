@@ -62,13 +62,9 @@ namespace 随身袋.Helper
 
         public static string EncodeCtrlName(string name)
         {
-            return EasyFramework.Security.Encrypt.EncryptHelper.EnBase64(name);
+            return "EnCN_"+EasyFramework.Security.Encrypt.EncryptHelper.APIEncode(name, EasyFramework.Security.Encrypt.EncryptHelper.EncryptType.MD5);
         }
 
-        public static string DecodeCtrlName(string enname)
-        {
-            return EasyFramework.Security.Encrypt.EncryptHelper.DeBase64(enname);
-        }
 
         public static List<RootCategory> Categorys
         {
