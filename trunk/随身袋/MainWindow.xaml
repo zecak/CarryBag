@@ -120,8 +120,8 @@
 
                 <DockPanel Margin="2 5 2 5">
                     <DockPanel DockPanel.Dock="Top" >
-                        <TextBox Controls:TextBoxHelper.Watermark="搜索内容" Controls:TextBoxHelper.IsWaitingForData="True" KeyDown="TextBox_KeyDown"></TextBox>
-                    </DockPanel>
+                        <TextBox Controls:TextBoxHelper.Watermark="搜索内容" Controls:TextBoxHelper.IsWaitingForData="True" TextChanged="TextBox_TextChanged" />
+                        </DockPanel>
                     <Controls:MetroAnimatedSingleRowTabControl Name="tabMain" Controls:TabControlHelper.IsUnderlined="True" TabStripPlacement="Top" >
                         
                     </Controls:MetroAnimatedSingleRowTabControl>

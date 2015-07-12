@@ -57,7 +57,9 @@ namespace 随身袋
 
             加载类别();
 
-
+            //文件保护
+            //System.IO.Directory.SetAccessControl(@"D:\登录", new System.Security.AccessControl.DirectorySecurity("hh", System.Security.AccessControl.AccessControlSections.Audit));
+            
         }
 
         void autoTimer_Tick(object sender, EventArgs e)
@@ -214,6 +216,7 @@ namespace 随身袋
             var p_c = Helper.Global.Categorys.FirstOrDefault(m => m.ID == c.PID);
             cbx_root_Move.SelectedItem = p_c;
             btn_AddSubC_Move.Tag = c.ID;
+            Flyout_Move.Header = "移动["+c.Name+"]到";
             Flyout_Move.IsOpen = true;
         }
 
@@ -287,7 +290,7 @@ namespace 随身袋
 
             SubCMenu_App.Items.Add(item_open);
             SubCMenu_App.Items.Add(item_update);
-            SubCMenu_App.Items.Add(item_move);
+            //SubCMenu_App.Items.Add(item_move);
             SubCMenu_App.Items.Add(new Separator());
             SubCMenu_App.Items.Add(item_del);
             #endregion
@@ -317,13 +320,14 @@ namespace 随身袋
 
         void item_update_Click(object sender, RoutedEventArgs e)
         {
-            throw new NotImplementedException();
+            //throw new NotImplementedException();
         }
 
         void item_open_Click(object sender, RoutedEventArgs e)
         {
             var listbox = SubCMenu_App.PlacementTarget as ListBox;
             var b = listbox.SelectedItem as Border;
+            if (b == null) { return; }
             var link = b.Tag as AppLink;
             if (link != null)
             {
@@ -571,10 +575,6 @@ namespace 随身袋
             }
         }
 
-        private void TextBox_KeyDown(object sender, KeyEventArgs e)
-        {
-            //搜索
-        }
 
         private void btn_Import_Click(object sender, RoutedEventArgs e)
         {
@@ -618,6 +618,36 @@ namespace 随身袋
         private void cbx_Import_DropDownClosed(object sender, EventArgs e)
         {
             txt_Import.Text = System.IO.Path.Combine(txt_Import.Text, cbx_Import.Text);
+        }
+
+        private void TextBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            var all_list = this.tabMain.FindChildren<Border>();
+
+            var tbox = sender as TextBox;
+            if (string.IsNullOrWhiteSpace(tbox.Text)) 
+            {
+                foreach (var a in all_list.Where(m => m.Visibility != System.Windows.Visibility.Visible))
+                {
+                    a.Visibility = System.Windows.Visibility.Visible;
+                }
+            
+                return; 
+            }
+
+            foreach (var b in all_list)
+            {
+                b.Visibility = System.Windows.Visibility.Collapsed;
+            }
+
+
+            var blist = all_list.Where(m => (m.Tag as AppLink).Tags.ToUpper().Contains(tbox.Text.ToUpper()) || (m.Tag as AppLink).Name.ToUpper().Contains(tbox.Text.ToUpper())); //查找所有子控件
+            
+            foreach (var b in blist)
+            {
+                b.Visibility = System.Windows.Visibility.Visible;
+            }
+
         }
 
 
