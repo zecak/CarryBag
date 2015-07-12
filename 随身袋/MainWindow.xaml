@@ -9,7 +9,7 @@
                       ShowTitleBar="True"
                       GlowBrush="{DynamicResource AccentColorBrush}"
                       mc:Ignorable="d"
-        Title="随身袋 v1.0" Height="600" MinHeight="540" Width="380" MinWidth="280" Loaded="MetroWindow_Loaded" SaveWindowPosition="True" Topmost="True" ShowInTaskbar="False" ShowMinButton="False" >
+        Title="随身袋 v1.0" Height="600" MinHeight="540" Width="380" MinWidth="280" Loaded="MetroWindow_Loaded" SaveWindowPosition="True" Topmost="True" ShowInTaskbar="False" StateChanged="MetroWindow_StateChanged" >
     <Controls:MetroWindow.RightWindowCommands>
         <Controls:WindowCommands>
             <Button ToolTip="关于" Content="关于"  />

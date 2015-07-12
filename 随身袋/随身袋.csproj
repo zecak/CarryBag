@@ -79,6 +79,8 @@
     </Compile>
     <Compile Include="Helper\Global.cs" />
     <Compile Include="Helper\SREngine.cs" />
+    <Compile Include="Helper\WindowAutoHide.cs" />
+    <Compile Include="Helper\WindowSysMin.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
