@@ -5,11 +5,12 @@
                       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
                       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                       xmlns:Dialog="clr-namespace:MahApps.Metro.Controls.Dialogs;assembly=MahApps.Metro"
+                      xmlns:local="clr-namespace:随身袋.Helper"
                       ShowIconOnTitleBar="True"
                       ShowTitleBar="True"
                       GlowBrush="{DynamicResource AccentColorBrush}"
                       mc:Ignorable="d"
-        Title="随身袋 v1.0" Height="600" MinHeight="540" Width="380" MinWidth="280" Loaded="MetroWindow_Loaded" SaveWindowPosition="True" Topmost="True" ShowInTaskbar="False" StateChanged="MetroWindow_StateChanged" >
+        Title="随身袋 v1.0" Height="550" MinHeight="550" Width="300" MinWidth="300" Loaded="MetroWindow_Loaded" Topmost="True" ShowInTaskbar="False">
     <Controls:MetroWindow.RightWindowCommands>
         <Controls:WindowCommands>
             <Button ToolTip="关于" Content="关于"  />
@@ -97,9 +98,17 @@
     <Controls:MetroContentControl>
         <Grid>
             <DockPanel>
+                <DockPanel DockPanel.Dock="Bottom" Margin="5" >
+                    <DockPanel>
+                        <ToolBarPanel Orientation="Horizontal">
+                            <Button Click="Button_Click" Width="32" Height="32" FontFamily="微软雅黑" FontSize="18" Style="{DynamicResource MetroCircleButtonStyle}">+</Button>
+                        </ToolBarPanel>
+                    </DockPanel>
+                </DockPanel>
+                <DockPanel>
                 <DockPanel DockPanel.Dock="Top">
-                    <Label Name="btn_test" Width="64" Height="64" Background="White" HorizontalContentAlignment="Center" VerticalContentAlignment="Center">
-                        <Image DockPanel.Dock="Top" Source="Res/logo.png" Width="32" Height="32" />
+                    <Label Name="lblTime" FontSize="28" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Background="#FFF5F4EA" Foreground="#FFE45333">
+                        2015/7/12 13:14
                     </Label>
                     
                     <!--<WrapPanel Margin="12">
@@ -108,13 +117,7 @@
                         
                     </WrapPanel>-->
                 </DockPanel>
-                <DockPanel DockPanel.Dock="Bottom" Margin="5" >
-                    <DockPanel>
-                        <ToolBarPanel Orientation="Horizontal">
-                            <Button Click="Button_Click" Width="32" Height="32" FontFamily="微软雅黑" FontSize="18" Style="{DynamicResource MetroCircleButtonStyle}">+</Button>
-                        </ToolBarPanel>
-                    </DockPanel>
-                </DockPanel>
+
                 <DockPanel Margin="2 5 2 5">
                     <DockPanel DockPanel.Dock="Top" >
                         <TextBox Controls:TextBoxHelper.Watermark="搜索内容" Controls:TextBoxHelper.IsWaitingForData="True" KeyDown="TextBox_KeyDown"></TextBox>
@@ -123,6 +126,9 @@
                         
                     </Controls:MetroAnimatedSingleRowTabControl>
                 </DockPanel>
+            </DockPanel>
+
+
             </DockPanel>
         </Grid>
     </Controls:MetroContentControl>
