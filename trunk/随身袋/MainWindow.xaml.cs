@@ -144,7 +144,7 @@ namespace 随身袋
         ContextMenu SubCMenu = new ContextMenu();
 
         /// <summary>
-        /// 初始化类别菜单
+        /// 初始化栏目菜单
         /// </summary>
         void SubCMenuInit()
         {
@@ -154,11 +154,11 @@ namespace 随身袋
             var mi_import = new MenuItem() { Header = "导入快捷方式" };
             mi_import.Click += mi_import_Click;
 
-            var mitem_upd = new MenuItem() { Header = "修改类别" };
+            var mitem_upd = new MenuItem() { Header = "修改栏目" };
             mitem_upd.Click += mitem_upd_Click;
-            var mitem_mov = new MenuItem() { Header = "移动类别" };
+            var mitem_mov = new MenuItem() { Header = "移动栏目" };
             mitem_mov.Click += mitem_mov_Click;
-            var mitem_del = new MenuItem() { Header = "删除类别" };
+            var mitem_del = new MenuItem() { Header = "删除栏目" };
             mitem_del.Click += mitem_del_Click;
 
             SubCMenu.Items.Add(mitem_filelink);
@@ -204,7 +204,7 @@ namespace 随身袋
         }
 
         /// <summary>
-        /// 移动操作,加载类别
+        /// 移动操作,加载栏目
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -228,7 +228,7 @@ namespace 随身袋
         void mitem_del_Click(object sender, RoutedEventArgs e)
         {
             var exp = SubCMenu.PlacementTarget as Expander;
-            var mbr = MBox.Show("确定删除该类别信息么?", "提示", this);
+            var mbr = MBox.Show("确定删除该栏目信息么?", "提示", this);
             if (mbr == true)
             {
                 var c = exp.Tag as RootCategory;
