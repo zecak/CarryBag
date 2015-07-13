@@ -71,13 +71,13 @@
                     </StackPanel>
                 </DockPanel>
             </Controls:Flyout>
-            <Controls:Flyout Name="Flyout_Add" Header="创建类别" Position="Left" IsModal="True" Theme="Accent" Width="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=Controls:MetroWindow}, Path=ActualWidth}">
+            <Controls:Flyout Name="Flyout_Add" Header="创建栏目" Position="Left" IsModal="True" Theme="Accent" Width="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=Controls:MetroWindow}, Path=ActualWidth}">
                 <DockPanel>
                     <StackPanel Margin="5,5,5,5">
                         <ComboBox Name="cbx_root" SelectedIndex="0" SelectedValuePath="ID" DisplayMemberPath="Name" Margin="5">
                             
                         </ComboBox>
-                        <TextBox Name="txt_SubCName" Controls:TextBoxHelper.Watermark="类别名称,必填" Margin="5" Controls:TextBoxHelper.IsWaitingForData="True"></TextBox>
+                        <TextBox Name="txt_SubCName" Controls:TextBoxHelper.Watermark="栏目名称,必填" Margin="5" Controls:TextBoxHelper.IsWaitingForData="True"></TextBox>
                         <DockPanel>
                             <Label Margin="5">排序</Label>
                             <Controls:NumericUpDown Name="nud_SortNum" Value="1" TextAlignment="Center" Minimum="0" Margin="5"/>
@@ -87,13 +87,13 @@
                     </StackPanel>
                 </DockPanel>
             </Controls:Flyout>
-            <Controls:Flyout Name="Flyout_Edit" Header="修改类别" Position="Left" IsModal="True" Theme="Accent" Width="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=Controls:MetroWindow}, Path=ActualWidth}">
+            <Controls:Flyout Name="Flyout_Edit" Header="修改栏目" Position="Left" IsModal="True" Theme="Accent" Width="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=Controls:MetroWindow}, Path=ActualWidth}">
                 <DockPanel>
                     <StackPanel Margin="5,5,5,5">
                         <ComboBox Name="cbx_root_edit" IsEnabled="False" SelectedValuePath="ID" DisplayMemberPath="Name" Margin="5">
 
                         </ComboBox>
-                        <TextBox Name="txt_SubCName_edit" Controls:TextBoxHelper.Watermark="类别名称" Margin="5" Controls:TextBoxHelper.IsWaitingForData="True"></TextBox>
+                        <TextBox Name="txt_SubCName_edit" Controls:TextBoxHelper.Watermark="栏目名称" Margin="5" Controls:TextBoxHelper.IsWaitingForData="True"></TextBox>
                         <DockPanel>
                             <Label Margin="5">排序</Label>
                             <Controls:NumericUpDown Name="nud_SortNum_edit" TextAlignment="Center" Minimum="0" Margin="5"/>
@@ -103,7 +103,7 @@
                     </StackPanel>
                 </DockPanel>
             </Controls:Flyout>
-            <Controls:Flyout Name="Flyout_Move" Header="调整类别" Position="Left" IsModal="True" Theme="Accent" Width="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=Controls:MetroWindow}, Path=ActualWidth}">
+            <Controls:Flyout Name="Flyout_Move" Header="调整栏目" Position="Left" IsModal="True" Theme="Accent" Width="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=Controls:MetroWindow}, Path=ActualWidth}">
                 <DockPanel>
                     <StackPanel Margin="5,5,5,5">
                         <ComboBox Name="cbx_root_Move" SelectedValuePath="ID" DisplayMemberPath="Name" Margin="5">
