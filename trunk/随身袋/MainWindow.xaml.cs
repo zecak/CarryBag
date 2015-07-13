@@ -484,6 +484,11 @@ namespace 随身袋
                     }
                     txt_LinkNameEdit.Text = System.IO.Path.GetFileNameWithoutExtension(openFileDialog.FileName);
                     txt_TagsEdit.Text = System.IO.Path.GetFileName(openFileDialog.FileName);
+                    var uri = new Uri(txt_LinkFileNameEdit.Text);
+                    if (uri.IsAbsoluteUri)
+                    {
+                        chb_IsRelativeEdit.IsChecked = false;
+                    }
                 }
             }
             catch (Exception ex)
@@ -504,6 +509,11 @@ namespace 随身袋
                 link.Name = txt_LinkNameEdit.Text;
                 link.FileName = txt_LinkFileNameEdit.Text;
                 link.Args = txt_ArgsEdit.Text;
+                var uri = new Uri(txt_LinkFileNameEdit.Text);
+                if (uri.IsAbsoluteUri)
+                {
+                    chb_IsRelativeEdit.IsChecked = false;
+                }
                 link.IsRelative = chb_IsRelativeEdit.IsChecked == true;
                 link.Tags = txt_TagsEdit.Text;
                 link.SortNum = (int)nud_SortEdit.Value;
@@ -556,6 +566,11 @@ namespace 随身袋
                     Width = 32,
                     Height = 32,
                 };
+                var uri = new Uri(link.FileName);
+                if (uri.IsAbsoluteUri)
+                {
+                    link.IsRelative = false;
+                }
                 if (link.IsRelative)
                 {
                     image.Source = Helper.Global.GetIcon(Helper.Global.AppPath + link.FileName);
@@ -765,6 +780,11 @@ namespace 随身袋
                     TextBoxHelper.SetWatermark(txt_LinkName, "名称已存在!");
                     return;
                 }
+                var uri = new Uri(txt_LinkFileName.Text);
+                if(uri.IsAbsoluteUri)
+                {
+                    chb_IsRelative.IsChecked=false;
+                }
 
                 var subc = btn_AddFileLink.Tag as RootCategory;
                 var link = new AppLink() { ID = Guid.NewGuid(), Name = txt_LinkName.Text, FileName = txt_LinkFileName.Text, Args = txt_Args.Text, IsRelative = chb_IsRelative.IsChecked == true, Tags = txt_Tags.Text, SortNum = (int)nud_Sort.Value, PID = subc.ID, Extension = System.IO.Path.GetExtension(txt_LinkFileName.Text) };
@@ -830,6 +850,12 @@ namespace 随身袋
                     }
                     txt_LinkName.Text = System.IO.Path.GetFileNameWithoutExtension(openFileDialog.FileName);
                     txt_Tags.Text = System.IO.Path.GetFileName(openFileDialog.FileName);
+                   
+                    var uri = new Uri(txt_LinkFileName.Text);
+                    if (uri.IsAbsoluteUri)
+                    {
+                        chb_IsRelative.IsChecked = false;
+                    }
                 }
             }
             catch (Exception ex)
