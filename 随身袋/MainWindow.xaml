@@ -6,26 +6,40 @@
                       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                       xmlns:Dialog="clr-namespace:MahApps.Metro.Controls.Dialogs;assembly=MahApps.Metro"
                       xmlns:local="clr-namespace:随身袋.Helper"
+                      xmlns:WpfTools="clr-namespace:WpfTools"
                       ShowIconOnTitleBar="True"
                       ShowTitleBar="True"
                       GlowBrush="{DynamicResource AccentColorBrush}"
                       mc:Ignorable="d"
-        Title="随身袋 v1.0" Height="550" MinHeight="550" Width="300" MinWidth="300" Loaded="MetroWindow_Loaded" ShowInTaskbar="False">
+        Title="随身袋" Height="550" MinHeight="550" Width="300" MinWidth="300" Loaded="MetroWindow_Loaded" ShowInTaskbar="False" Icon="{WpfTools:ImageFromFont Text=&#xf0b1;, FontFamily=/随身袋;component/Res/#FontAwesome, Brush=White}" >
     <Controls:MetroWindow.RightWindowCommands>
         <Controls:WindowCommands>
-            <Button ToolTip="关于" Content="关于"  />
-            <Button ToolTip="帮助" Content="帮助"  />
+            <Button Name="btn_about" ToolTip="关于" Content="关于" Click="btn_about_Click"  />
+            <Button ToolTip="帮助" Content="帮助" Visibility="Collapsed"  />
         </Controls:WindowCommands>
     </Controls:MetroWindow.RightWindowCommands>
     <Controls:MetroWindow.Flyouts>
         <Controls:FlyoutsControl>
+            <Controls:Flyout Name="fly_about" Header="关于随身袋" Position="Left" IsModal="True" Theme="Accent" Width="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=Controls:MetroWindow}, Path=ActualWidth}">
+                <DockPanel>
+                    <StackPanel Margin="5,5,5,5">
+                        <Label Style="{DynamicResource WhiteFont}">随身袋 v1.0(20150713)</Label>
+                        <Label Style="{DynamicResource WhiteFont}">by zecak</Label>
+                        <Label Style="{DynamicResource WhiteFont}">系统环境: Win7 SP1</Label>
+                        <Label Style="{DynamicResource WhiteFont}">开发工具: Microsoft Visual Studio 2013 (Update4) + .Net FrameWork 4.0</Label>
+                        <Label Style="{DynamicResource WhiteFont}">Email: zecak@qq.com</Label>
+                        <Label Style="{DynamicResource WhiteFont}">Copyright 2015 zecak All Rights Reserved.</Label>
+                        
+                    </StackPanel>
+                </DockPanel>
+            </Controls:Flyout>
             <Controls:Flyout Name="Flyout_Import" Header="导入快捷方式" Position="Left" IsModal="True" Theme="Accent" Width="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=Controls:MetroWindow}, Path=ActualWidth}">
                 <DockPanel>
                     <StackPanel Margin="5,5,5,5">
-                        <ComboBox Name="cbx_Import" SelectedValuePath="Name" DisplayMemberPath="Name" Margin="5" DropDownClosed="cbx_Import_DropDownClosed">
+                        <ComboBox Name="cbx_Import" SelectedValuePath="Name" DisplayMemberPath="Name" Margin="5" DropDownClosed="cbx_Import_DropDownClosed" >
                             
                         </ComboBox>
-                        <TextBox Name="txt_Import" Controls:TextBoxHelper.Watermark="要导入的相对位置" Margin="5" Controls:TextBoxHelper.IsWaitingForData="True" TextChanged="txt_Import_TextChanged"></TextBox>
+                        <TextBox Name="txt_Import" Controls:TextBoxHelper.Watermark="要导入的相对位置" Margin="5" Controls:TextBoxHelper.IsWaitingForData="True" TextChanged="txt_Import_TextChanged" ></TextBox>
 
                         <Button Name="btn_Import" Click="btn_Import_Click" Margin="5">导入</Button>
                     </StackPanel>
@@ -34,16 +48,16 @@
             <Controls:Flyout Name="Flyout_EditFileLink" Header="修改快捷方式" Position="Left" IsModal="True" Theme="Accent" Width="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=Controls:MetroWindow}, Path=ActualWidth}">
                 <DockPanel>
                     <StackPanel Margin="5,5,5,5">
-                        <Controls:ToggleSwitch Name="chb_IsRelativeEdit" IsChecked="True" OnLabel="相对位置" OffLabel="绝对位置" Margin="5"/>
+                        <Controls:ToggleSwitch Name="chb_IsRelativeEdit" IsChecked="True" OnLabel="相对位置" OffLabel="绝对位置" Margin="5" Style="{DynamicResource WhiteFont}"/>
                         <DockPanel>
                             <Button Name="btn_LinkFileNameEdit" DockPanel.Dock="Right" Margin="5" Click="btn_LinkFileNameEdit_Click">浏览文件..</Button>
-                            <TextBox Name="txt_LinkFileNameEdit" Controls:TextBoxHelper.Watermark="程序位置,必填" Margin="5" Controls:TextBoxHelper.IsWaitingForData="True"></TextBox>
+                            <TextBox Name="txt_LinkFileNameEdit" Controls:TextBoxHelper.Watermark="程序位置,必填" Margin="5" Controls:TextBoxHelper.IsWaitingForData="True" ></TextBox>
                         </DockPanel>
-                        <TextBox Name="txt_LinkNameEdit" Controls:TextBoxHelper.Watermark="程序名称,必填" Margin="5" Controls:TextBoxHelper.IsWaitingForData="True"></TextBox>
-                        <TextBox Name="txt_ArgsEdit" Controls:TextBoxHelper.Watermark="运行参数,可不填" Margin="5" Controls:TextBoxHelper.IsWaitingForData="True"></TextBox>
-                        <TextBox Name="txt_TagsEdit" Controls:TextBoxHelper.Watermark="标签,方便搜索" Margin="5" Controls:TextBoxHelper.IsWaitingForData="True"></TextBox>
+                        <TextBox Name="txt_LinkNameEdit" Controls:TextBoxHelper.Watermark="程序名称,必填" Margin="5" Controls:TextBoxHelper.IsWaitingForData="True" ></TextBox>
+                        <TextBox Name="txt_ArgsEdit" Controls:TextBoxHelper.Watermark="运行参数,可不填" Margin="5" Controls:TextBoxHelper.IsWaitingForData="True" ></TextBox>
+                        <TextBox Name="txt_TagsEdit" Controls:TextBoxHelper.Watermark="标签,方便搜索" Margin="5" Controls:TextBoxHelper.IsWaitingForData="True" ></TextBox>
                         <DockPanel>
-                            <Label Margin="5">排序</Label>
+                            <Label Margin="5" Style="{DynamicResource WhiteFont}">排序</Label>
                             <Controls:NumericUpDown Name="nud_SortEdit" Value="1" TextAlignment="Center" Minimum="0" Margin="5" />
                         </DockPanel>
 
@@ -54,16 +68,16 @@
             <Controls:Flyout Name="Flyout_AddFileLink" Header="创建快捷方式" Position="Left" IsModal="True" Theme="Accent" Width="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=Controls:MetroWindow}, Path=ActualWidth}">
                 <DockPanel>
                     <StackPanel Margin="5,5,5,5">
-                        <Controls:ToggleSwitch Name="chb_IsRelative" IsChecked="True" OnLabel="相对位置" OffLabel="绝对位置" Margin="5"/>
+                        <Controls:ToggleSwitch Name="chb_IsRelative" IsChecked="True" OnLabel="相对位置" OffLabel="绝对位置" Margin="5" Style="{DynamicResource WhiteFont}"/>
                         <DockPanel>
                             <Button Name="btn_LinkFileName" DockPanel.Dock="Right" Margin="5" Click="btn_LinkFileName_Click">浏览文件..</Button>
-                            <TextBox Name="txt_LinkFileName" Controls:TextBoxHelper.Watermark="程序位置,必填" Margin="5" Controls:TextBoxHelper.IsWaitingForData="True"></TextBox>
+                            <TextBox Name="txt_LinkFileName" Controls:TextBoxHelper.Watermark="程序位置,必填" Margin="5" Controls:TextBoxHelper.IsWaitingForData="True" ></TextBox>
                         </DockPanel>
-                        <TextBox Name="txt_LinkName" Controls:TextBoxHelper.Watermark="程序名称,必填" Margin="5" Controls:TextBoxHelper.IsWaitingForData="True"></TextBox>
-                        <TextBox Name="txt_Args" Controls:TextBoxHelper.Watermark="运行参数,可不填" Margin="5" Controls:TextBoxHelper.IsWaitingForData="True"></TextBox>
-                        <TextBox Name="txt_Tags" Controls:TextBoxHelper.Watermark="标签,方便搜索" Margin="5" Controls:TextBoxHelper.IsWaitingForData="True"></TextBox>
+                        <TextBox Name="txt_LinkName" Controls:TextBoxHelper.Watermark="程序名称,必填" Margin="5" Controls:TextBoxHelper.IsWaitingForData="True" ></TextBox>
+                        <TextBox Name="txt_Args" Controls:TextBoxHelper.Watermark="运行参数,可不填" Margin="5" Controls:TextBoxHelper.IsWaitingForData="True" ></TextBox>
+                        <TextBox Name="txt_Tags" Controls:TextBoxHelper.Watermark="标签,方便搜索" Margin="5" Controls:TextBoxHelper.IsWaitingForData="True" ></TextBox>
                         <DockPanel>
-                            <Label Margin="5">排序</Label>
+                            <Label Margin="5" Style="{DynamicResource WhiteFont}">排序</Label>
                             <Controls:NumericUpDown Name="nud_Sort" Value="1" TextAlignment="Center" Minimum="0" Margin="5" />
                         </DockPanel>
                         
@@ -77,9 +91,9 @@
                         <ComboBox Name="cbx_root" SelectedIndex="0" SelectedValuePath="ID" DisplayMemberPath="Name" Margin="5">
                             
                         </ComboBox>
-                        <TextBox Name="txt_SubCName" Controls:TextBoxHelper.Watermark="栏目名称,必填" Margin="5" Controls:TextBoxHelper.IsWaitingForData="True"></TextBox>
+                        <TextBox Name="txt_SubCName" Controls:TextBoxHelper.Watermark="栏目名称,必填" Margin="5" Controls:TextBoxHelper.IsWaitingForData="True" ></TextBox>
                         <DockPanel>
-                            <Label Margin="5">排序</Label>
+                            <Label Margin="5" Style="{DynamicResource WhiteFont}">排序</Label>
                             <Controls:NumericUpDown Name="nud_SortNum" Value="1" TextAlignment="Center" Minimum="0" Margin="5"/>
                         </DockPanel>
                         
@@ -93,9 +107,9 @@
                         <ComboBox Name="cbx_root_edit" IsEnabled="False" SelectedValuePath="ID" DisplayMemberPath="Name" Margin="5">
 
                         </ComboBox>
-                        <TextBox Name="txt_SubCName_edit" Controls:TextBoxHelper.Watermark="栏目名称" Margin="5" Controls:TextBoxHelper.IsWaitingForData="True"></TextBox>
+                        <TextBox Name="txt_SubCName_edit" Controls:TextBoxHelper.Watermark="栏目名称" Margin="5" Controls:TextBoxHelper.IsWaitingForData="True" ></TextBox>
                         <DockPanel>
-                            <Label Margin="5">排序</Label>
+                            <Label Margin="5" Style="{DynamicResource WhiteFont}">排序</Label>
                             <Controls:NumericUpDown Name="nud_SortNum_edit" TextAlignment="Center" Minimum="0" Margin="5"/>
                         </DockPanel>
                        
@@ -125,7 +139,7 @@
                         </ToolBarPanel>
                     </DockPanel>
                 </DockPanel>
-                <DockPanel>
+                <DockPanel >
                 <DockPanel DockPanel.Dock="Top">
                     <Label Name="lblTime" FontSize="28" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Background="#FFF5F4EA" Foreground="#FFE45333">
                         2015/7/12 13:14
@@ -138,11 +152,11 @@
                     </WrapPanel>-->
                 </DockPanel>
 
-                <DockPanel Margin="2 5 2 5">
+                <DockPanel Margin="2 5 2 5" LastChildFill="False">
                     <DockPanel DockPanel.Dock="Top" >
                         <TextBox Controls:TextBoxHelper.Watermark="搜索内容" Controls:TextBoxHelper.IsWaitingForData="True" TextChanged="TextBox_TextChanged" />
                         </DockPanel>
-                    <Controls:MetroAnimatedSingleRowTabControl Name="tabMain" Controls:TabControlHelper.IsUnderlined="True" TabStripPlacement="Top" >
+                    <Controls:MetroAnimatedSingleRowTabControl Name="tabMain" Controls:TabControlHelper.IsUnderlined="True" TabStripPlacement="Top" DockPanel.Dock="Top" >
                         
                     </Controls:MetroAnimatedSingleRowTabControl>
                 </DockPanel>

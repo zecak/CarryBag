@@ -28,7 +28,6 @@ namespace 随身袋
     {
         SREngine SRE;
         DispatcherTimer autoTimer;
-        double listHeight = 300;
         public MainWindow()
         {
             InitializeComponent();
@@ -45,15 +44,16 @@ namespace 随身袋
 
             Helper.Global.Init();
 
-            try
-            {
-                SRE = new SREngine("随身袋", new string[] { "出来", "退下" });
-                SRE.SpeRecSay += SRE_SpeRecSay;
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
-            }
+            ////语音控制
+            //try
+            //{
+            //    SRE = new SREngine("随身袋", new string[] { "出来", "退下" });
+            //    SRE.SpeRecSay += SRE_SpeRecSay;
+            //}
+            //catch (Exception ex)
+            //{
+            //    MessageBox.Show(ex.Message);
+            //}
 
             加载类别();
 
@@ -97,17 +97,17 @@ namespace 随身袋
             SubCMenu_AppInit();
 
 
-            cbx_root.ItemsSource = Helper.Global.Categorys.FindAll(m => m.PID == Guid.Empty);
-            foreach (var c in Helper.Global.Categorys.FindAll(m => m.PID == Guid.Empty))
+            cbx_root.ItemsSource = Helper.Global.Categorys.FindAll(m => m.PID == Guid.Empty).OrderBy(m=>m.SortNum);
+            foreach (var c in Helper.Global.Categorys.FindAll(m => m.PID == Guid.Empty).OrderBy(m => m.SortNum))
             {
                 var tabItem = new TabItem() { Header = c.Name };
                 tabItem.Tag = c;
                 ControlsHelper.SetHeaderFontSize(tabItem, 18);
 
-
+                var scrollViewer = new ScrollViewer();
                 var stackPanel = new StackPanel() { Name = Helper.Global.EncodeCtrlName(c.ID.ToString()) };
-
-                foreach (var subc in Helper.Global.Categorys.FindAll(m => m.PID == c.ID))
+                
+                foreach (var subc in Helper.Global.Categorys.FindAll(m => m.PID == c.ID).OrderBy(m => m.SortNum))
                 {
                     var expander = new Expander() { Name = Helper.Global.EncodeCtrlName(subc.ID.ToString()), Header = subc.Name, IsExpanded = true };
                     expander.Tag = subc;
@@ -116,12 +116,10 @@ namespace 随身袋
 
                     var wrapPanel = new ListBox();
 
-                    //wrapPanel.Style = (Style)this.FindResource("ListPanel");
-                    wrapPanel.Height = listHeight;
                     Helper.ListBoxSelector.SetEnabled(wrapPanel, true);
 
-                    
-                    foreach (var link in Helper.Global.AppLinks.FindAll(m => m.PID == subc.ID))
+
+                    foreach (var link in Helper.Global.AppLinks.FindAll(m => m.PID == subc.ID).OrderBy(m => m.SortNum))
                     {
                         wrapPanel.Items.Add(GetImg(link));
                     }
@@ -132,7 +130,9 @@ namespace 随身袋
                     stackPanel.Children.Add(expander);
                 }
 
-                tabItem.Content = stackPanel;
+                scrollViewer.Content = stackPanel;
+
+                tabItem.Content = scrollViewer;
                 tabMain.Items.Add(tabItem);
             }
 
@@ -211,7 +211,7 @@ namespace 随身袋
         void mitem_mov_Click(object sender, RoutedEventArgs e)
         {
             var exp = SubCMenu.PlacementTarget as Expander;
-            cbx_root_Move.ItemsSource = Helper.Global.Categorys.FindAll(m => m.PID == Guid.Empty);
+            cbx_root_Move.ItemsSource = Helper.Global.Categorys.FindAll(m => m.PID == Guid.Empty).OrderBy(m => m.SortNum);
             var c = exp.Tag as RootCategory;
             var p_c = Helper.Global.Categorys.FirstOrDefault(m => m.ID == c.PID);
             cbx_root_Move.SelectedItem = p_c;
@@ -255,7 +255,7 @@ namespace 随身袋
         void mitem_upd_Click(object sender, RoutedEventArgs e)
         {
             var exp = SubCMenu.PlacementTarget as Expander;
-            cbx_root_edit.ItemsSource = Helper.Global.Categorys.FindAll(m => m.PID == Guid.Empty);
+            cbx_root_edit.ItemsSource = Helper.Global.Categorys.FindAll(m => m.PID == Guid.Empty).OrderBy(m => m.SortNum);
             var c = exp.Tag as RootCategory;
             var p_c = Helper.Global.Categorys.FirstOrDefault(m => m.ID == c.PID);
             cbx_root_edit.SelectedItem = p_c;
@@ -388,6 +388,7 @@ namespace 随身袋
                     txt_LinkFileNameEdit.Text = System.IO.Path.GetFullPath(openFileDialog.FileName);
                 }
                 txt_LinkNameEdit.Text = System.IO.Path.GetFileNameWithoutExtension(openFileDialog.FileName);
+                txt_TagsEdit.Text = System.IO.Path.GetFileName(openFileDialog.FileName);
             }
         }
 
@@ -407,12 +408,20 @@ namespace 随身袋
 
             Helper.Global.SaveAppLinks();
 
-            var border = this.tabMain.FindChild<Border>(Helper.Global.EncodeCtrlName(link.ID.ToString()));
-            SetImg(border,link);
 
-            Flyout_AddFileLink.IsOpen = false;
+            var listbox = this.tabMain.FindChild<Expander>(Helper.Global.EncodeCtrlName(link.PID.ToString())).Content as ListBox;
+            listbox.Items.Clear();
+            foreach (var l in Helper.Global.AppLinks.FindAll(m => m.PID == link.PID).OrderBy(m => m.SortNum))
+            {
+                listbox.Items.Add(GetImg(l));
+            }
+            
+
+            Flyout_EditFileLink.IsOpen = false;
 
         }
+
+
         #endregion
 
 
@@ -455,7 +464,24 @@ namespace 随身袋
 
         void SetImg(Border border,AppLink link)
         {
-            
+            border.ToolTip = link.Name + "\r\n" + link.FileName;
+            border.Tag = link;
+            var label=border.Child as Label;
+            label.ToolTip = border.ToolTip;
+            label.Tag = link;
+            var image = label.Content as Image;
+            image.ToolTip = border.ToolTip;
+            if (link.IsRelative)
+            {
+                image.Source = Helper.Global.GetIcon(Helper.Global.AppPath + link.FileName);
+            }
+            else
+            {
+                image.Source = Helper.Global.GetIcon(link.FileName);
+            }
+            image.Tag = link;
+
+
         }
 
         /// <summary>
@@ -512,14 +538,14 @@ namespace 随身袋
 
 
             var stackPanel = this.tabMain.FindChildren<StackPanel>().FirstOrDefault(m => m.Name == Helper.Global.EncodeCtrlName(subc.PID.ToString()));//查找所有的子控件
+
+            //stackPanel.Children.Clear();
+
             var expander = new Expander() { Name = Helper.Global.EncodeCtrlName(subc.ID.ToString()), Header = subc.Name, IsExpanded = true };
             expander.Tag = subc;
             expander.ContextMenu = SubCMenu;
             var wrapPanel = new ListBox();
-            //wrapPanel.Style = (Style)this.FindResource("ListPanel");
-            wrapPanel.Height = listHeight;
             Helper.ListBoxSelector.SetEnabled(wrapPanel, true);
-            //wrapPanel.ContextMenu = SubCMenu_App;
             expander.Content = wrapPanel;
             stackPanel.Children.Add(expander);
 
@@ -599,7 +625,13 @@ namespace 随身袋
             Helper.Global.SaveAppLinks();
 
             var wrapPanel = this.tabMain.FindChild<Expander>(Helper.Global.EncodeCtrlName(subc.ID.ToString())).Content as ListBox;
-            wrapPanel.Items.Add(GetImg(link));
+
+            wrapPanel.Items.Clear();
+            foreach (var l in Helper.Global.AppLinks.FindAll(m => m.PID == link.PID).OrderBy(m => m.SortNum))
+            {
+                wrapPanel.Items.Add(GetImg(l));
+            }
+
 
             Flyout_AddFileLink.IsOpen = false;
             txt_LinkName.Text = "";
@@ -642,6 +674,7 @@ namespace 随身袋
                     txt_LinkFileName.Text = System.IO.Path.GetFullPath(openFileDialog.FileName);
                 }
                 txt_LinkName.Text = System.IO.Path.GetFileNameWithoutExtension(openFileDialog.FileName);
+                txt_Tags.Text = System.IO.Path.GetFileName(openFileDialog.FileName);
             }
         }
 
@@ -718,6 +751,11 @@ namespace 随身袋
                 b.Visibility = System.Windows.Visibility.Visible;
             }
 
+        }
+
+        private void btn_about_Click(object sender, RoutedEventArgs e)
+        {
+            fly_about.IsOpen = true;
         }
 
 
