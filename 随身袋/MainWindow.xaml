@@ -147,7 +147,7 @@
                 <DockPanel DockPanel.Dock="Bottom" Margin="5" >
                     <DockPanel>
                         <ToolBarPanel Orientation="Horizontal">
-                            <Button Click="Button_Click" Width="32" Height="32" FontFamily="微软雅黑" FontSize="18" Style="{DynamicResource MetroCircleButtonStyle}">+</Button>
+                            <Button Click="Button_Click" Width="32" Height="32" FontFamily="微软雅黑" FontSize="18" Style="{DynamicResource MetroCircleButtonStyle}" ToolTip="创建栏目">+</Button>
                         </ToolBarPanel>
                     </DockPanel>
                 </DockPanel>
