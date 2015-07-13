@@ -32,6 +32,8 @@ namespace 随身袋.Helper
                 window.Hide();
                 window.Topmost = false;
             }
+
+            
         }
 
         void window_Closing(object sender, System.ComponentModel.CancelEventArgs e)

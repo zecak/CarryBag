@@ -51,28 +51,34 @@ namespace 随身袋.Helper
 
         void window_LocationChanged(object sender, EventArgs e)
         {
-            if (!this._IsHidded)
+
+           //
+            if(window.WindowState== WindowState.Normal)
             {
-                if (window.Top <= 0 && window.Left <= 0)
+                if (!this._IsHidded)
                 {
-                    this.location = Location.LeftTop;
-                    this.HideWindow();
-                }
-                else if (window.Top <= 0 && window.Left >= SystemParameters.VirtualScreenWidth - window.ActualWidth)
-                {
-                    this.location = Location.RightTop;
-                    this.HideWindow();
-                }
-                else if (window.Top <= 0)
-                {
-                    this.location = Location.Top;
-                    this.HideWindow();
-                }
-                else
-                {
-                    this.location = Location.None;
+                    if (window.Top <= 0 && window.Left <= 0)
+                    {
+                        this.location = Location.LeftTop;
+                        this.HideWindow();
+                    }
+                    else if (window.Top <= 0 && window.Left >= SystemParameters.VirtualScreenWidth - window.ActualWidth)
+                    {
+                        this.location = Location.RightTop;
+                        this.HideWindow();
+                    }
+                    else if (window.Top <= 0)
+                    {
+                        this.location = Location.Top;
+                        this.HideWindow();
+                    }
+                    else
+                    {
+                        this.location = Location.None;
+                    }
                 }
             }
+            
         }
 
         /// <summary>
@@ -82,27 +88,27 @@ namespace 随身袋.Helper
         /// <param name="e"></param>
         private void AutoHideTimer_Tick(object sender, EventArgs e)
         {
+            if (window.WindowState == WindowState.Normal)
+            {
+                POINT p;
+                if (!GetCursorPos(out p))
+                {
+                    return;
+                }
 
-            POINT p;
-            if (!GetCursorPos(out p))
-            {
-                return;
-            }
-
-            if (p.x >= window.Left && p.x <= (window.Left + window.ActualWidth)
-                 && p.y >= window.Top && p.y <= (window.Top + window.ActualHeight))
-            {
-                this.ShowWindow();
-            }
-            else
-            {
-                this.HideWindow();
+                if (p.x >= window.Left && p.x <= (window.Left + window.ActualWidth)
+                     && p.y >= window.Top && p.y <= (window.Top + window.ActualHeight))
+                {
+                    this.ShowWindow();
+                }
+                else
+                {
+                    this.HideWindow();
+                }
             }
         }
 
-        /// <summary>
-        /// 隐藏窗体
-        /// </summary>
+
         private void ShowWindow()
         {
             if (this._IsHidded)
@@ -122,9 +128,7 @@ namespace 随身袋.Helper
                 }
             }
         }
-        /// <summary>
-        /// 显示窗体
-        /// </summary>
+
         private void HideWindow()
         {
             if (!this._IsHidded)
@@ -152,6 +156,7 @@ namespace 随身袋.Helper
                         this.autoHideTimer.Start();
                         break;
                     case Location.None:
+                        this.autoHideTimer.Stop();
                         break;
                 }
             }
