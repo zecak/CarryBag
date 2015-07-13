@@ -62,6 +62,27 @@ namespace 随身袋
             
         }
 
+        void SysRun( bool enable)
+        {
+            Microsoft.Win32.RegistryKey HKCU = Microsoft.Win32.Registry.CurrentUser; 
+            Microsoft.Win32.RegistryKey Run = HKCU.OpenSubKey(@"SOFTWARE\Microsoft\Windows\CurrentVersion\Run", true);
+            try 
+            {
+                var exe = new System.IO.FileInfo(AppDomain.CurrentDomain.FriendlyName);
+                if (enable)
+                {
+                    Run.SetValue("CarryBag", exe.FullName);
+                }
+                else
+                {
+                    Run.DeleteValue("CarryBag");
+                }
+            }
+            catch { } 
+            HKCU.Close(); 
+        }
+
+
         void autoTimer_Tick(object sender, EventArgs e)
         {
             lblTime.ToolTip = "农历" + NLCalendar.GetCalendar(DateTime.Now);
@@ -105,6 +126,8 @@ namespace 随身袋
                 ControlsHelper.SetHeaderFontSize(tabItem, 18);
 
                 var scrollViewer = new ScrollViewer();
+                scrollViewer.VerticalScrollBarVisibility = ScrollBarVisibility.Auto;
+                scrollViewer.HorizontalScrollBarVisibility = ScrollBarVisibility.Disabled;
                 var stackPanel = new StackPanel() { Name = Helper.Global.EncodeCtrlName(c.ID.ToString()) };
                 
                 foreach (var subc in Helper.Global.Categorys.FindAll(m => m.PID == c.ID).OrderBy(m => m.SortNum))
@@ -116,7 +139,7 @@ namespace 随身袋
 
                     var wrapPanel = new ListBox();
 
-                    Helper.ListBoxSelector.SetEnabled(wrapPanel, true);
+                    //Helper.ListBoxSelector.SetEnabled(wrapPanel, true);
 
 
                     foreach (var link in Helper.Global.AppLinks.FindAll(m => m.PID == subc.ID).OrderBy(m => m.SortNum))
@@ -405,6 +428,7 @@ namespace 随身袋
             link.IsRelative = chb_IsRelativeEdit.IsChecked == true;
             link.Tags = txt_TagsEdit.Text;
             link.SortNum = (int)nud_SortEdit.Value;
+            link.Extension = System.IO.Path.GetExtension(txt_LinkFileNameEdit.Text);
 
             Helper.Global.SaveAppLinks();
 
@@ -428,7 +452,7 @@ namespace 随身袋
         private void MetroWindow_Loaded(object sender, RoutedEventArgs e)
         {
 
-
+            //System.IO.Path.GetExtension()
 
         }
 
@@ -456,7 +480,8 @@ namespace 随身袋
                 image.Source = Helper.Global.GetIcon(link.FileName);
             }
             image.Tag = link;
-            image.MouseLeftButtonDown += image_MouseLeftButtonDown;
+            //image.MouseLeftButtonUp += image_MouseLeftButtonDown;
+            label.MouseLeftButtonDown += image_MouseLeftButtonDown;
             label.Content = image;
             border.Child = label;
             return border;
@@ -492,6 +517,7 @@ namespace 随身袋
         void image_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             var img = sender as Image;
+            if (img == null) { img = (sender as Label).Content as Image; }
             var link = img.Tag as AppLink;
             if (link != null)
             {
@@ -545,7 +571,7 @@ namespace 随身袋
             expander.Tag = subc;
             expander.ContextMenu = SubCMenu;
             var wrapPanel = new ListBox();
-            Helper.ListBoxSelector.SetEnabled(wrapPanel, true);
+            //Helper.ListBoxSelector.SetEnabled(wrapPanel, true);
             expander.Content = wrapPanel;
             stackPanel.Children.Add(expander);
 
@@ -619,7 +645,7 @@ namespace 随身袋
             }
 
             var subc = btn_AddFileLink.Tag as RootCategory;
-            var link = new AppLink() { ID = Guid.NewGuid(), Name = txt_LinkName.Text, FileName = txt_LinkFileName.Text, Args = txt_Args.Text, IsRelative = chb_IsRelative.IsChecked == true, Tags = txt_Tags.Text, SortNum = (int)nud_Sort.Value, PID = subc.ID };
+            var link = new AppLink() { ID = Guid.NewGuid(), Name = txt_LinkName.Text, FileName = txt_LinkFileName.Text, Args = txt_Args.Text, IsRelative = chb_IsRelative.IsChecked == true, Tags = txt_Tags.Text, SortNum = (int)nud_Sort.Value, PID = subc.ID, Extension = System.IO.Path.GetExtension(txt_LinkFileName.Text) };
 
             Helper.Global.AppLinks.Add(link);
             Helper.Global.SaveAppLinks();
@@ -689,7 +715,7 @@ namespace 随身袋
                 var files = dir.GetFiles("*.exe", System.IO.SearchOption.AllDirectories);
                 foreach (var file in files)
                 {
-                    var link = new AppLink() { ID = Guid.NewGuid(), IsRelative = true, SortNum = 99, Name = System.IO.Path.GetFileNameWithoutExtension(file.FullName), Tags = System.IO.Path.GetFileName(file.FullName), FileName = file.FullName.Replace(AppDomain.CurrentDomain.BaseDirectory, ""), PID = p_cate.ID };
+                    var link = new AppLink() { ID = Guid.NewGuid(), IsRelative = true, SortNum = 99, Name = System.IO.Path.GetFileNameWithoutExtension(file.FullName), Tags = System.IO.Path.GetFileName(file.FullName), FileName = file.FullName.Replace(AppDomain.CurrentDomain.BaseDirectory, ""), PID = p_cate.ID, Extension = file.Extension};
                     var only = Helper.Global.AppLinks.FirstOrDefault(m => m.Name.ToUpper() == link.Name.ToUpper());
                     if (only == null)
                     {
@@ -756,6 +782,16 @@ namespace 随身袋
         private void btn_about_Click(object sender, RoutedEventArgs e)
         {
             fly_about.IsOpen = true;
+        }
+
+        private void ts_SysRun_IsCheckedChanged(object sender, EventArgs e)
+        {
+            SysRun(ts_SysRun.IsChecked==true);
+        }
+
+        private void btn_set_Click(object sender, RoutedEventArgs e)
+        {
+            fly_set.IsOpen = true;
         }
 
 

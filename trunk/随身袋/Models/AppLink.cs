@@ -13,8 +13,15 @@ namespace 随身袋.Models
 
         public Guid PID { get; set; }
 
-
+        /// <summary>
+        /// 相对路径
+        /// </summary>
         public string FileName { get; set; }
+
+        /// <summary>
+        /// 扩展名
+        /// </summary>
+        public string Extension { get; set; }
 
         /// <summary>
         /// 是否相对的
