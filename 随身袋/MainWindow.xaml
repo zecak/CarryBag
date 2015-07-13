@@ -14,19 +14,31 @@
         Title="随身袋" Height="550" MinHeight="550" Width="300" MinWidth="300" Loaded="MetroWindow_Loaded" ShowInTaskbar="False" Icon="{WpfTools:ImageFromFont Text=&#xf0b1;, FontFamily=/随身袋;component/Res/#FontAwesome, Brush=White}" >
     <Controls:MetroWindow.RightWindowCommands>
         <Controls:WindowCommands>
-            <Button Name="btn_about" ToolTip="关于" Content="关于" Click="btn_about_Click"  />
-            <Button ToolTip="帮助" Content="帮助" Visibility="Collapsed"  />
+            <Button Name="btn_about" ToolTip="关于随身袋" Content="关于" Click="btn_about_Click"  />
+            <Button Name="btn_set" ToolTip="设置" Content="设置" Click="btn_set_Click"  />
         </Controls:WindowCommands>
     </Controls:MetroWindow.RightWindowCommands>
     <Controls:MetroWindow.Flyouts>
         <Controls:FlyoutsControl>
+            <Controls:Flyout Name="fly_set" Header="设置" Position="Left" IsModal="True" Theme="Accent" Width="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=Controls:MetroWindow}, Path=ActualWidth}">
+                <DockPanel>
+                    <StackPanel Margin="5,5,5,5">
+                        <DockPanel>
+                            <Label Margin="5" Style="{DynamicResource WhiteFont}">随系统启动</Label>
+                            <Controls:ToggleSwitch Name="ts_SysRun" IsChecked="False" OnLabel="开启" OffLabel="关闭" Margin="5" Style="{DynamicResource WhiteFont}" IsCheckedChanged="ts_SysRun_IsCheckedChanged"/>
+                        </DockPanel>
+                        
+                    </StackPanel>
+                </DockPanel>
+            </Controls:Flyout>
             <Controls:Flyout Name="fly_about" Header="关于随身袋" Position="Left" IsModal="True" Theme="Accent" Width="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=Controls:MetroWindow}, Path=ActualWidth}">
                 <DockPanel>
                     <StackPanel Margin="5,5,5,5">
-                        <Label Style="{DynamicResource WhiteFont}">随身袋 v1.0(20150713)</Label>
+                        <Label Style="{DynamicResource WhiteFont}">随身袋 v1.0.0.0713</Label>
                         <Label Style="{DynamicResource WhiteFont}">by zecak</Label>
                         <Label Style="{DynamicResource WhiteFont}">系统环境: Win7 SP1</Label>
-                        <Label Style="{DynamicResource WhiteFont}">开发工具: Microsoft Visual Studio 2013 (Update4) + .Net FrameWork 4.0</Label>
+                        <Label Style="{DynamicResource WhiteFont}">开发工具: Microsoft Visual Studio 2013 (Update4)</Label>
+                        <Label Style="{DynamicResource WhiteFont}">运行库版本:.Net Framework 4.0</Label>
                         <Label Style="{DynamicResource WhiteFont}">Email: zecak@qq.com</Label>
                         <Label Style="{DynamicResource WhiteFont}">Copyright 2015 zecak All Rights Reserved.</Label>
                         
