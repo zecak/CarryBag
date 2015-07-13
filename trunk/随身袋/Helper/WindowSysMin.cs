@@ -30,6 +30,7 @@ namespace 随身袋.Helper
             {
                 window.WindowState = WindowState.Normal;
                 window.Hide();
+                window.Topmost = false;
             }
         }
 
@@ -39,6 +40,7 @@ namespace 随身袋.Helper
             {
                 e.Cancel = true;
                 window.Hide();
+                window.Topmost = false;
             }
         }
         void Init()
@@ -50,6 +52,7 @@ namespace 随身袋.Helper
             this.notifyIcon.Visible = true;
             this.notifyIcon.DoubleClick += new EventHandler(delegate
             {
+                window.Topmost = true;
                 window.WindowState = wsl;
                 window.Show();
                
@@ -59,6 +62,7 @@ namespace 随身袋.Helper
             this.notifyIcon.ContextMenu = new System.Windows.Forms.ContextMenu();
             AddMenuItem("打开随身袋", delegate
             {
+                window.Topmost = true;
                 window.WindowState = wsl;
                 window.Show();
             });

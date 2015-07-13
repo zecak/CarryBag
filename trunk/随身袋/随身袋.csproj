@@ -33,6 +33,9 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>Res\exe.ico</ApplicationIcon>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="EasyFramework">
       <HintPath>..\packages\EasyFramework.1.2.1\lib\EasyFramework.dll</HintPath>
@@ -78,6 +81,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Helper\Global.cs" />
+    <Compile Include="Helper\ImageFromFont.cs" />
     <Compile Include="Helper\ListBoxSelector.cs" />
     <Compile Include="Helper\NLCalendar.cs" />
     <Compile Include="Helper\SREngine.cs" />
@@ -131,10 +135,13 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Res\logo.png" />
+    <Resource Include="Res\header1.jpg" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Res\header1.jpg" />
+    <Resource Include="Res\exe.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Res\logo.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
