@@ -82,6 +82,7 @@
     <Compile Include="Helper\NLCalendar.cs" />
     <Compile Include="Helper\SREngine.cs" />
     <Compile Include="Helper\WindowAutoHide.cs" />
+    <Compile Include="Helper\WindowDecktop.cs" />
     <Compile Include="Helper\WindowSysMin.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>

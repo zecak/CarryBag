@@ -113,7 +113,7 @@ namespace 随身袋.Helper
                     case Location.LeftTop:
                     case Location.RightTop:
                         window.Top = 0;
-                        //window.Topmost = false;
+                        window.Topmost = false;
                         this._IsHidded = false;
                         window.UpdateLayout();
                         break;
@@ -133,21 +133,21 @@ namespace 随身袋.Helper
                 {
                     case Location.Top:
                         window.Top = BORDER - window.ActualHeight;
-                        //window.Topmost = true;
+                        window.Topmost = true;
                         this._IsHidded = true;
                         this.autoHideTimer.Start();
                         break;
                     case Location.LeftTop:
                         window.Left = 0;
                         window.Top = BORDER - window.ActualHeight;
-                        //window.Topmost = true;
+                        window.Topmost = true;
                         this._IsHidded = true;
                         this.autoHideTimer.Start();
                         break;
                     case Location.RightTop:
                         window.Left = SystemParameters.VirtualScreenWidth - window.ActualWidth;
                         window.Top = BORDER - window.ActualHeight;
-                        //window.Topmost = true;
+                        window.Topmost = true;
                         this._IsHidded = true;
                         this.autoHideTimer.Start();
                         break;
