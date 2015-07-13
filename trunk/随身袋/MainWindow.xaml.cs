@@ -488,6 +488,7 @@ namespace 随身袋
                     if (uri.IsAbsoluteUri)
                     {
                         chb_IsRelativeEdit.IsChecked = false;
+                        lbl_TipEdit.Visibility = System.Windows.Visibility.Visible;
                     }
                 }
             }
@@ -566,11 +567,7 @@ namespace 随身袋
                     Width = 32,
                     Height = 32,
                 };
-                var uri = new Uri(link.FileName);
-                if (uri.IsAbsoluteUri)
-                {
-                    link.IsRelative = false;
-                }
+                
                 if (link.IsRelative)
                 {
                     image.Source = Helper.Global.GetIcon(Helper.Global.AppPath + link.FileName);
@@ -855,6 +852,7 @@ namespace 随身袋
                     if (uri.IsAbsoluteUri)
                     {
                         chb_IsRelative.IsChecked = false;
+                        lbl_TipEdit.Visibility = System.Windows.Visibility.Visible;
                     }
                 }
             }
