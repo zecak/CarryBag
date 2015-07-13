@@ -61,6 +61,8 @@ namespace 随身袋
 
                 //文件保护
                 //System.IO.Directory.SetAccessControl(@"D:\登录", new System.Security.AccessControl.DirectorySecurity("hh", System.Security.AccessControl.AccessControlSections.Audit));
+
+                autoTimer_Tick(null,null);
             }
             catch (Exception ex)
             {
