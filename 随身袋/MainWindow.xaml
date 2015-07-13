@@ -34,7 +34,7 @@
             <Controls:Flyout Name="fly_about" Header="关于随身袋" Position="Left" IsModal="True" Theme="Accent" Width="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=Controls:MetroWindow}, Path=ActualWidth}">
                 <DockPanel>
                     <StackPanel Margin="5,5,5,5">
-                        <Label Style="{DynamicResource WhiteFont}">随身袋 v1.0.0.0713</Label>
+                        <Label Style="{DynamicResource WhiteFont}">随身袋 v1.0.0.7132</Label>
                         <Label Style="{DynamicResource WhiteFont}">by zecak</Label>
                         <Label Style="{DynamicResource WhiteFont}">系统环境: Win7 SP1</Label>
                         <Label Style="{DynamicResource WhiteFont}">开发工具: Microsoft Visual Studio 2013 (Update4)</Label>
@@ -65,6 +65,7 @@
                             <Button Name="btn_LinkFileNameEdit" DockPanel.Dock="Right" Margin="5" Click="btn_LinkFileNameEdit_Click">浏览文件..</Button>
                             <TextBox Name="txt_LinkFileNameEdit" Controls:TextBoxHelper.Watermark="程序位置,必填" Margin="5" Controls:TextBoxHelper.IsWaitingForData="True" ></TextBox>
                         </DockPanel>
+                        <Label Name="lbl_TipEdit" Visibility="Collapsed" Margin="5" Style="{DynamicResource WhiteFont}">非系统程序,建议使用相对位置,放AppBag目录下</Label>
                         <TextBox Name="txt_LinkNameEdit" Controls:TextBoxHelper.Watermark="程序名称,必填" Margin="5" Controls:TextBoxHelper.IsWaitingForData="True" ></TextBox>
                         <TextBox Name="txt_ArgsEdit" Controls:TextBoxHelper.Watermark="运行参数,可不填" Margin="5" Controls:TextBoxHelper.IsWaitingForData="True" ></TextBox>
                         <TextBox Name="txt_TagsEdit" Controls:TextBoxHelper.Watermark="标签,方便搜索" Margin="5" Controls:TextBoxHelper.IsWaitingForData="True" ></TextBox>
@@ -85,6 +86,7 @@
                             <Button Name="btn_LinkFileName" DockPanel.Dock="Right" Margin="5" Click="btn_LinkFileName_Click">浏览文件..</Button>
                             <TextBox Name="txt_LinkFileName" Controls:TextBoxHelper.Watermark="程序位置,必填" Margin="5" Controls:TextBoxHelper.IsWaitingForData="True" ></TextBox>
                         </DockPanel>
+                        <Label Name="lbl_Tip" Visibility="Collapsed" Margin="5" Style="{DynamicResource WhiteFont}">非系统程序,建议使用相对位置,放AppBag目录下</Label>
                         <TextBox Name="txt_LinkName" Controls:TextBoxHelper.Watermark="程序名称,必填" Margin="5" Controls:TextBoxHelper.IsWaitingForData="True" ></TextBox>
                         <TextBox Name="txt_Args" Controls:TextBoxHelper.Watermark="运行参数,可不填" Margin="5" Controls:TextBoxHelper.IsWaitingForData="True" ></TextBox>
                         <TextBox Name="txt_Tags" Controls:TextBoxHelper.Watermark="标签,方便搜索" Margin="5" Controls:TextBoxHelper.IsWaitingForData="True" ></TextBox>
