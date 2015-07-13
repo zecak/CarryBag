@@ -490,6 +490,11 @@ namespace 随身袋
                         chb_IsRelativeEdit.IsChecked = false;
                         lbl_TipEdit.Visibility = System.Windows.Visibility.Visible;
                     }
+                    else
+                    {
+                        chb_IsRelativeEdit.IsChecked = true;
+                        lbl_TipEdit.Visibility = System.Windows.Visibility.Collapsed;
+                    }
                 }
             }
             catch (Exception ex)
@@ -514,6 +519,10 @@ namespace 随身袋
                 if (uri.IsAbsoluteUri)
                 {
                     chb_IsRelativeEdit.IsChecked = false;
+                }
+                else
+                {
+                    chb_IsRelativeEdit.IsChecked = true;
                 }
                 link.IsRelative = chb_IsRelativeEdit.IsChecked == true;
                 link.Tags = txt_TagsEdit.Text;
@@ -782,6 +791,10 @@ namespace 随身袋
                 {
                     chb_IsRelative.IsChecked=false;
                 }
+                else
+                {
+                    chb_IsRelative.IsChecked = true;
+                }
 
                 var subc = btn_AddFileLink.Tag as RootCategory;
                 var link = new AppLink() { ID = Guid.NewGuid(), Name = txt_LinkName.Text, FileName = txt_LinkFileName.Text, Args = txt_Args.Text, IsRelative = chb_IsRelative.IsChecked == true, Tags = txt_Tags.Text, SortNum = (int)nud_Sort.Value, PID = subc.ID, Extension = System.IO.Path.GetExtension(txt_LinkFileName.Text) };
@@ -852,7 +865,12 @@ namespace 随身袋
                     if (uri.IsAbsoluteUri)
                     {
                         chb_IsRelative.IsChecked = false;
-                        lbl_TipEdit.Visibility = System.Windows.Visibility.Visible;
+                        lbl_Tip.Visibility = System.Windows.Visibility.Visible;
+                    }
+                    else
+                    {
+                        chb_IsRelative.IsChecked = true;
+                        lbl_Tip.Visibility = System.Windows.Visibility.Collapsed;
                     }
                 }
             }
