@@ -10,7 +10,7 @@
                       ShowTitleBar="True"
                       GlowBrush="{DynamicResource AccentColorBrush}"
                       mc:Ignorable="d"
-        Title="随身袋 v1.0" Height="550" MinHeight="550" Width="300" MinWidth="300" Loaded="MetroWindow_Loaded" Topmost="True" ShowInTaskbar="False">
+        Title="随身袋 v1.0" Height="550" MinHeight="550" Width="300" MinWidth="300" Loaded="MetroWindow_Loaded" ShowInTaskbar="False">
     <Controls:MetroWindow.RightWindowCommands>
         <Controls:WindowCommands>
             <Button ToolTip="关于" Content="关于"  />
@@ -28,6 +28,26 @@
                         <TextBox Name="txt_Import" Controls:TextBoxHelper.Watermark="要导入的相对位置" Margin="5" Controls:TextBoxHelper.IsWaitingForData="True" TextChanged="txt_Import_TextChanged"></TextBox>
 
                         <Button Name="btn_Import" Click="btn_Import_Click" Margin="5">导入</Button>
+                    </StackPanel>
+                </DockPanel>
+            </Controls:Flyout>
+            <Controls:Flyout Name="Flyout_EditFileLink" Header="修改快捷方式" Position="Left" IsModal="True" Theme="Accent" Width="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=Controls:MetroWindow}, Path=ActualWidth}">
+                <DockPanel>
+                    <StackPanel Margin="5,5,5,5">
+                        <Controls:ToggleSwitch Name="chb_IsRelativeEdit" IsChecked="True" OnLabel="相对位置" OffLabel="绝对位置" Margin="5"/>
+                        <DockPanel>
+                            <Button Name="btn_LinkFileNameEdit" DockPanel.Dock="Right" Margin="5" Click="btn_LinkFileNameEdit_Click">浏览文件..</Button>
+                            <TextBox Name="txt_LinkFileNameEdit" Controls:TextBoxHelper.Watermark="程序位置,必填" Margin="5" Controls:TextBoxHelper.IsWaitingForData="True"></TextBox>
+                        </DockPanel>
+                        <TextBox Name="txt_LinkNameEdit" Controls:TextBoxHelper.Watermark="程序名称,必填" Margin="5" Controls:TextBoxHelper.IsWaitingForData="True"></TextBox>
+                        <TextBox Name="txt_ArgsEdit" Controls:TextBoxHelper.Watermark="运行参数,可不填" Margin="5" Controls:TextBoxHelper.IsWaitingForData="True"></TextBox>
+                        <TextBox Name="txt_TagsEdit" Controls:TextBoxHelper.Watermark="标签,方便搜索" Margin="5" Controls:TextBoxHelper.IsWaitingForData="True"></TextBox>
+                        <DockPanel>
+                            <Label Margin="5">排序</Label>
+                            <Controls:NumericUpDown Name="nud_SortEdit" Value="1" TextAlignment="Center" Minimum="0" Margin="5" />
+                        </DockPanel>
+
+                        <Button Name="btn_EditFileLink" Margin="5" Click="btn_EditFileLink_Click">保存</Button>
                     </StackPanel>
                 </DockPanel>
             </Controls:Flyout>
