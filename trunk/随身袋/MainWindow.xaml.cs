@@ -32,41 +32,49 @@ namespace 随身袋
         {
             InitializeComponent();
 
-            var autoHide = new WindowAutoHide(this);
+            try
+            {
+                var autoHide = new WindowAutoHide(this);
 
-            var windowSysMin = new WindowSysMin(this);
+                var windowSysMin = new WindowSysMin(this);
 
 
-            autoTimer = new DispatcherTimer();
-            autoTimer.Interval = TimeSpan.FromMilliseconds(1000);
-            autoTimer.Tick += autoTimer_Tick;
-            autoTimer.Start();
+                autoTimer = new DispatcherTimer();
+                autoTimer.Interval = TimeSpan.FromMilliseconds(1000*30);
+                autoTimer.Tick += autoTimer_Tick;
+                autoTimer.Start();
 
-            Helper.Global.Init();
+                Helper.Global.Init();
 
-            ////语音控制
-            //try
-            //{
-            //    SRE = new SREngine("随身袋", new string[] { "出来", "退下" });
-            //    SRE.SpeRecSay += SRE_SpeRecSay;
-            //}
-            //catch (Exception ex)
-            //{
-            //    MessageBox.Show(ex.Message);
-            //}
+                ////语音控制
+                //try
+                //{
+                //    SRE = new SREngine("随身袋", new string[] { "出来", "退下" });
+                //    SRE.SpeRecSay += SRE_SpeRecSay;
+                //}
+                //catch (Exception ex)
+                //{
+                //    MessageBox.Show(ex.Message);
+                //}
 
-            加载类别();
+                加载类别();
 
-            //文件保护
-            //System.IO.Directory.SetAccessControl(@"D:\登录", new System.Security.AccessControl.DirectorySecurity("hh", System.Security.AccessControl.AccessControlSections.Audit));
-            
+                //文件保护
+                //System.IO.Directory.SetAccessControl(@"D:\登录", new System.Security.AccessControl.DirectorySecurity("hh", System.Security.AccessControl.AccessControlSections.Audit));
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+
+
         }
 
-        void SysRun( bool enable)
+        void SysRun(bool enable)
         {
-            Microsoft.Win32.RegistryKey HKCU = Microsoft.Win32.Registry.CurrentUser; 
+            Microsoft.Win32.RegistryKey HKCU = Microsoft.Win32.Registry.CurrentUser;
             Microsoft.Win32.RegistryKey Run = HKCU.OpenSubKey(@"SOFTWARE\Microsoft\Windows\CurrentVersion\Run", true);
-            try 
+            try
             {
                 var exe = new System.IO.FileInfo(AppDomain.CurrentDomain.FriendlyName);
                 if (enable)
@@ -78,15 +86,21 @@ namespace 随身袋
                     Run.DeleteValue("CarryBag");
                 }
             }
-            catch { } 
-            HKCU.Close(); 
+            catch { }
+            HKCU.Close();
         }
 
 
         void autoTimer_Tick(object sender, EventArgs e)
         {
-            lblTime.ToolTip = "农历" + NLCalendar.GetCalendar(DateTime.Now);
-            lblTime.Content = System.Globalization.CultureInfo.CurrentCulture.DateTimeFormat.GetDayName(DateTime.Now.DayOfWeek) + " " + DateTime.Now.ToLongDateString();
+            try
+            {
+                lblTime.ToolTip = "农历" + NLCalendar.GetCalendar(DateTime.Now);
+                lblTime.Content = System.Globalization.CultureInfo.CurrentCulture.DateTimeFormat.GetDayName(DateTime.Now.DayOfWeek) + " " + DateTime.Now.ToLongDateString();
+
+            }
+            catch { }
+            
         }
 
 
@@ -118,7 +132,7 @@ namespace 随身袋
             SubCMenu_AppInit();
 
 
-            cbx_root.ItemsSource = Helper.Global.Categorys.FindAll(m => m.PID == Guid.Empty).OrderBy(m=>m.SortNum);
+            cbx_root.ItemsSource = Helper.Global.Categorys.FindAll(m => m.PID == Guid.Empty).OrderBy(m => m.SortNum);
             foreach (var c in Helper.Global.Categorys.FindAll(m => m.PID == Guid.Empty).OrderBy(m => m.SortNum))
             {
                 var tabItem = new TabItem() { Header = c.Name };
@@ -129,7 +143,7 @@ namespace 随身袋
                 scrollViewer.VerticalScrollBarVisibility = ScrollBarVisibility.Auto;
                 scrollViewer.HorizontalScrollBarVisibility = ScrollBarVisibility.Disabled;
                 var stackPanel = new StackPanel() { Name = Helper.Global.EncodeCtrlName(c.ID.ToString()) };
-                
+
                 foreach (var subc in Helper.Global.Categorys.FindAll(m => m.PID == c.ID).OrderBy(m => m.SortNum))
                 {
                     var expander = new Expander() { Name = Helper.Global.EncodeCtrlName(subc.ID.ToString()), Header = subc.Name, IsExpanded = true };
@@ -195,21 +209,29 @@ namespace 随身袋
 
         void mi_import_Click(object sender, RoutedEventArgs e)
         {
-            var exp = SubCMenu.PlacementTarget as Expander;
-            btn_Import.Tag = exp.Tag;
-
-            var dir = new System.IO.DirectoryInfo(Helper.Global.AppBagName);
-            if (dir.Exists)
+            try
             {
-                var cur_dirs = dir.GetDirectories();
-                cbx_Import.ItemsSource = cur_dirs;
+                var exp = SubCMenu.PlacementTarget as Expander;
+                btn_Import.Tag = exp.Tag;
+
+                var dir = new System.IO.DirectoryInfo(Helper.Global.AppBagName);
+                if (dir.Exists)
+                {
+                    var cur_dirs = dir.GetDirectories();
+                    cbx_Import.ItemsSource = cur_dirs;
+                }
+                else
+                {
+                    cbx_Import.ItemsSource = null;
+                }
+
+                Flyout_Import.IsOpen = true;
             }
-            else
+            catch (Exception ex)
             {
-                cbx_Import.ItemsSource = null;
+                MessageBox.Show(ex.Message);
             }
 
-            Flyout_Import.IsOpen = true;
         }
 
         /// <summary>
@@ -219,11 +241,19 @@ namespace 随身袋
         /// <param name="e"></param>
         void mitem_filelink_Click(object sender, RoutedEventArgs e)
         {
-            var exp = SubCMenu.PlacementTarget as Expander;
+            try
+            {
+                var exp = SubCMenu.PlacementTarget as Expander;
 
-            btn_AddFileLink.Tag = exp.Tag;
+                btn_AddFileLink.Tag = exp.Tag;
 
-            Flyout_AddFileLink.IsOpen = true;
+                Flyout_AddFileLink.IsOpen = true;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+
         }
 
         /// <summary>
@@ -233,14 +263,21 @@ namespace 随身袋
         /// <param name="e"></param>
         void mitem_mov_Click(object sender, RoutedEventArgs e)
         {
-            var exp = SubCMenu.PlacementTarget as Expander;
-            cbx_root_Move.ItemsSource = Helper.Global.Categorys.FindAll(m => m.PID == Guid.Empty).OrderBy(m => m.SortNum);
-            var c = exp.Tag as RootCategory;
-            var p_c = Helper.Global.Categorys.FirstOrDefault(m => m.ID == c.PID);
-            cbx_root_Move.SelectedItem = p_c;
-            btn_AddSubC_Move.Tag = c.ID;
-            Flyout_Move.Header = "移动["+c.Name+"]到";
-            Flyout_Move.IsOpen = true;
+            try
+            {
+                var exp = SubCMenu.PlacementTarget as Expander;
+                cbx_root_Move.ItemsSource = Helper.Global.Categorys.FindAll(m => m.PID == Guid.Empty).OrderBy(m => m.SortNum);
+                var c = exp.Tag as RootCategory;
+                var p_c = Helper.Global.Categorys.FirstOrDefault(m => m.ID == c.PID);
+                cbx_root_Move.SelectedItem = p_c;
+                btn_AddSubC_Move.Tag = c.ID;
+                Flyout_Move.Header = "移动[" + c.Name + "]到";
+                Flyout_Move.IsOpen = true;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
         }
 
         /// <summary>
@@ -250,24 +287,30 @@ namespace 随身袋
         /// <param name="e"></param>
         void mitem_del_Click(object sender, RoutedEventArgs e)
         {
-            var exp = SubCMenu.PlacementTarget as Expander;
-            var mbr = MBox.Show("确定删除该栏目信息么?", "提示", this);
-            if (mbr == true)
+            try
             {
-                var c = exp.Tag as RootCategory;
-                var p_c = Helper.Global.Categorys.FirstOrDefault(m => m.ID == c.PID);
-                var spanel = this.tabMain.FindChild<StackPanel>(Helper.Global.EncodeCtrlName(p_c.ID.ToString()));//查找可见的子控件
-                if (spanel != null)
+                var exp = SubCMenu.PlacementTarget as Expander;
+                var mbr = MBox.Show("确定删除该栏目信息么?", "提示", this);
+                if (mbr == true)
                 {
-                    spanel.Children.Remove(exp);
+                    var c = exp.Tag as RootCategory;
+                    var p_c = Helper.Global.Categorys.FirstOrDefault(m => m.ID == c.PID);
+                    var spanel = this.tabMain.FindChild<StackPanel>(Helper.Global.EncodeCtrlName(p_c.ID.ToString()));//查找可见的子控件
+                    if (spanel != null)
+                    {
+                        spanel.Children.Remove(exp);
 
-                    Helper.Global.AppLinks.RemoveAll(m => m.PID == c.ID);
-                    Helper.Global.SaveAppLinks();
-                    Helper.Global.Categorys.Remove(c);
-                    Helper.Global.SaveCategorys();
+                        Helper.Global.AppLinks.RemoveAll(m => m.PID == c.ID);
+                        Helper.Global.SaveAppLinks();
+                        Helper.Global.Categorys.Remove(c);
+                        Helper.Global.SaveCategorys();
+                    }
                 }
             }
-
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
         }
 
         /// <summary>
@@ -277,16 +320,22 @@ namespace 随身袋
         /// <param name="e"></param>
         void mitem_upd_Click(object sender, RoutedEventArgs e)
         {
-            var exp = SubCMenu.PlacementTarget as Expander;
-            cbx_root_edit.ItemsSource = Helper.Global.Categorys.FindAll(m => m.PID == Guid.Empty).OrderBy(m => m.SortNum);
-            var c = exp.Tag as RootCategory;
-            var p_c = Helper.Global.Categorys.FirstOrDefault(m => m.ID == c.PID);
-            cbx_root_edit.SelectedItem = p_c;
-            txt_SubCName_edit.Tag = c.ID;
-            txt_SubCName_edit.Text = c.Name;
-            nud_SortNum_edit.Value = c.SortNum;
-            Flyout_Edit.IsOpen = true;
-
+            try
+            {
+                var exp = SubCMenu.PlacementTarget as Expander;
+                cbx_root_edit.ItemsSource = Helper.Global.Categorys.FindAll(m => m.PID == Guid.Empty).OrderBy(m => m.SortNum);
+                var c = exp.Tag as RootCategory;
+                var p_c = Helper.Global.Categorys.FirstOrDefault(m => m.ID == c.PID);
+                cbx_root_edit.SelectedItem = p_c;
+                txt_SubCName_edit.Tag = c.ID;
+                txt_SubCName_edit.Text = c.Name;
+                nud_SortNum_edit.Value = c.SortNum;
+                Flyout_Edit.IsOpen = true;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
         }
         #endregion
 
@@ -323,19 +372,25 @@ namespace 随身袋
 
         void item_del_Click(object sender, RoutedEventArgs e)
         {
-            var listbox = (SubCMenu_App.PlacementTarget as Border).Parent as ListBox;
-            var list = listbox.SelectedItems.OfType<Border>().ToList();
-            foreach (var b in list)
+            try
             {
-                var link = b.Tag as AppLink;
-                if (link != null)
+                var listbox = (SubCMenu_App.PlacementTarget as Border).Parent as ListBox;
+                var list = listbox.SelectedItems.OfType<Border>().ToList();
+                foreach (var b in list)
                 {
-                    Global.AppLinks.Remove(link);
-                    listbox.Items.Remove(b);
+                    var link = b.Tag as AppLink;
+                    if (link != null)
+                    {
+                        Global.AppLinks.Remove(link);
+                        listbox.Items.Remove(b);
+                    }
                 }
+                Global.SaveAppLinks();
             }
-            Global.SaveAppLinks();
-
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
         }
 
         void item_move_Click(object sender, RoutedEventArgs e)
@@ -345,104 +400,130 @@ namespace 随身袋
 
         void item_update_Click(object sender, RoutedEventArgs e)
         {
-            var listbox = (SubCMenu_App.PlacementTarget as Border).Parent as ListBox;
-            var border = listbox.SelectedItems.OfType<Border>().FirstOrDefault();
-            if (border == null) { return; }
-            var link = border.Tag as AppLink;
-            if (link == null) { return; }
+            try
+            {
+                var listbox = (SubCMenu_App.PlacementTarget as Border).Parent as ListBox;
+                var border = listbox.SelectedItems.OfType<Border>().FirstOrDefault();
+                if (border == null) { return; }
+                var link = border.Tag as AppLink;
+                if (link == null) { return; }
 
-            chb_IsRelativeEdit.IsChecked = link.IsRelative;
-            txt_LinkFileNameEdit.Text = link.FileName;
-            txt_LinkNameEdit.Text = link.Name;
-            txt_ArgsEdit.Text = link.Args;
-            txt_TagsEdit.Text = link.Tags;
-            nud_SortEdit.Value = link.SortNum;
-            btn_EditFileLink.Tag = link;
+                chb_IsRelativeEdit.IsChecked = link.IsRelative;
+                txt_LinkFileNameEdit.Text = link.FileName;
+                txt_LinkNameEdit.Text = link.Name;
+                txt_ArgsEdit.Text = link.Args;
+                txt_TagsEdit.Text = link.Tags;
+                nud_SortEdit.Value = link.SortNum;
+                btn_EditFileLink.Tag = link;
 
-            Flyout_EditFileLink.IsOpen = true;
+                Flyout_EditFileLink.IsOpen = true;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
         }
 
         void item_open_Click(object sender, RoutedEventArgs e)
         {
-            var listbox = (SubCMenu_App.PlacementTarget as Border).Parent as ListBox;
-            var list = listbox.SelectedItems.OfType<Border>().ToList();
-            foreach (var b in list)
+            try
             {
-                var link = b.Tag as AppLink;
-                if (link != null)
+                var listbox = (SubCMenu_App.PlacementTarget as Border).Parent as ListBox;
+                var list = listbox.SelectedItems.OfType<Border>().ToList();
+                foreach (var b in list)
                 {
-                    if (link.IsRelative == true)
+                    var link = b.Tag as AppLink;
+                    if (link != null)
                     {
-                        System.Diagnostics.Process.Start(System.IO.Path.Combine(Helper.Global.AppPath, link.FileName), link.Args);
-                    }
-                    else
-                    {
-                        System.Diagnostics.Process.Start(link.FileName, link.Args);
+                        if (link.IsRelative == true)
+                        {
+                            System.Diagnostics.Process.Start(System.IO.Path.Combine(Helper.Global.AppPath, link.FileName), link.Args);
+                        }
+                        else
+                        {
+                            System.Diagnostics.Process.Start(link.FileName, link.Args);
+                        }
                     }
                 }
             }
-
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
         }
 
 
         private void btn_LinkFileNameEdit_Click(object sender, RoutedEventArgs e)
         {
-            var openFileDialog = new Microsoft.Win32.OpenFileDialog()
+            try
             {
-                Filter = "执行文件|*.exe|所有文件|*.*",
-            };
-            if (chb_IsRelativeEdit.IsChecked == true)
-            {
-                openFileDialog.InitialDirectory = Helper.Global.AppBagPath;
-            }
-            else
-            {
-                openFileDialog.InitialDirectory = "C:\\";
-            }
-            var result = openFileDialog.ShowDialog();
-            if (result == true)
-            {
+                var openFileDialog = new Microsoft.Win32.OpenFileDialog()
+                {
+                    Filter = "执行文件|*.exe|所有文件|*.*",
+                };
                 if (chb_IsRelativeEdit.IsChecked == true)
                 {
-                    txt_LinkFileNameEdit.Text = openFileDialog.FileName.Replace(AppDomain.CurrentDomain.BaseDirectory, "");
+                    openFileDialog.InitialDirectory = Helper.Global.AppBagPath;
                 }
                 else
                 {
-                    txt_LinkFileNameEdit.Text = System.IO.Path.GetFullPath(openFileDialog.FileName);
+                    openFileDialog.InitialDirectory = "C:\\";
                 }
-                txt_LinkNameEdit.Text = System.IO.Path.GetFileNameWithoutExtension(openFileDialog.FileName);
-                txt_TagsEdit.Text = System.IO.Path.GetFileName(openFileDialog.FileName);
+                var result = openFileDialog.ShowDialog();
+                if (result == true)
+                {
+                    if (chb_IsRelativeEdit.IsChecked == true)
+                    {
+                        txt_LinkFileNameEdit.Text = openFileDialog.FileName.Replace(AppDomain.CurrentDomain.BaseDirectory, "");
+                    }
+                    else
+                    {
+                        txt_LinkFileNameEdit.Text = System.IO.Path.GetFullPath(openFileDialog.FileName);
+                    }
+                    txt_LinkNameEdit.Text = System.IO.Path.GetFileNameWithoutExtension(openFileDialog.FileName);
+                    txt_TagsEdit.Text = System.IO.Path.GetFileName(openFileDialog.FileName);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
             }
         }
 
         private void btn_EditFileLink_Click(object sender, RoutedEventArgs e)
         {
-            if (string.IsNullOrWhiteSpace(txt_LinkNameEdit.Text)) { txt_LinkNameEdit.Focus(); return; }
-            if (string.IsNullOrWhiteSpace(txt_LinkFileNameEdit.Text)) { txt_LinkFileNameEdit.Focus(); return; }
-
-            var temp_link = btn_EditFileLink.Tag as AppLink;
-            var link = Helper.Global.AppLinks.FirstOrDefault(m => m.ID == temp_link.ID);
-            link.Name = txt_LinkNameEdit.Text;
-            link.FileName = txt_LinkFileNameEdit.Text; 
-            link.Args = txt_ArgsEdit.Text;
-            link.IsRelative = chb_IsRelativeEdit.IsChecked == true;
-            link.Tags = txt_TagsEdit.Text;
-            link.SortNum = (int)nud_SortEdit.Value;
-            link.Extension = System.IO.Path.GetExtension(txt_LinkFileNameEdit.Text);
-
-            Helper.Global.SaveAppLinks();
-
-
-            var listbox = this.tabMain.FindChild<Expander>(Helper.Global.EncodeCtrlName(link.PID.ToString())).Content as ListBox;
-            listbox.Items.Clear();
-            foreach (var l in Helper.Global.AppLinks.FindAll(m => m.PID == link.PID).OrderBy(m => m.SortNum))
+            try
             {
-                listbox.Items.Add(GetImg(l));
+                if (string.IsNullOrWhiteSpace(txt_LinkNameEdit.Text)) { txt_LinkNameEdit.Focus(); return; }
+                if (string.IsNullOrWhiteSpace(txt_LinkFileNameEdit.Text)) { txt_LinkFileNameEdit.Focus(); return; }
+
+                var temp_link = btn_EditFileLink.Tag as AppLink;
+                var link = Helper.Global.AppLinks.FirstOrDefault(m => m.ID == temp_link.ID);
+                link.Name = txt_LinkNameEdit.Text;
+                link.FileName = txt_LinkFileNameEdit.Text;
+                link.Args = txt_ArgsEdit.Text;
+                link.IsRelative = chb_IsRelativeEdit.IsChecked == true;
+                link.Tags = txt_TagsEdit.Text;
+                link.SortNum = (int)nud_SortEdit.Value;
+                link.Extension = System.IO.Path.GetExtension(txt_LinkFileNameEdit.Text);
+
+                Helper.Global.SaveAppLinks();
+
+
+                var listbox = this.tabMain.FindChild<Expander>(Helper.Global.EncodeCtrlName(link.PID.ToString())).Content as ListBox;
+                listbox.Items.Clear();
+                foreach (var l in Helper.Global.AppLinks.FindAll(m => m.PID == link.PID).OrderBy(m => m.SortNum))
+                {
+                    listbox.Items.Add(GetImg(l));
+                }
+
+
+                Flyout_EditFileLink.IsOpen = false;
             }
-            
-
-            Flyout_EditFileLink.IsOpen = false;
-
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
         }
 
 
@@ -463,35 +544,44 @@ namespace 随身袋
         /// <returns></returns>
         Border GetImg(AppLink link)
         {
-            var border = new Border() { Name = Helper.Global.EncodeCtrlName(link.ID.ToString()), Style = (Style)this.FindResource("LinkBorder"), ToolTip = link.Name + "\r\n" + link.FileName, Tag = link, ContextMenu = SubCMenu_App };
-            var label = new Label() { Width = 64, Height = 64, Style = (Style)this.FindResource("LinkLabel"), HorizontalContentAlignment = System.Windows.HorizontalAlignment.Center, VerticalContentAlignment = System.Windows.VerticalAlignment.Center, ToolTip = border.ToolTip, Tag = link };
-            var image = new Image()
+            try
             {
-                ToolTip = border.ToolTip,
-                Width = 32,
-                Height = 32,
-            };
-            if (link.IsRelative)
-            {
-                image.Source = Helper.Global.GetIcon(Helper.Global.AppPath + link.FileName);
+                var border = new Border() { Name = Helper.Global.EncodeCtrlName(link.ID.ToString()), Style = (Style)this.FindResource("LinkBorder"), ToolTip = link.Name + "\r\n" + link.FileName, Tag = link, ContextMenu = SubCMenu_App };
+                var label = new Label() { Width = 64, Height = 64, Style = (Style)this.FindResource("LinkLabel"), HorizontalContentAlignment = System.Windows.HorizontalAlignment.Center, VerticalContentAlignment = System.Windows.VerticalAlignment.Center, ToolTip = border.ToolTip, Tag = link };
+                var image = new Image()
+                {
+                    ToolTip = border.ToolTip,
+                    Width = 32,
+                    Height = 32,
+                };
+                if (link.IsRelative)
+                {
+                    image.Source = Helper.Global.GetIcon(Helper.Global.AppPath + link.FileName);
+                }
+                else
+                {
+                    image.Source = Helper.Global.GetIcon(link.FileName);
+                }
+                image.Tag = link;
+                //image.MouseLeftButtonUp += image_MouseLeftButtonDown;
+                label.MouseLeftButtonDown += image_MouseLeftButtonDown;
+                label.Content = image;
+                border.Child = label;
+                return border;
             }
-            else
+            catch (Exception ex)
             {
-                image.Source = Helper.Global.GetIcon(link.FileName);
+                MessageBox.Show(ex.Message);
+                return new Border();
             }
-            image.Tag = link;
-            //image.MouseLeftButtonUp += image_MouseLeftButtonDown;
-            label.MouseLeftButtonDown += image_MouseLeftButtonDown;
-            label.Content = image;
-            border.Child = label;
-            return border;
+
         }
 
-        void SetImg(Border border,AppLink link)
+        void SetImg(Border border, AppLink link)
         {
             border.ToolTip = link.Name + "\r\n" + link.FileName;
             border.Tag = link;
-            var label=border.Child as Label;
+            var label = border.Child as Label;
             label.ToolTip = border.ToolTip;
             label.Tag = link;
             var image = label.Content as Image;
@@ -516,20 +606,27 @@ namespace 随身袋
         /// <param name="e"></param>
         void image_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            var img = sender as Image;
-            if (img == null) { img = (sender as Label).Content as Image; }
-            var link = img.Tag as AppLink;
-            if (link != null)
+            try
             {
-                if (link.IsRelative == true)
+                var img = sender as Image;
+                if (img == null) { img = (sender as Label).Content as Image; }
+                var link = img.Tag as AppLink;
+                if (link != null)
                 {
-                    System.Diagnostics.Process.Start(System.IO.Path.Combine(Helper.Global.AppPath, link.FileName), link.Args);
-                }
-                else
-                {
-                    System.Diagnostics.Process.Start(link.FileName, link.Args);
-                }
+                    if (link.IsRelative == true)
+                    {
+                        System.Diagnostics.Process.Start(System.IO.Path.Combine(Helper.Global.AppPath, link.FileName), link.Args);
+                    }
+                    else
+                    {
+                        System.Diagnostics.Process.Start(link.FileName, link.Args);
+                    }
 
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
             }
         }
 
@@ -550,34 +647,41 @@ namespace 随身袋
         /// <param name="e"></param>
         private void btn_AddSubC_Click(object sender, RoutedEventArgs e)
         {
-            if (string.IsNullOrWhiteSpace(txt_SubCName.Text)) { txt_SubCName.Focus(); return; }
-            var only = Helper.Global.Categorys.FirstOrDefault(m => m.Name.ToUpper() == txt_SubCName.Text.ToUpper());
-            if (only != null)
+            try
             {
+                if (string.IsNullOrWhiteSpace(txt_SubCName.Text)) { txt_SubCName.Focus(); return; }
+                var only = Helper.Global.Categorys.FirstOrDefault(m => m.Name.ToUpper() == txt_SubCName.Text.ToUpper());
+                if (only != null)
+                {
+                    txt_SubCName.Text = "";
+                    TextBoxHelper.SetWatermark(txt_SubCName, "名称已存在!");
+                    return;
+                }
+                var subc = new RootCategory() { ID = Guid.NewGuid(), Name = txt_SubCName.Text, PID = (Guid)cbx_root.SelectedValue, SortNum = (int)nud_SortNum.Value };
+                Helper.Global.Categorys.Add(subc);
+                Helper.Global.SaveCategorys();
+
+
+                var stackPanel = this.tabMain.FindChildren<StackPanel>().FirstOrDefault(m => m.Name == Helper.Global.EncodeCtrlName(subc.PID.ToString()));//查找所有的子控件
+
+                //stackPanel.Children.Clear();
+
+                var expander = new Expander() { Name = Helper.Global.EncodeCtrlName(subc.ID.ToString()), Header = subc.Name, IsExpanded = true };
+                expander.Tag = subc;
+                expander.ContextMenu = SubCMenu;
+                var wrapPanel = new ListBox();
+                //Helper.ListBoxSelector.SetEnabled(wrapPanel, true);
+                expander.Content = wrapPanel;
+                stackPanel.Children.Add(expander);
+
+
                 txt_SubCName.Text = "";
-                TextBoxHelper.SetWatermark(txt_SubCName, "名称已存在!");
-                return;
+                Flyout_Add.IsOpen = false;
             }
-            var subc = new RootCategory() { ID = Guid.NewGuid(), Name = txt_SubCName.Text, PID = (Guid)cbx_root.SelectedValue, SortNum = (int)nud_SortNum.Value };
-            Helper.Global.Categorys.Add(subc);
-            Helper.Global.SaveCategorys();
-
-
-            var stackPanel = this.tabMain.FindChildren<StackPanel>().FirstOrDefault(m => m.Name == Helper.Global.EncodeCtrlName(subc.PID.ToString()));//查找所有的子控件
-
-            //stackPanel.Children.Clear();
-
-            var expander = new Expander() { Name = Helper.Global.EncodeCtrlName(subc.ID.ToString()), Header = subc.Name, IsExpanded = true };
-            expander.Tag = subc;
-            expander.ContextMenu = SubCMenu;
-            var wrapPanel = new ListBox();
-            //Helper.ListBoxSelector.SetEnabled(wrapPanel, true);
-            expander.Content = wrapPanel;
-            stackPanel.Children.Add(expander);
-
-
-            txt_SubCName.Text = "";
-            Flyout_Add.IsOpen = false;
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
         }
 
         /// <summary>
@@ -587,23 +691,30 @@ namespace 随身袋
         /// <param name="e"></param>
         private void btn_AddSubC_edit_Click(object sender, RoutedEventArgs e)
         {
-            //此方法,暂不支持更换类别
-            var subc = Helper.Global.Categorys.FirstOrDefault(m => m.ID == ((Guid)txt_SubCName_edit.Tag));
+            try
+            {
+                //此方法,暂不支持更换类别
+                var subc = Helper.Global.Categorys.FirstOrDefault(m => m.ID == ((Guid)txt_SubCName_edit.Tag));
 
-            var expander = this.tabMain.FindChild<Expander>(Helper.Global.EncodeCtrlName(subc.ID.ToString()));//查找可见的子控件
+                var expander = this.tabMain.FindChild<Expander>(Helper.Global.EncodeCtrlName(subc.ID.ToString()));//查找可见的子控件
 
-            subc.Name = txt_SubCName_edit.Text;
-            subc.PID = (Guid)cbx_root_edit.SelectedValue;
-            subc.SortNum = Convert.ToInt32(nud_SortNum_edit.Value);
+                subc.Name = txt_SubCName_edit.Text;
+                subc.PID = (Guid)cbx_root_edit.SelectedValue;
+                subc.SortNum = Convert.ToInt32(nud_SortNum_edit.Value);
 
-            expander.Name = Helper.Global.EncodeCtrlName(subc.ID.ToString());
-            expander.Header = subc.Name;
-            expander.Tag = subc;
-            expander.ContextMenu = SubCMenu;
+                expander.Name = Helper.Global.EncodeCtrlName(subc.ID.ToString());
+                expander.Header = subc.Name;
+                expander.Tag = subc;
+                expander.ContextMenu = SubCMenu;
 
-            Helper.Global.SaveCategorys();
+                Helper.Global.SaveCategorys();
 
-            Flyout_Edit.IsOpen = false;
+                Flyout_Edit.IsOpen = false;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
         }
 
         /// <summary>
@@ -613,18 +724,25 @@ namespace 随身袋
         /// <param name="e"></param>
         private void btn_AddSubC_Move_Click(object sender, RoutedEventArgs e)
         {
-            var id = (Guid)btn_AddSubC_Move.Tag;
-            var subc = Helper.Global.Categorys.FirstOrDefault(m => m.ID == id);
-            subc.PID = (Guid)cbx_root_Move.SelectedValue;
+            try
+            {
+                var id = (Guid)btn_AddSubC_Move.Tag;
+                var subc = Helper.Global.Categorys.FirstOrDefault(m => m.ID == id);
+                subc.PID = (Guid)cbx_root_Move.SelectedValue;
 
-            var stackPanel_temp = this.tabMain.SelectedContent as StackPanel;//查找可见的子控件
-            var stackPanel = this.tabMain.FindChildren<StackPanel>().FirstOrDefault(sp => sp.Name == Helper.Global.EncodeCtrlName(subc.PID.ToString())); //查找所有子控件
-            var expander = this.tabMain.FindChild<Expander>(Helper.Global.EncodeCtrlName(subc.ID.ToString()));
-            stackPanel_temp.Children.Remove(expander);
-            stackPanel.Children.Add(expander);
+                var stackPanel_temp = this.tabMain.SelectedContent as StackPanel;//查找可见的子控件
+                var stackPanel = this.tabMain.FindChildren<StackPanel>().FirstOrDefault(sp => sp.Name == Helper.Global.EncodeCtrlName(subc.PID.ToString())); //查找所有子控件
+                var expander = this.tabMain.FindChild<Expander>(Helper.Global.EncodeCtrlName(subc.ID.ToString()));
+                stackPanel_temp.Children.Remove(expander);
+                stackPanel.Children.Add(expander);
 
-            Helper.Global.SaveCategorys();
-            Flyout_Move.IsOpen = false;
+                Helper.Global.SaveCategorys();
+                Flyout_Move.IsOpen = false;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
         }
 
         /// <summary>
@@ -634,39 +752,46 @@ namespace 随身袋
         /// <param name="e"></param>
         private void btn_AddFileLink_Click(object sender, RoutedEventArgs e)
         {
-            if (string.IsNullOrWhiteSpace(txt_LinkName.Text)) { txt_LinkName.Focus(); return; }
-            if (string.IsNullOrWhiteSpace(txt_LinkFileName.Text)) { txt_LinkFileName.Focus(); return; }
-            var only = Helper.Global.AppLinks.FirstOrDefault(m => m.Name.ToUpper() == txt_LinkName.Text.ToUpper());
-            if (only != null)
+            try
             {
+                if (string.IsNullOrWhiteSpace(txt_LinkName.Text)) { txt_LinkName.Focus(); return; }
+                if (string.IsNullOrWhiteSpace(txt_LinkFileName.Text)) { txt_LinkFileName.Focus(); return; }
+                var only = Helper.Global.AppLinks.FirstOrDefault(m => m.Name.ToUpper() == txt_LinkName.Text.ToUpper());
+                if (only != null)
+                {
+                    txt_LinkName.Text = "";
+                    TextBoxHelper.SetWatermark(txt_LinkName, "名称已存在!");
+                    return;
+                }
+
+                var subc = btn_AddFileLink.Tag as RootCategory;
+                var link = new AppLink() { ID = Guid.NewGuid(), Name = txt_LinkName.Text, FileName = txt_LinkFileName.Text, Args = txt_Args.Text, IsRelative = chb_IsRelative.IsChecked == true, Tags = txt_Tags.Text, SortNum = (int)nud_Sort.Value, PID = subc.ID, Extension = System.IO.Path.GetExtension(txt_LinkFileName.Text) };
+
+                Helper.Global.AppLinks.Add(link);
+                Helper.Global.SaveAppLinks();
+
+                var wrapPanel = this.tabMain.FindChild<Expander>(Helper.Global.EncodeCtrlName(subc.ID.ToString())).Content as ListBox;
+
+                wrapPanel.Items.Clear();
+                foreach (var l in Helper.Global.AppLinks.FindAll(m => m.PID == link.PID).OrderBy(m => m.SortNum))
+                {
+                    wrapPanel.Items.Add(GetImg(l));
+                }
+
+
+                Flyout_AddFileLink.IsOpen = false;
                 txt_LinkName.Text = "";
-                TextBoxHelper.SetWatermark(txt_LinkName, "名称已存在!");
-                return;
+                txt_LinkFileName.Text = "";
+                btn_AddFileLink.Tag = null;
+                txt_Args.Text = "";
+                chb_IsRelative.IsChecked = true;
+                txt_Tags.Text = "";
+                nud_Sort.Value = 1;
             }
-
-            var subc = btn_AddFileLink.Tag as RootCategory;
-            var link = new AppLink() { ID = Guid.NewGuid(), Name = txt_LinkName.Text, FileName = txt_LinkFileName.Text, Args = txt_Args.Text, IsRelative = chb_IsRelative.IsChecked == true, Tags = txt_Tags.Text, SortNum = (int)nud_Sort.Value, PID = subc.ID, Extension = System.IO.Path.GetExtension(txt_LinkFileName.Text) };
-
-            Helper.Global.AppLinks.Add(link);
-            Helper.Global.SaveAppLinks();
-
-            var wrapPanel = this.tabMain.FindChild<Expander>(Helper.Global.EncodeCtrlName(subc.ID.ToString())).Content as ListBox;
-
-            wrapPanel.Items.Clear();
-            foreach (var l in Helper.Global.AppLinks.FindAll(m => m.PID == link.PID).OrderBy(m => m.SortNum))
+            catch (Exception ex)
             {
-                wrapPanel.Items.Add(GetImg(l));
+                MessageBox.Show(ex.Message);
             }
-
-
-            Flyout_AddFileLink.IsOpen = false;
-            txt_LinkName.Text = "";
-            txt_LinkFileName.Text = "";
-            btn_AddFileLink.Tag = null;
-            txt_Args.Text = "";
-            chb_IsRelative.IsChecked = true;
-            txt_Tags.Text = "";
-            nud_Sort.Value = 1;
         }
 
         /// <summary>
@@ -676,107 +801,140 @@ namespace 随身袋
         /// <param name="e"></param>
         private void btn_LinkFileName_Click(object sender, RoutedEventArgs e)
         {
-            var openFileDialog = new Microsoft.Win32.OpenFileDialog()
+            try
             {
-                Filter = "执行文件|*.exe|所有文件|*.*",
-            };
-            if (chb_IsRelative.IsChecked == true)
-            {
-                openFileDialog.InitialDirectory = Helper.Global.AppBagPath;
-            }
-            else
-            {
-                openFileDialog.InitialDirectory = "C:\\";
-            }
-            var result = openFileDialog.ShowDialog();
-            if (result == true)
-            {
+                var openFileDialog = new Microsoft.Win32.OpenFileDialog()
+                {
+                    Filter = "执行文件|*.exe|所有文件|*.*",
+                };
                 if (chb_IsRelative.IsChecked == true)
                 {
-                    txt_LinkFileName.Text = openFileDialog.FileName.Replace(AppDomain.CurrentDomain.BaseDirectory, "");
+                    openFileDialog.InitialDirectory = Helper.Global.AppBagPath;
                 }
                 else
                 {
-                    txt_LinkFileName.Text = System.IO.Path.GetFullPath(openFileDialog.FileName);
+                    openFileDialog.InitialDirectory = "C:\\";
                 }
-                txt_LinkName.Text = System.IO.Path.GetFileNameWithoutExtension(openFileDialog.FileName);
-                txt_Tags.Text = System.IO.Path.GetFileName(openFileDialog.FileName);
+                var result = openFileDialog.ShowDialog();
+                if (result == true)
+                {
+                    if (chb_IsRelative.IsChecked == true)
+                    {
+                        txt_LinkFileName.Text = openFileDialog.FileName.Replace(AppDomain.CurrentDomain.BaseDirectory, "");
+                    }
+                    else
+                    {
+                        txt_LinkFileName.Text = System.IO.Path.GetFullPath(openFileDialog.FileName);
+                    }
+                    txt_LinkName.Text = System.IO.Path.GetFileNameWithoutExtension(openFileDialog.FileName);
+                    txt_Tags.Text = System.IO.Path.GetFileName(openFileDialog.FileName);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
             }
         }
 
 
         private void btn_Import_Click(object sender, RoutedEventArgs e)
         {
-            var p_cate = btn_Import.Tag as RootCategory;
-            var dir = new System.IO.DirectoryInfo(System.IO.Path.Combine(Helper.Global.AppBagName, txt_Import.Text));
-            if (dir.Exists)
+            try
             {
-                var wrapPanel = this.tabMain.FindChild<Expander>(Helper.Global.EncodeCtrlName(p_cate.ID.ToString())).Content as ListBox;
-                var files = dir.GetFiles("*.exe", System.IO.SearchOption.AllDirectories);
-                foreach (var file in files)
+                var p_cate = btn_Import.Tag as RootCategory;
+                var dir = new System.IO.DirectoryInfo(System.IO.Path.Combine(Helper.Global.AppBagName, txt_Import.Text));
+                if (dir.Exists)
                 {
-                    var link = new AppLink() { ID = Guid.NewGuid(), IsRelative = true, SortNum = 99, Name = System.IO.Path.GetFileNameWithoutExtension(file.FullName), Tags = System.IO.Path.GetFileName(file.FullName), FileName = file.FullName.Replace(AppDomain.CurrentDomain.BaseDirectory, ""), PID = p_cate.ID, Extension = file.Extension};
-                    var only = Helper.Global.AppLinks.FirstOrDefault(m => m.Name.ToUpper() == link.Name.ToUpper());
-                    if (only == null)
+                    var wrapPanel = this.tabMain.FindChild<Expander>(Helper.Global.EncodeCtrlName(p_cate.ID.ToString())).Content as ListBox;
+                    var files = dir.GetFiles("*.exe", System.IO.SearchOption.AllDirectories);
+                    foreach (var file in files)
                     {
-                        Helper.Global.AppLinks.Add(link);
-                        wrapPanel.Items.Add(GetImg(link));
+                        var link = new AppLink() { ID = Guid.NewGuid(), IsRelative = true, SortNum = 99, Name = System.IO.Path.GetFileNameWithoutExtension(file.FullName), Tags = System.IO.Path.GetFileName(file.FullName), FileName = file.FullName.Replace(AppDomain.CurrentDomain.BaseDirectory, ""), PID = p_cate.ID, Extension = file.Extension };
+                        var only = Helper.Global.AppLinks.FirstOrDefault(m => m.Name.ToUpper() == link.Name.ToUpper());
+                        if (only == null)
+                        {
+                            Helper.Global.AppLinks.Add(link);
+                            wrapPanel.Items.Add(GetImg(link));
+                        }
                     }
+                    Helper.Global.SaveAppLinks();
+                    Flyout_Import.IsOpen = false;
                 }
-                Helper.Global.SaveAppLinks();
-                Flyout_Import.IsOpen = false;
             }
-
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
         }
 
         private void txt_Import_TextChanged(object sender, TextChangedEventArgs e)
         {
-            var dir = new System.IO.DirectoryInfo(System.IO.Path.Combine(Helper.Global.AppBagName, txt_Import.Text));
-            if (dir.Exists)
+            try
             {
-                var cur_dirs = dir.GetDirectories();
-                cbx_Import.ItemsSource = cur_dirs;
+                var dir = new System.IO.DirectoryInfo(System.IO.Path.Combine(Helper.Global.AppBagName, txt_Import.Text));
+                if (dir.Exists)
+                {
+                    var cur_dirs = dir.GetDirectories();
+                    cbx_Import.ItemsSource = cur_dirs;
+                }
+                else
+                {
+                    cbx_Import.ItemsSource = null;
+                }
             }
-            else
+            catch (Exception ex)
             {
-                cbx_Import.ItemsSource = null;
+                MessageBox.Show(ex.Message);
             }
         }
 
 
         private void cbx_Import_DropDownClosed(object sender, EventArgs e)
         {
-            txt_Import.Text = System.IO.Path.Combine(txt_Import.Text, cbx_Import.Text);
+            try
+            {
+                txt_Import.Text = System.IO.Path.Combine(txt_Import.Text, cbx_Import.Text);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
         }
 
         private void TextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
-            var all_list = this.tabMain.FindChildren<Border>();
-
-            var tbox = sender as TextBox;
-            if (string.IsNullOrWhiteSpace(tbox.Text)) 
+            try
             {
-                foreach (var a in all_list.Where(m => m.Visibility != System.Windows.Visibility.Visible))
+                var all_list = this.tabMain.FindChildren<Border>();
+
+                var tbox = sender as TextBox;
+                if (string.IsNullOrWhiteSpace(tbox.Text))
                 {
-                    a.Visibility = System.Windows.Visibility.Visible;
+                    foreach (var a in all_list.Where(m => m.Visibility != System.Windows.Visibility.Visible))
+                    {
+                        a.Visibility = System.Windows.Visibility.Visible;
+                    }
+
+                    return;
                 }
-            
-                return; 
-            }
 
-            foreach (var b in all_list)
+                foreach (var b in all_list)
+                {
+                    b.Visibility = System.Windows.Visibility.Collapsed;
+                }
+
+
+                var blist = all_list.Where(m => (m.Tag as AppLink).Tags.ToUpper().Contains(tbox.Text.ToUpper()) || (m.Tag as AppLink).Name.ToUpper().Contains(tbox.Text.ToUpper())); //查找所有子控件
+
+                foreach (var b in blist)
+                {
+                    b.Visibility = System.Windows.Visibility.Visible;
+                }
+            }
+            catch (Exception ex)
             {
-                b.Visibility = System.Windows.Visibility.Collapsed;
+                MessageBox.Show(ex.Message);
             }
-
-
-            var blist = all_list.Where(m => (m.Tag as AppLink).Tags.ToUpper().Contains(tbox.Text.ToUpper()) || (m.Tag as AppLink).Name.ToUpper().Contains(tbox.Text.ToUpper())); //查找所有子控件
-            
-            foreach (var b in blist)
-            {
-                b.Visibility = System.Windows.Visibility.Visible;
-            }
-
         }
 
         private void btn_about_Click(object sender, RoutedEventArgs e)
@@ -786,16 +944,13 @@ namespace 随身袋
 
         private void ts_SysRun_IsCheckedChanged(object sender, EventArgs e)
         {
-            SysRun(ts_SysRun.IsChecked==true);
+            SysRun(ts_SysRun.IsChecked == true);
         }
 
         private void btn_set_Click(object sender, RoutedEventArgs e)
         {
             fly_set.IsOpen = true;
         }
-
-
-
 
 
     }
