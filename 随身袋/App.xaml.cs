@@ -15,26 +15,27 @@ namespace 随身袋
         static System.Threading.Mutex run;
         private void Application_Startup(object sender, StartupEventArgs e)
         {
+                bool runone;
+                run = new System.Threading.Mutex(true, "App_" + "CarryBag", out runone);
+                if (!runone)
+                {
+                    Application.Current.Shutdown();
+                    return;
+                }
 
-            bool runone;
-            run = new System.Threading.Mutex(true, "App_" + "CarryBag", out runone);
-            if (!runone)
-            {
-                Application.Current.Shutdown();
-                return;
-            }
+                //FSLib.App.SimpleUpdater.Updater.CheckUpdateSimple(curClient.更新Url, "update_c.xml");
+                try
+                {
+                    Ezhu.AutoUpdater.Updater.CheckUpdateStatus("http://update.zecak.com/CarryBag/", "update.xml", "update.zip");
+                }
+                catch { }
 
-            //FSLib.App.SimpleUpdater.Updater.CheckUpdateSimple(curClient.更新Url, "update_c.xml");
-            try
-            {
-                Ezhu.AutoUpdater.Updater.CheckUpdateStatus("http://update.zecak.com/CarryBag/", "update.xml", "update.zip");
-            }
-            catch { }
+                Application currApp = Application.Current;
+                currApp.StartupUri = new Uri("MainWindow.xaml", UriKind.RelativeOrAbsolute);
 
-            Application currApp = Application.Current;
-            currApp.StartupUri = new Uri("MainWindow.xaml", UriKind.RelativeOrAbsolute);
+                run.ReleaseMutex();
 
-            run.ReleaseMutex();
+            
         }
 
     }
