@@ -46,23 +46,24 @@ namespace 随身袋
 
                 Helper.Global.Init();
 
-                ////语音控制
-                //try
-                //{
-                //    SRE = new SREngine("随身袋", new string[] { "出来", "退下" });
-                //    SRE.SpeRecSay += SRE_SpeRecSay;
-                //}
-                //catch (Exception ex)
-                //{
-                //    MessageBox.Show(ex.Message);
-                //}
-
                 加载类别();
 
                 //文件保护
                 //System.IO.Directory.SetAccessControl(@"D:\登录", new System.Security.AccessControl.DirectorySecurity("hh", System.Security.AccessControl.AccessControlSections.Audit));
 
                 autoTimer_Tick(null,null);
+
+                //语音控制
+                try
+                {
+                    SRE = new SREngine("随身袋", new string[] { "出来", "退下" });
+                    SRE.SpeRecSay += SRE_SpeRecSay;
+                    SRE.Start();
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message);
+                }
             }
             catch (Exception ex)
             {
@@ -109,6 +110,10 @@ namespace 随身袋
 
         void SRE_SpeRecSay(string saytext)
         {
+            this.Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Normal, new Action(() =>
+            {
+                lbl_say.Content = saytext;
+            }));
             switch (saytext)
             {
                 case "随身袋出来":
@@ -187,6 +192,13 @@ namespace 随身袋
                 return;
             }
 
+            var listbox = sender as ListBox;
+
+            var exp = listbox.Parent as Expander;
+            if (exp == null) { MessageBox.Show("找不到节点"); return; }
+            var subc = exp.Tag as RootCategory;
+            if (subc == null) { MessageBox.Show("找不到节点信息"); return; }
+
             //获取拖拽的文件
             string[] files = (string[])e.Data.GetData(DataFormats.FileDrop);
 
@@ -203,7 +215,7 @@ namespace 随身袋
             //    e.Effects = DragDropEffects.None;
             //}
 
-            List<string> allfile = new List<string>();
+            //List<string> allfile = new List<string>();
             foreach (var file in files)
             {
                 if (System.IO.File.Exists(file))
@@ -212,7 +224,21 @@ namespace 随身袋
                     var file_ext = System.IO.Path.GetExtension(file);
                     if (file_ext.ToLower() == ".exe")
                     {
-                        allfile.Add(file);
+                        var isrel = false;
+                        var filename = file;
+                        if(file.StartsWith(AppDomain.CurrentDomain.BaseDirectory))
+                        {
+                            isrel = true;
+                            filename=file.Replace(AppDomain.CurrentDomain.BaseDirectory, "");
+                        }
+                        var link = new AppLink() { ID = Guid.NewGuid(), IsRelative = isrel, SortNum = 99, Name = System.IO.Path.GetFileNameWithoutExtension(file), Tags = System.IO.Path.GetFileName(file), FileName = filename, PID = subc.ID, Extension = file_ext };
+
+                        if(Helper.Global.AppLinks.FirstOrDefault(m=>m.Name==link.Name)==null)
+                        {
+                            Helper.Global.AppLinks.Add(link);
+                            listbox.Items.Add(GetImg(link));
+                        }
+                        //allfile.Add(file);
                     }
                 }
                 else if (System.IO.Directory.Exists(file))
@@ -221,10 +247,28 @@ namespace 随身袋
                     var fs = System.IO.Directory.GetFiles(file, "*.exe", System.IO.SearchOption.AllDirectories);
                     if (fs.Length > 0)
                     {
-                        allfile.AddRange(fs);
+                        foreach (var f in fs)
+                        {
+                            var isrel = false;
+                            var filename = file;
+                            if (file.StartsWith(AppDomain.CurrentDomain.BaseDirectory))
+                            {
+                                isrel = true;
+                                filename = file.Replace(AppDomain.CurrentDomain.BaseDirectory, "");
+                            }
+                            var link = new AppLink() { ID = Guid.NewGuid(), IsRelative = isrel, SortNum = 99, Name = System.IO.Path.GetFileNameWithoutExtension(file), Tags = System.IO.Path.GetFileName(file), FileName = filename, PID = subc.ID, Extension = ".exe" };
+
+                            if (Helper.Global.AppLinks.FirstOrDefault(m => m.Name == link.Name) == null)
+                            {
+                                Helper.Global.AppLinks.Add(link);
+                                listbox.Items.Add(GetImg(link));
+                            }
+                        }
+                        //allfile.AddRange(fs);
                     }
                 }
             }
+            Helper.Global.SaveAppLinks();
 
 
         }
@@ -969,7 +1013,7 @@ namespace 随身袋
                 }
                 image.Tag = link;
                 //image.MouseLeftButtonUp += image_MouseLeftButtonDown;
-                label.MouseLeftButtonDown += image_MouseLeftButtonDown;
+                label.MouseLeftButtonUp += image_MouseLeftButtonDown;
                 label.Content = image;
                 border.Child = label;
                 return border;

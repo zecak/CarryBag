@@ -54,6 +54,7 @@ namespace 随身袋.Helper
             this.notifyIcon.Visible = true;
             this.notifyIcon.DoubleClick += new EventHandler(delegate
             {
+                if (window.Top < 0) { window.Top = 1; }
                 window.Topmost = true;
                 window.WindowState = wsl;
                 window.Show();
@@ -64,6 +65,7 @@ namespace 随身袋.Helper
             this.notifyIcon.ContextMenu = new System.Windows.Forms.ContextMenu();
             AddMenuItem("打开随身袋", delegate
             {
+                if (window.Top < 0) { window.Top = 1; }
                 window.Topmost = true;
                 window.WindowState = wsl;
                 window.Show();
