@@ -56,7 +56,7 @@ namespace 随身袋
                 //语音控制
                 try
                 {
-                    SRE = new SREngine("随身袋", new string[] { "出来", "退下" });
+                    SRE = new SREngine("随身袋", new string[] { "出来", "退下","下去" });
                     SRE.SpeRecSay += SRE_SpeRecSay;
                     SRE.Start();
                 }
@@ -127,6 +127,7 @@ namespace 随身袋
 
                     break;
                 case "随身袋退下":
+                case "随身袋下去":
                     this.Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Normal, new Action(() =>
                     {
                         this.Hide();
