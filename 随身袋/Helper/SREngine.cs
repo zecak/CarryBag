@@ -9,48 +9,67 @@ namespace 随身袋.Helper
 {
     public class SREngine
     {
-        private SpeechRecognitionEngine SRE;
-        public SREngine(string name,string[] choices)
+        private SpeechRecognitionEngine recognizer;
+
+        public delegate void SpeRec(string saytext);
+        public event SpeRec SpeRecSay;
+        public SREngine(string name, string[] choices)
         {
             try
             {
-                var config = SpeechRecognitionEngine.InstalledRecognizers().FirstOrDefault(m => m.Id == "MS-2052-80-DESK");//中文引擎配置,必须的
-                SRE = new SpeechRecognitionEngine(config);//使用中文引擎
-                SRE.SetInputToDefaultAudioDevice();//录音设备(麦克风)的[默认设备],注意是[默认设备],不是[默认通信设备],不然没效果
+                //zh-CN
+                //recognizer = new SpeechRecognitionEngine(new System.Globalization.CultureInfo("zh-CN"));
+                var myCIintl = new System.Globalization.CultureInfo("zh-CN");
+                foreach (RecognizerInfo config in SpeechRecognitionEngine.InstalledRecognizers())//获取所有语音引擎  
+                {
+                    if (config.Culture.Equals(myCIintl) && config.Id == "MS-2052-80-DESK")
+                    {
+                        recognizer = new SpeechRecognitionEngine(config);
+                        break;
+                    }//选择识别引擎
+                }
+
+                // Create and load a dictation grammar.
                 GrammarBuilder GB = new GrammarBuilder();//自然语法
                 GB.Append(name);
                 GB.Append(new Choices(choices));
                 Grammar G = new Grammar(GB);
-                G.SpeechRecognized += new EventHandler<SpeechRecognizedEventArgs>(G_SpeechRecognized);
-                SRE.LoadGrammar(G);
-                SRE.RecognizeAsync(RecognizeMode.Multiple); //<=======异步调用识别引擎，允许多次识别（否则程序只响应你的一句话）
+                recognizer.LoadGrammar(G);
+
+                // Add a handler for the speech recognized event.
+                recognizer.SpeechRecognized += recognizer_SpeechRecognized;
+
+                // Configure input to the speech recognizer.
+                recognizer.SetInputToDefaultAudioDevice();
+
+                // Start asynchronous, continuous speech recognition.
+                //recognizer.RecognizeAsync(RecognizeMode.Multiple);
+                //识别模式为连续识别  
             }
             catch
             {
                 throw new Exception("启用语音失败");
             }
-           
+
         }
 
-        public delegate void SpeRec(string saytext);
-        public event SpeRec SpeRecSay;
-
-        void G_SpeechRecognized(object sender, SpeechRecognizedEventArgs e)
+        void recognizer_SpeechRecognized(object sender, SpeechRecognizedEventArgs e)
         {
-            if(SpeRecSay!=null)
+            if (SpeRecSay != null)
             {
                 SpeRecSay(e.Result.Text);
             }
         }
 
+
         public void Start()
         {
-            SRE.RecognizeAsync(RecognizeMode.Multiple);
+            recognizer.RecognizeAsync(RecognizeMode.Multiple);
         }
 
         public void Stop()
         {
-            SRE.RecognizeAsyncStop();
+            recognizer.RecognizeAsyncStop();
         }
     }
 }
