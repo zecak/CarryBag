@@ -8,14 +8,14 @@ using System.Windows.Threading;
 namespace 随身袋.Helper
 {
     public class WindowAutoHide
-    { 
+    {
         //窗体自动隐藏
         private bool _IsHidded = false;
         private const int BORDER = 3;
         private const int AUTOHIDETIME = 50;
         private Location location = Location.None;
         private DispatcherTimer autoHideTimer = null;
-        
+
         enum Location
         {
             None,
@@ -43,42 +43,33 @@ namespace 随身袋.Helper
         {
             window = wind;
             window.LocationChanged += window_LocationChanged;
+
             //自动隐藏窗体
             this.autoHideTimer = new DispatcherTimer();
             this.autoHideTimer.Interval = TimeSpan.FromMilliseconds(AUTOHIDETIME);
             this.autoHideTimer.Tick += new EventHandler(AutoHideTimer_Tick);
+            this.autoHideTimer.Start();
         }
 
         void window_LocationChanged(object sender, EventArgs e)
         {
-
-           //
-            if(window.WindowState== WindowState.Normal)
+            if (window.Top <= 0 && window.Left <= 0)
             {
-                if (!this._IsHidded)
-                {
-                    if (window.Top <= 0 && window.Left <= 0)
-                    {
-                        this.location = Location.LeftTop;
-                        this.HideWindow();
-                    }
-                    else if (window.Top <= 0 && window.Left >= SystemParameters.VirtualScreenWidth - window.ActualWidth)
-                    {
-                        this.location = Location.RightTop;
-                        this.HideWindow();
-                    }
-                    else if (window.Top <= 0)
-                    {
-                        this.location = Location.Top;
-                        this.HideWindow();
-                    }
-                    else
-                    {
-                        this.location = Location.None;
-                    }
-                }
+                this.location = Location.LeftTop;
             }
-            
+            else if (window.Top <= 0 && window.Left >= SystemParameters.VirtualScreenWidth - window.ActualWidth)
+            {
+                this.location = Location.RightTop;
+            }
+            else if (window.Top <= 0)
+            {
+                this.location = Location.Top;
+            }
+            else
+            {
+                this.location = Location.None;
+            }
+
         }
 
         /// <summary>
@@ -121,7 +112,6 @@ namespace 随身袋.Helper
                         window.Top = 0;
                         window.Topmost = false;
                         this._IsHidded = false;
-                        window.UpdateLayout();
                         break;
                     case Location.None:
                         break;
@@ -139,24 +129,20 @@ namespace 随身袋.Helper
                         window.Top = BORDER - window.ActualHeight;
                         window.Topmost = true;
                         this._IsHidded = true;
-                        this.autoHideTimer.Start();
                         break;
                     case Location.LeftTop:
                         window.Left = 0;
                         window.Top = BORDER - window.ActualHeight;
                         window.Topmost = true;
                         this._IsHidded = true;
-                        this.autoHideTimer.Start();
                         break;
                     case Location.RightTop:
                         window.Left = SystemParameters.VirtualScreenWidth - window.ActualWidth;
                         window.Top = BORDER - window.ActualHeight;
                         window.Topmost = true;
                         this._IsHidded = true;
-                        this.autoHideTimer.Start();
                         break;
                     case Location.None:
-                        this.autoHideTimer.Stop();
                         break;
                 }
             }
