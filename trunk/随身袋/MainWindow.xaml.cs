@@ -62,6 +62,8 @@ namespace 随身袋
                 }
                 catch (Exception ex)
                 {
+                    lbl_rez.Visibility = System.Windows.Visibility.Collapsed;
+                    lbl_say.Visibility = System.Windows.Visibility.Collapsed;
                     MessageBox.Show(ex.Message);
                 }
             }
@@ -119,6 +121,7 @@ namespace 随身袋
                 case "随身袋出来":
                     this.Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Normal, new Action(() =>
                     {
+                        if (this.Top < 0) { this.Top = 1; }
                         this.Show();
                     }));
 

@@ -150,7 +150,8 @@
                     <DockPanel>
                         <ToolBarPanel Orientation="Horizontal">
                                 <Button DockPanel.Dock="Left" Click="Button_Click" Width="32" Height="32" FontFamily="微软雅黑" FontSize="18" Style="{DynamicResource MetroCircleButtonStyle}" ToolTip="创建栏目">+</Button>
-                            <Label Name="lbl_say"></Label>
+                            <Label Name="lbl_rez" Margin="25 5 0 5" Foreground="LightGray">识别结果:</Label>
+                            <Label Name="lbl_say" Margin="0 5 0 5" Foreground="LightGray">识别中..</Label>
 
                         </ToolBarPanel>
                     </DockPanel>

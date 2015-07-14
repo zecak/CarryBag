@@ -18,16 +18,16 @@ namespace 随身袋.Helper
             try
             {
                 //zh-CN
-                //recognizer = new SpeechRecognitionEngine(new System.Globalization.CultureInfo("zh-CN"));
-                var myCIintl = new System.Globalization.CultureInfo("zh-CN");
-                foreach (RecognizerInfo config in SpeechRecognitionEngine.InstalledRecognizers())//获取所有语音引擎  
-                {
-                    if (config.Culture.Equals(myCIintl) && config.Id == "MS-2052-80-DESK")
-                    {
-                        recognizer = new SpeechRecognitionEngine(config);
-                        break;
-                    }//选择识别引擎
-                }
+                recognizer = new SpeechRecognitionEngine(new System.Globalization.CultureInfo("zh-CN"));
+                //var myCIintl = new System.Globalization.CultureInfo("zh-CN");
+                //foreach (RecognizerInfo config in SpeechRecognitionEngine.InstalledRecognizers())//获取所有语音引擎  
+                //{
+                //    if (config.Culture.Equals(myCIintl) && config.Id == "MS-2052-80-DESK")
+                //    {
+                //        recognizer = new SpeechRecognitionEngine(config);
+                //        break;
+                //    }//选择识别引擎
+                //}
 
                 // Create and load a dictation grammar.
                 GrammarBuilder GB = new GrammarBuilder();//自然语法
