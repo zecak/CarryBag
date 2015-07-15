@@ -171,7 +171,7 @@
 
                 <DockPanel Margin="2 5 2 5" LastChildFill="False">
                     <DockPanel DockPanel.Dock="Top" >
-                        <TextBox Controls:TextBoxHelper.Watermark="搜索内容" Controls:TextBoxHelper.IsWaitingForData="True" TextChanged="TextBox_TextChanged" />
+                        <TextBox Controls:TextBoxHelper.Watermark="搜索内容" Controls:TextBoxHelper.IsWaitingForData="True" TextChanged="TextBox_TextChanged" KeyDown="TextBox_KeyDown" />
                         </DockPanel>
                     <Controls:MetroAnimatedSingleRowTabControl Name="tabMain" Controls:TabControlHelper.IsUnderlined="True" TabStripPlacement="Top" DockPanel.Dock="Top" >
                         
