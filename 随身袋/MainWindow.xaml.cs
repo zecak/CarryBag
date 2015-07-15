@@ -40,7 +40,7 @@ namespace 随身袋
 
 
                 autoTimer = new DispatcherTimer();
-                autoTimer.Interval = TimeSpan.FromMilliseconds(1000*30);
+                autoTimer.Interval = TimeSpan.FromMilliseconds(1000 * 30);
                 autoTimer.Tick += autoTimer_Tick;
                 autoTimer.Start();
 
@@ -51,12 +51,12 @@ namespace 随身袋
                 //文件保护
                 //System.IO.Directory.SetAccessControl(@"D:\登录", new System.Security.AccessControl.DirectorySecurity("hh", System.Security.AccessControl.AccessControlSections.Audit));
 
-                autoTimer_Tick(null,null);
+                autoTimer_Tick(null, null);
 
                 //语音控制
                 try
                 {
-                    SRE = new SREngine("随身袋", new string[] { "出来", "退下","下去" });
+                    SRE = new SREngine("随身袋", new string[] { "出来", "退下", "下去" });
                     SRE.SpeRecSay += SRE_SpeRecSay;
                     SRE.Start();
                 }
@@ -105,7 +105,7 @@ namespace 随身袋
 
             }
             catch { }
-            
+
         }
 
 
@@ -230,14 +230,14 @@ namespace 随身袋
                     {
                         var isrel = false;
                         var filename = file;
-                        if(file.StartsWith(AppDomain.CurrentDomain.BaseDirectory))
+                        if (file.StartsWith(AppDomain.CurrentDomain.BaseDirectory))
                         {
                             isrel = true;
-                            filename=file.Replace(AppDomain.CurrentDomain.BaseDirectory, "");
+                            filename = file.Replace(AppDomain.CurrentDomain.BaseDirectory, "");
                         }
                         var link = new AppLink() { ID = Guid.NewGuid(), IsRelative = isrel, SortNum = 99, Name = System.IO.Path.GetFileNameWithoutExtension(file), Tags = System.IO.Path.GetFileName(file), FileName = filename, PID = subc.ID, Extension = file_ext };
 
-                        if(Helper.Global.AppLinks.FirstOrDefault(m=>m.Name==link.Name)==null)
+                        if (Helper.Global.AppLinks.FirstOrDefault(m => m.Name == link.Name) == null)
                         {
                             Helper.Global.AppLinks.Add(link);
                             listbox.Items.Add(GetImg(link));
@@ -326,7 +326,8 @@ namespace 随身袋
                 {
                     cbx_Import.ItemsSource = null;
                 }
-
+                txt_Import.Text = "";
+                Flyout_Import.Header = "导入到" + (exp.Tag as RootCategory).Name;
                 Flyout_Import.IsOpen = true;
             }
             catch (Exception ex)
@@ -617,46 +618,7 @@ namespace 随身袋
             }
         }
 
-        /// <summary>
-        /// 搜索
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void TextBox_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            try
-            {
-                var all_list = this.tabMain.FindChildren<Border>();
 
-                var tbox = sender as TextBox;
-                if (string.IsNullOrWhiteSpace(tbox.Text))
-                {
-                    foreach (var a in all_list.Where(m => m.Visibility != System.Windows.Visibility.Visible))
-                    {
-                        a.Visibility = System.Windows.Visibility.Visible;
-                    }
-
-                    return;
-                }
-
-                foreach (var b in all_list)
-                {
-                    b.Visibility = System.Windows.Visibility.Collapsed;
-                }
-
-
-                var blist = all_list.Where(m => (m.Tag as AppLink).Tags.ToUpper().Contains(tbox.Text.ToUpper()) || (m.Tag as AppLink).Name.ToUpper().Contains(tbox.Text.ToUpper())); //查找所有子控件
-
-                foreach (var b in blist)
-                {
-                    b.Visibility = System.Windows.Visibility.Visible;
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
-            }
-        }
 
         /// <summary>
         /// 添加类别,加载
@@ -791,6 +753,9 @@ namespace 随身袋
             var item_update = new MenuItem() { Header = "修改" };
             item_update.Click += item_update_Click;
 
+            var item_opendir = new MenuItem() { Header = "打开文件位置" };
+            item_opendir.Click += item_opendir_Click;
+
             var item_move = new MenuItem() { Header = "移动" };
             item_move.Click += item_move_Click;
 
@@ -799,9 +764,39 @@ namespace 随身袋
 
             SubCMenu_App.Items.Add(item_open);
             SubCMenu_App.Items.Add(item_update);
+            SubCMenu_App.Items.Add(new Separator());
+            SubCMenu_App.Items.Add(item_opendir);
             //SubCMenu_App.Items.Add(item_move);
             SubCMenu_App.Items.Add(new Separator());
             SubCMenu_App.Items.Add(item_del);
+        }
+
+        void item_opendir_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                var listbox = (SubCMenu_App.PlacementTarget as Border).Parent as ListBox;
+                var list = listbox.SelectedItems.OfType<Border>().ToList();
+                foreach (var b in list)
+                {
+                    var link = b.Tag as AppLink;
+                    if (link != null)
+                    {
+                        if (link.IsRelative == true)
+                        {
+                            System.Diagnostics.Process.Start(System.IO.Path.GetDirectoryName(System.IO.Path.Combine(Helper.Global.AppPath, link.FileName)));
+                        }
+                        else
+                        {
+                            System.Diagnostics.Process.Start(System.IO.Path.GetDirectoryName(link.FileName));
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
         }
 
         void item_del_Click(object sender, RoutedEventArgs e)
@@ -1006,7 +1001,7 @@ namespace 随身袋
                     Width = 32,
                     Height = 32,
                 };
-                
+
                 if (link.IsRelative)
                 {
                     image.Source = Helper.Global.GetIcon(Helper.Global.AppPath + link.FileName);
@@ -1050,6 +1045,82 @@ namespace 随身袋
             image.Tag = link;
 
 
+        }
+        /// <summary>
+        /// 搜索
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void TextBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            try
+            {
+                var all_list = this.tabMain.FindChildren<Border>();
+
+                var tbox = sender as TextBox;
+                if (string.IsNullOrWhiteSpace(tbox.Text))
+                {
+                    foreach (var a in all_list.Where(m => m.Visibility != System.Windows.Visibility.Visible))
+                    {
+                        a.Visibility = System.Windows.Visibility.Visible;
+                    }
+
+                    return;
+                }
+
+                foreach (var b in all_list)
+                {
+                    b.Visibility = System.Windows.Visibility.Collapsed;
+                }
+
+
+                var blist = all_list.Where(m => (m.Tag as AppLink).Tags.ToUpper().Contains(tbox.Text.ToUpper()) || (m.Tag as AppLink).Name.ToUpper().Contains(tbox.Text.ToUpper())); //查找所有子控件
+
+                foreach (var b in blist)
+                {
+                    b.Visibility = System.Windows.Visibility.Visible;
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+        }
+        /// <summary>
+        /// 回车打开文件
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void TextBox_KeyDown(object sender, KeyEventArgs e)
+        {
+            try
+            {
+                if (e.Key == Key.Enter)
+                {
+                    var tbox = sender as TextBox;
+                    if (!string.IsNullOrWhiteSpace(tbox.Text))
+                    {
+                        var link = Helper.Global.AppLinks.FirstOrDefault(m => m.Name.ToUpper().Contains(tbox.Text.ToUpper()) || m.Tags.ToUpper().Contains(tbox.Text.ToUpper()));
+                        if (link != null)
+                        {
+                            if (link.IsRelative == true)
+                            {
+                                System.Diagnostics.Process.Start(System.IO.Path.Combine(Helper.Global.AppPath, link.FileName), link.Args);
+                            }
+                            else
+                            {
+                                System.Diagnostics.Process.Start(link.FileName, link.Args);
+                            }
+                        }
+                    }
+
+                }
+
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
         }
 
         /// <summary>
@@ -1097,6 +1168,8 @@ namespace 随身袋
         {
             fly_set.IsOpen = true;
         }
+
+
 
     }
 }
