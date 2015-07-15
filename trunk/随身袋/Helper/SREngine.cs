@@ -9,6 +9,7 @@ namespace 随身袋.Helper
 {
     public class SREngine
     {
+        public bool IsRecord { get; set; }
         private SpeechRecognitionEngine recognizer;
 
         public delegate void SpeRec(string saytext);
@@ -17,6 +18,7 @@ namespace 随身袋.Helper
         {
             try
             {
+                IsRecord = false;
                 //zh-CN
                 recognizer = new SpeechRecognitionEngine(new System.Globalization.CultureInfo("zh-CN"));
                 //var myCIintl = new System.Globalization.CultureInfo("zh-CN");
@@ -64,12 +66,29 @@ namespace 随身袋.Helper
 
         public void Start()
         {
-            recognizer.RecognizeAsync(RecognizeMode.Multiple);
+            if (recognizer != null)
+            {
+                if (!IsRecord)
+                {
+                    recognizer.RecognizeAsync(RecognizeMode.Multiple);
+                    IsRecord = true;
+                }
+                
+            }
+
         }
 
         public void Stop()
         {
-            recognizer.RecognizeAsyncStop();
+            if (recognizer != null)
+            {
+                if (IsRecord)
+                {
+                    recognizer.RecognizeAsyncStop();
+                    IsRecord = false;
+                }
+            }
+
         }
     }
 }

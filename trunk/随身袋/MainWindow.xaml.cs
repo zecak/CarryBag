@@ -64,6 +64,7 @@ namespace 随身袋
                 {
                     lbl_rez.Visibility = System.Windows.Visibility.Collapsed;
                     lbl_say.Visibility = System.Windows.Visibility.Collapsed;
+                    ts_shibie.IsEnabled = false;
                     MessageBox.Show(ex.Message);
                 }
             }
@@ -1167,6 +1168,21 @@ namespace 随身袋
         private void btn_set_Click(object sender, RoutedEventArgs e)
         {
             fly_set.IsOpen = true;
+        }
+
+        private void ts_shibie_IsCheckedChanged(object sender, EventArgs e)
+        {
+            if(ts_shibie.IsChecked==true)
+            {
+                SRE.Start();
+                
+                lbl_say.Content = "识别中..";
+            }
+            else
+            {
+                SRE.Stop();
+                lbl_say.Content = "识别已停止";
+            }
         }
 
 
