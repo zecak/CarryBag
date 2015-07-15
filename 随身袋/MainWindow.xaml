@@ -27,7 +27,10 @@
                             <Label Margin="5" Style="{DynamicResource WhiteFont}">随系统启动</Label>
                             <Controls:ToggleSwitch Name="ts_SysRun" IsChecked="False" OnLabel="开启" OffLabel="关闭" Margin="5" Style="{DynamicResource WhiteFont}" IsCheckedChanged="ts_SysRun_IsCheckedChanged"/>
                         </DockPanel>
-                        
+                        <DockPanel>
+                            <Label Margin="5" Style="{DynamicResource WhiteFont}">语音识别</Label>
+                            <Controls:ToggleSwitch Name="ts_shibie" IsChecked="False" OnLabel="开启" OffLabel="关闭" Margin="5" Style="{DynamicResource WhiteFont}" IsCheckedChanged="ts_shibie_IsCheckedChanged"/>
+                        </DockPanel>
                     </StackPanel>
                 </DockPanel>
             </Controls:Flyout>
