@@ -753,7 +753,7 @@ namespace 随身袋
             var item_update = new MenuItem() { Header = "修改" };
             item_update.Click += item_update_Click;
 
-            var item_opendir = new MenuItem() { Header = "打开文件位置" };
+            var item_opendir = new MenuItem() { Header = "文件位置" };
             item_opendir.Click += item_opendir_Click;
 
             var item_move = new MenuItem() { Header = "移动" };
