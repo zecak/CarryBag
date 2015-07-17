@@ -6,7 +6,7 @@
         <StackPanel>
             <DockPanel>
                 <Label>程序目录：</Label>
-                <TextBox Name="txtDir">..\..\..\MyClient\ICClient\bin\NET40\Release\ac</TextBox>
+                <TextBox Name="txtDir">..\..\..\随身袋\bin\Release\CarryBag</TextBox>
             </DockPanel>
             <DockPanel>
                 <Label>程序名称：</Label>

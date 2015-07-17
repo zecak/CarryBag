@@ -34,7 +34,7 @@ namespace WpfCreateUpdateInfo
         {
             try
             {
-                var files = System.IO.Directory.GetFiles(txtDir.Text, "*Client.exe");
+                var files = System.IO.Directory.GetFiles(txtDir.Text, "随身袋.exe");
                 if (files.Length == 1)
                 {
                     System.Diagnostics.FileVersionInfo fv = System.Diagnostics.FileVersionInfo.GetVersionInfo(System.IO.Path.GetFullPath(files[0]));
@@ -46,7 +46,7 @@ namespace WpfCreateUpdateInfo
                     txtUpdateTime.Text = file.LastWriteTime.ToShortDateString();
                 }
 
-                txtDes.Text = System.IO.File.ReadAllText(("../../../MyClient/ICClient/UpdateInfo.txt"));
+                txtDes.Text = System.IO.File.ReadAllText((@"..\..\..\随身袋\bin\Release\CarryBag\使用说明.txt"));
 
                 System.IO.File.Delete("update.zip");
 
