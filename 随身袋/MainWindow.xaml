@@ -20,6 +20,13 @@
     </Controls:MetroWindow.RightWindowCommands>
     <Controls:MetroWindow.Flyouts>
         <Controls:FlyoutsControl>
+            <Controls:Flyout Name="fly_Search" Header="搜索" Position="Left" Theme="Accent" Width="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=Controls:MetroWindow}, Path=ActualWidth}" VerticalAlignment="Bottom" Visibility="Collapsed" TitleVisibility="Collapsed" >
+                <DockPanel>
+                    <StackPanel Margin="5,5,5,5">
+                        
+                    </StackPanel>
+                </DockPanel>
+            </Controls:Flyout>
             <Controls:Flyout Name="fly_set" Header="设置" Position="Left" IsModal="True" Theme="Accent" Width="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=Controls:MetroWindow}, Path=ActualWidth}">
                 <DockPanel>
                     <StackPanel Margin="5,5,5,5">
@@ -174,7 +181,7 @@
 
                 <DockPanel Margin="2 5 2 5" LastChildFill="False">
                     <DockPanel DockPanel.Dock="Top" >
-                        <TextBox Controls:TextBoxHelper.Watermark="搜索内容" Controls:TextBoxHelper.IsWaitingForData="True" TextChanged="TextBox_TextChanged" KeyDown="TextBox_KeyDown" />
+                        <TextBox Name="txt_Search" Controls:TextBoxHelper.Watermark="搜索内容" Controls:TextBoxHelper.IsWaitingForData="True" TextChanged="TextBox_TextChanged" KeyDown="TextBox_KeyDown" />
                         </DockPanel>
                     <Controls:MetroAnimatedSingleRowTabControl Name="tabMain" Controls:TabControlHelper.IsUnderlined="True" TabStripPlacement="Top" DockPanel.Dock="Top" >
                         
