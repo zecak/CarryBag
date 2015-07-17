@@ -461,18 +461,16 @@ namespace 随身袋
                     TextBoxHelper.SetWatermark(txt_LinkName, "名称已存在!");
                     return;
                 }
-                var uri = new Uri(txt_LinkFileName.Text);
-                if (uri.IsAbsoluteUri)
+                var isrel = false;
+                var filename = System.IO.Path.GetFullPath(txt_LinkFileName.Text);
+                if (filename.StartsWith(AppDomain.CurrentDomain.BaseDirectory))
                 {
-                    chb_IsRelative.IsChecked = false;
-                }
-                else
-                {
-                    chb_IsRelative.IsChecked = true;
+                    isrel = true;
+                    filename = filename.Replace(AppDomain.CurrentDomain.BaseDirectory, "");
                 }
 
                 var subc = btn_AddFileLink.Tag as RootCategory;
-                var link = new AppLink() { ID = Guid.NewGuid(), Name = txt_LinkName.Text, FileName = txt_LinkFileName.Text, Args = txt_Args.Text, IsRelative = chb_IsRelative.IsChecked == true, Tags = txt_Tags.Text, SortNum = (int)nud_Sort.Value, PID = subc.ID, Extension = System.IO.Path.GetExtension(txt_LinkFileName.Text) };
+                var link = new AppLink() { ID = Guid.NewGuid(), Name = txt_LinkName.Text, FileName = txt_LinkFileName.Text, Args = txt_Args.Text, IsRelative = isrel, Tags = txt_Tags.Text, SortNum = (int)nud_Sort.Value, PID = subc.ID, Extension = System.IO.Path.GetExtension(txt_LinkFileName.Text) };
 
                 Helper.Global.AppLinks.Add(link);
                 Helper.Global.SaveAppLinks();
@@ -525,28 +523,23 @@ namespace 随身袋
                 var result = openFileDialog.ShowDialog();
                 if (result == true)
                 {
-                    if (chb_IsRelative.IsChecked == true)
-                    {
-                        txt_LinkFileName.Text = openFileDialog.FileName.Replace(AppDomain.CurrentDomain.BaseDirectory, "");
-                    }
-                    else
-                    {
-                        txt_LinkFileName.Text = System.IO.Path.GetFullPath(openFileDialog.FileName);
-                    }
                     txt_LinkName.Text = System.IO.Path.GetFileNameWithoutExtension(openFileDialog.FileName);
                     txt_Tags.Text = System.IO.Path.GetFileName(openFileDialog.FileName);
 
-                    var uri = new Uri(txt_LinkFileName.Text);
-                    if (uri.IsAbsoluteUri)
-                    {
-                        chb_IsRelative.IsChecked = false;
-                        lbl_Tip.Visibility = System.Windows.Visibility.Visible;
-                    }
-                    else
+                    var filename = openFileDialog.FileName;
+                    if (filename.StartsWith(AppDomain.CurrentDomain.BaseDirectory))
                     {
                         chb_IsRelative.IsChecked = true;
                         lbl_Tip.Visibility = System.Windows.Visibility.Collapsed;
+                        txt_LinkFileName.Text = filename.Replace(AppDomain.CurrentDomain.BaseDirectory, "");
                     }
+                    else
+                    {
+                        chb_IsRelative.IsChecked = false;
+                        lbl_Tip.Visibility = System.Windows.Visibility.Visible;
+                        txt_LinkFileName.Text = System.IO.Path.GetFullPath(openFileDialog.FileName);
+                    }
+
                 }
             }
             catch (Exception ex)
@@ -568,7 +561,15 @@ namespace 随身袋
                     var files = dir.GetFiles("*.exe", System.IO.SearchOption.AllDirectories);
                     foreach (var file in files)
                     {
-                        var link = new AppLink() { ID = Guid.NewGuid(), IsRelative = true, SortNum = 99, Name = System.IO.Path.GetFileNameWithoutExtension(file.FullName), Tags = System.IO.Path.GetFileName(file.FullName), FileName = file.FullName.Replace(AppDomain.CurrentDomain.BaseDirectory, ""), PID = p_cate.ID, Extension = file.Extension };
+                        var isrel = false;
+                        var filename = file.FullName;
+                        if (filename.StartsWith(AppDomain.CurrentDomain.BaseDirectory))
+                        {
+                            isrel = true;
+                            filename = filename.Replace(AppDomain.CurrentDomain.BaseDirectory, "");
+                        }
+
+                        var link = new AppLink() { ID = Guid.NewGuid(), IsRelative = isrel, SortNum = 99, Name = System.IO.Path.GetFileNameWithoutExtension(file.FullName), Tags = System.IO.Path.GetFileName(file.FullName), FileName = filename, PID = p_cate.ID, Extension = file.Extension };
                         var only = Helper.Global.AppLinks.FirstOrDefault(m => m.Name.ToUpper() == link.Name.ToUpper());
                         if (only == null)
                         {
@@ -903,27 +904,24 @@ namespace 随身袋
                 var result = openFileDialog.ShowDialog();
                 if (result == true)
                 {
-                    if (chb_IsRelativeEdit.IsChecked == true)
-                    {
-                        txt_LinkFileNameEdit.Text = openFileDialog.FileName.Replace(AppDomain.CurrentDomain.BaseDirectory, "");
-                    }
-                    else
-                    {
-                        txt_LinkFileNameEdit.Text = System.IO.Path.GetFullPath(openFileDialog.FileName);
-                    }
+
                     txt_LinkNameEdit.Text = System.IO.Path.GetFileNameWithoutExtension(openFileDialog.FileName);
                     txt_TagsEdit.Text = System.IO.Path.GetFileName(openFileDialog.FileName);
-                    var uri = new Uri(txt_LinkFileNameEdit.Text);
-                    if (uri.IsAbsoluteUri)
-                    {
-                        chb_IsRelativeEdit.IsChecked = false;
-                        lbl_TipEdit.Visibility = System.Windows.Visibility.Visible;
-                    }
-                    else
+
+                    var filename = openFileDialog.FileName;
+                    if (filename.StartsWith(AppDomain.CurrentDomain.BaseDirectory))
                     {
                         chb_IsRelativeEdit.IsChecked = true;
                         lbl_TipEdit.Visibility = System.Windows.Visibility.Collapsed;
+                        txt_LinkFileNameEdit.Text = filename.Replace(AppDomain.CurrentDomain.BaseDirectory, "");
                     }
+                    else
+                    {
+                        chb_IsRelativeEdit.IsChecked = false;
+                        lbl_TipEdit.Visibility = System.Windows.Visibility.Visible;
+                        txt_LinkFileNameEdit.Text = System.IO.Path.GetFullPath(openFileDialog.FileName);
+                    }
+                    
                 }
             }
             catch (Exception ex)
@@ -944,16 +942,16 @@ namespace 随身袋
                 link.Name = txt_LinkNameEdit.Text;
                 link.FileName = txt_LinkFileNameEdit.Text;
                 link.Args = txt_ArgsEdit.Text;
-                var uri = new Uri(txt_LinkFileNameEdit.Text);
-                if (uri.IsAbsoluteUri)
+
+                var isrel = false;
+                var filename = System.IO.Path.GetFullPath(link.FileName);
+                if (filename.StartsWith(AppDomain.CurrentDomain.BaseDirectory))
                 {
-                    chb_IsRelativeEdit.IsChecked = false;
+                    isrel = true;
+                    link.FileName = filename.Replace(AppDomain.CurrentDomain.BaseDirectory, "");
                 }
-                else
-                {
-                    chb_IsRelativeEdit.IsChecked = true;
-                }
-                link.IsRelative = chb_IsRelativeEdit.IsChecked == true;
+
+                link.IsRelative = isrel;
                 link.Tags = txt_TagsEdit.Text;
                 link.SortNum = (int)nud_SortEdit.Value;
                 link.Extension = System.IO.Path.GetExtension(txt_LinkFileNameEdit.Text);
