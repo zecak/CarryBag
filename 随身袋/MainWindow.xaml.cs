@@ -59,6 +59,7 @@ namespace 随身袋
                     SRE = new SREngine("随身袋", new string[] { "出来", "退下", "下去" });
                     SRE.SpeRecSay += SRE_SpeRecSay;
                     SRE.Start();
+                    ts_shibie.IsChecked = SRE.IsRecord;
                 }
                 catch (Exception ex)
                 {
@@ -1175,13 +1176,15 @@ namespace 随身袋
             if(ts_shibie.IsChecked==true)
             {
                 SRE.Start();
-                
                 lbl_say.Content = "识别中..";
+                lbl_rez.Visibility = System.Windows.Visibility.Visible;
+                lbl_say.Visibility = System.Windows.Visibility.Visible;
             }
             else
             {
                 SRE.Stop();
-                lbl_say.Content = "识别已停止";
+                lbl_rez.Visibility = System.Windows.Visibility.Collapsed;
+                lbl_say.Visibility = System.Windows.Visibility.Collapsed;
             }
         }
 
