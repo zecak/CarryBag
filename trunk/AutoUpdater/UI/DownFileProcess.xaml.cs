@@ -23,6 +23,7 @@ namespace Ezhu.AutoUpdater.UI
 
                 this.YesButton.Click += (sender, e) =>
                 {
+                    YesButton.IsEnabled = false;
                     Process[] processes = Process.GetProcessesByName(this.callExeName);
 
                     if (processes.Length > 0)
@@ -34,6 +35,7 @@ namespace Ezhu.AutoUpdater.UI
                     }
                     var url = System.Text.Encoding.UTF8.GetString(Convert.FromBase64String(urlzip));
                     DownloadUpdateFile(url);
+                    YesButton.IsEnabled = true;
                 };
 
                 this.NoButton.Click += (sender, e) =>

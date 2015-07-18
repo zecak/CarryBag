@@ -61,6 +61,7 @@
                             
                         </ComboBox>
                         <TextBox Name="txt_Import" Controls:TextBoxHelper.Watermark="要导入的相对位置" Margin="5" Controls:TextBoxHelper.IsWaitingForData="True" TextChanged="txt_Import_TextChanged" ></TextBox>
+                        <TextBox Name="txt_Filter" Controls:TextBoxHelper.Watermark="过滤条件(默认 .exe ),如: *.exe;*.lnk" Margin="5" Controls:TextBoxHelper.IsWaitingForData="True"></TextBox>
 
                         <Button Name="btn_Import" Click="btn_Import_Click" Margin="5">导入</Button>
                     </StackPanel>
