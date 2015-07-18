@@ -23,13 +23,6 @@ namespace 随身袋
                     return;
                 }
 
-                //FSLib.App.SimpleUpdater.Updater.CheckUpdateSimple(curClient.更新Url, "update_c.xml");
-                try
-                {
-                    Ezhu.AutoUpdater.Updater.CheckUpdateStatus("http://update.zecak.com/CarryBag/", "update.xml", "update.zip");
-                }
-                catch { }
-
                 Application currApp = Application.Current;
                 currApp.StartupUri = new Uri("MainWindow.xaml", UriKind.RelativeOrAbsolute);
 
