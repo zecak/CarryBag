@@ -34,50 +34,6 @@ namespace 随身袋
         public MainWindow()
         {
             InitializeComponent();
-
-            try
-            {
-                var autoHide = new WindowAutoHide(this);
-
-                var windowSysMin = new WindowSysMin(this);
-
-
-                autoTimer = new DispatcherTimer();
-                autoTimer.Interval = TimeSpan.FromMilliseconds(1000 * 30);
-                autoTimer.Tick += autoTimer_Tick;
-                autoTimer.Start();
-
-                Helper.Global.Init();
-
-                加载类别();
-
-                //文件保护
-                //System.IO.Directory.SetAccessControl(@"D:\登录", new System.Security.AccessControl.DirectorySecurity("hh", System.Security.AccessControl.AccessControlSections.Audit));
-
-                autoTimer_Tick(null, null);
-
-                //语音控制
-                try
-                {
-                    SRE = new SREngine("随身袋", new string[] { "出来", "退下", "下去" });
-                    SRE.SpeRecSay += SRE_SpeRecSay;
-                    SRE.Start();
-                    ts_shibie.IsChecked = SRE.IsRecord;
-                }
-                catch (Exception ex)
-                {
-                    lbl_rez.Visibility = System.Windows.Visibility.Collapsed;
-                    lbl_say.Visibility = System.Windows.Visibility.Collapsed;
-                    ts_shibie.IsEnabled = false;
-                    MessageBox.Show(ex.Message);
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
-            }
-
-
         }
 
         void SysRun(bool enable)
@@ -984,7 +940,52 @@ namespace 随身袋
 
         private void MetroWindow_Loaded(object sender, RoutedEventArgs e)
         {
+            try
+            {
+                var autoHide = new WindowAutoHide(this);
 
+                var windowSysMin = new WindowSysMin(this);
+
+
+                autoTimer = new DispatcherTimer();
+                autoTimer.Interval = TimeSpan.FromMilliseconds(1000 * 30);
+                autoTimer.Tick += autoTimer_Tick;
+                autoTimer.Start();
+
+                Helper.Global.Init();
+
+                加载类别();
+
+                //文件保护
+                //System.IO.Directory.SetAccessControl(@"D:\登录", new System.Security.AccessControl.DirectorySecurity("hh", System.Security.AccessControl.AccessControlSections.Audit));
+
+                autoTimer_Tick(null, null);
+
+                //语音控制
+                try
+                {
+                    SRE = new SREngine("随身袋", new string[] { "出来", "退下", "下去" });
+                    SRE.SpeRecSay += SRE_SpeRecSay;
+                    SRE.Start();
+                    ts_shibie.IsChecked = SRE.IsRecord;
+                }
+                catch (Exception ex)
+                {
+                    lbl_rez.Visibility = System.Windows.Visibility.Collapsed;
+                    lbl_say.Visibility = System.Windows.Visibility.Collapsed;
+                    ts_shibie.IsEnabled = false;
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+
+            try
+            {
+                Ezhu.AutoUpdater.Updater.CheckUpdateStatus("http://update.zecak.com/CarryBag/", "update.xml", "update.zip");
+            }
+            catch { }
         }
 
         /// <summary>
