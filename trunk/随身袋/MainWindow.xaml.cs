@@ -124,6 +124,7 @@ namespace 随身袋
                     expander.ContextMenu = SubCMenu;
 
                     var wrapPanel = new ListBox();
+                    wrapPanel.SelectionMode = SelectionMode.Extended;
                     wrapPanel.AllowDrop = true;
                     wrapPanel.Drop += wrapPanel_Drop;
 
@@ -187,7 +188,7 @@ namespace 随身袋
                 {
                     // 是文件
                     var file_ext = System.IO.Path.GetExtension(file);
-                    if (file_ext.ToLower() == ".exe")
+                    //if (file_ext.ToLower() == ".exe")
                     {
                         var isrel = false;
                         var filename = file;
@@ -209,28 +210,43 @@ namespace 随身袋
                 else if (System.IO.Directory.Exists(file))
                 {
                     // 是文件夹
-                    var fs = System.IO.Directory.GetFiles(file, "*.exe", System.IO.SearchOption.AllDirectories);
-                    if (fs.Length > 0)
+                    var file_ext = System.IO.Path.GetExtension(file);
+                    var isrel = false;
+                    var filename = file;
+                    if (file.StartsWith(AppDomain.CurrentDomain.BaseDirectory))
                     {
-                        foreach (var f in fs)
-                        {
-                            var isrel = false;
-                            var filename = file;
-                            if (file.StartsWith(AppDomain.CurrentDomain.BaseDirectory))
-                            {
-                                isrel = true;
-                                filename = file.Replace(AppDomain.CurrentDomain.BaseDirectory, "");
-                            }
-                            var link = new AppLink() { ID = Guid.NewGuid(), IsRelative = isrel, SortNum = 99, Name = System.IO.Path.GetFileNameWithoutExtension(file), Tags = System.IO.Path.GetFileName(file), FileName = filename, PID = subc.ID, Extension = ".exe" };
-
-                            if (Helper.Global.AppLinks.FirstOrDefault(m => m.Name == link.Name) == null)
-                            {
-                                Helper.Global.AppLinks.Add(link);
-                                listbox.Items.Add(GetImg(link));
-                            }
-                        }
-                        //allfile.AddRange(fs);
+                        isrel = true;
+                        filename = file.Replace(AppDomain.CurrentDomain.BaseDirectory, "");
                     }
+                    var link = new AppLink() { ID = Guid.NewGuid(), IsRelative = isrel, SortNum = 99, Name = System.IO.Path.GetFileNameWithoutExtension(file), Tags = System.IO.Path.GetFileName(file), FileName = filename, PID = subc.ID, Extension = file_ext };
+
+                    if (Helper.Global.AppLinks.FirstOrDefault(m => m.Name == link.Name) == null)
+                    {
+                        Helper.Global.AppLinks.Add(link);
+                        listbox.Items.Add(GetImg(link));
+                    }
+                    //var fs = System.IO.Directory.GetFiles(file, "*.exe", System.IO.SearchOption.AllDirectories);
+                    //if (fs.Length > 0)
+                    //{
+                    //    foreach (var f in fs)
+                    //    {
+                    //        var isrel = false;
+                    //        var filename = file;
+                    //        if (file.StartsWith(AppDomain.CurrentDomain.BaseDirectory))
+                    //        {
+                    //            isrel = true;
+                    //            filename = file.Replace(AppDomain.CurrentDomain.BaseDirectory, "");
+                    //        }
+                    //        var link = new AppLink() { ID = Guid.NewGuid(), IsRelative = isrel, SortNum = 99, Name = System.IO.Path.GetFileNameWithoutExtension(file), Tags = System.IO.Path.GetFileName(file), FileName = filename, PID = subc.ID, Extension = ".exe" };
+
+                    //        if (Helper.Global.AppLinks.FirstOrDefault(m => m.Name == link.Name) == null)
+                    //        {
+                    //            Helper.Global.AppLinks.Add(link);
+                    //            listbox.Items.Add(GetImg(link));
+                    //        }
+                    //    }
+                    //    //allfile.AddRange(fs);
+                    //}
                 }
             }
             Helper.Global.SaveAppLinks();
@@ -622,6 +638,7 @@ namespace 随身袋
                 expander.Tag = subc;
                 expander.ContextMenu = SubCMenu;
                 var wrapPanel = new ListBox();
+                wrapPanel.SelectionMode = SelectionMode.Extended;
                 wrapPanel.AllowDrop = true;
                 wrapPanel.Drop += wrapPanel_Drop;
                 //Helper.ListBoxSelector.SetEnabled(wrapPanel, true);
@@ -1008,7 +1025,15 @@ namespace 随身袋
 
                 if (link.IsRelative)
                 {
-                    image.Source = Helper.Global.GetIcon(Helper.Global.AppPath + link.FileName);
+                    if (System.IO.File.Exists(Helper.Global.AppPath + link.FileName))
+                    {
+                        image.Source = Helper.Global.GetIcon(Helper.Global.AppPath + link.FileName);
+                    }
+                    else
+                    {
+
+                    }
+                    
                 }
                 else
                 {
@@ -1028,6 +1053,7 @@ namespace 随身袋
             }
 
         }
+
 
         void SetImg(Border border, AppLink link)
         {
