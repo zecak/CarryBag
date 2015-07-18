@@ -28,7 +28,6 @@ namespace 随身袋.Helper
         {
             if (window.WindowState == WindowState.Minimized)
             {
-                window.WindowState = WindowState.Normal;
                 window.Hide();
                 window.Topmost = false;
             }
@@ -56,8 +55,8 @@ namespace 随身袋.Helper
             {
                 if (window.Top < 0) { window.Top = 1; }
                 window.Topmost = true;
-                window.WindowState = wsl;
                 window.Show();
+                window.WindowState = wsl;
                
             });
 
@@ -67,8 +66,8 @@ namespace 随身袋.Helper
             {
                 if (window.Top < 0) { window.Top = 1; }
                 window.Topmost = true;
-                window.WindowState = wsl;
                 window.Show();
+                window.WindowState = wsl;
             });
             this.notifyIcon.ContextMenu.MenuItems.Add("-");
             AddMenuItem("退出",delegate { IsCanClose = true; window.Close(); });
