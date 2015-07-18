@@ -11,7 +11,7 @@
                       ShowTitleBar="True"
                       GlowBrush="{DynamicResource AccentColorBrush}"
                       mc:Ignorable="d"
-        Title="随身袋" Height="550" MinHeight="550" Width="300" MinWidth="300" Loaded="MetroWindow_Loaded" ShowInTaskbar="False" Icon="{WpfTools:ImageFromFont Text=&#xf0b1;, FontFamily=/随身袋;component/Res/#FontAwesome, Brush=White}" >
+        Title="随身袋" Height="550" MinHeight="550" Width="300" MinWidth="300" Loaded="MetroWindow_Loaded" ShowInTaskbar="False" Icon="{WpfTools:ImageFromFont Text=&#xf0b1;, FontFamily=/随身袋;component/Res/#FontAwesome, Brush=White}" Name="win_Main" >
     <Controls:MetroWindow.RightWindowCommands>
         <Controls:WindowCommands>
             <Button Name="btn_about" ToolTip="关于随身袋" Content="关于" Click="btn_about_Click"  />
@@ -20,11 +20,10 @@
     </Controls:MetroWindow.RightWindowCommands>
     <Controls:MetroWindow.Flyouts>
         <Controls:FlyoutsControl>
-            <Controls:Flyout Name="fly_Search" Header="搜索" Position="Left" Theme="Accent" Width="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=Controls:MetroWindow}, Path=ActualWidth}" VerticalAlignment="Bottom" Visibility="Collapsed" TitleVisibility="Collapsed" >
+            <Controls:Flyout Name="fly_Search" Header="搜索" Position="Left" Theme="Accent" Width="{Binding ElementName=win_Main, Path=ActualWidth}" Height="{Binding ElementName=dpnl_Search, Path=ActualHeight}" Margin="0 30 0 0" TitleVisibility="Collapsed" CloseButtonVisibility="Collapsed"  >
                 <DockPanel>
-                    <StackPanel Margin="5,5,5,5">
-                        
-                    </StackPanel>
+                    <ListBox Name="lstbox_Search">
+                    </ListBox>
                 </DockPanel>
             </Controls:Flyout>
             <Controls:Flyout Name="fly_set" Header="设置" Position="Left" IsModal="True" Theme="Accent" Width="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=Controls:MetroWindow}, Path=ActualWidth}">
@@ -44,7 +43,7 @@
             <Controls:Flyout Name="fly_about" Header="关于随身袋" Position="Left" IsModal="True" Theme="Accent" Width="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=Controls:MetroWindow}, Path=ActualWidth}">
                 <DockPanel>
                     <StackPanel Margin="5,5,5,5">
-                        <Label Style="{DynamicResource WhiteFont}">随身袋 v1.0.1.1</Label>
+                        <Label Style="{DynamicResource WhiteFont}" Content="{Binding ElementName=win_Main, Path=Version}"></Label>
                         <Label Style="{DynamicResource WhiteFont}">by zecak</Label>
                         <Label Style="{DynamicResource WhiteFont}">系统环境: Win7 SP1</Label>
                         <Label Style="{DynamicResource WhiteFont}">开发工具: Microsoft Visual Studio 2013 (Update4)</Label>
@@ -179,13 +178,16 @@
                     </WrapPanel>-->
                 </DockPanel>
 
-                <DockPanel Margin="2 5 2 5" LastChildFill="False">
+                <DockPanel Name="dpnl_Search" Margin="2 5 2 5">
                     <DockPanel DockPanel.Dock="Top" >
                         <TextBox Name="txt_Search" Controls:TextBoxHelper.Watermark="搜索内容" Controls:TextBoxHelper.IsWaitingForData="True" TextChanged="TextBox_TextChanged" KeyDown="TextBox_KeyDown" />
                         </DockPanel>
-                    <Controls:MetroAnimatedSingleRowTabControl Name="tabMain" Controls:TabControlHelper.IsUnderlined="True" TabStripPlacement="Top" DockPanel.Dock="Top" >
                         
-                    </Controls:MetroAnimatedSingleRowTabControl>
+                            <Controls:MetroAnimatedSingleRowTabControl Name="tabMain" Controls:TabControlHelper.IsUnderlined="True" TabStripPlacement="Top"  >
+
+                            </Controls:MetroAnimatedSingleRowTabControl>
+                        
+                    
                 </DockPanel>
             </DockPanel>
 

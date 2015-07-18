@@ -26,6 +26,9 @@ namespace 随身袋
     /// </summary>
     public partial class MainWindow
     {
+        string version;
+        public string Version { get { if (string.IsNullOrWhiteSpace(version)) { version = this.Title + " v" + Application.ResourceAssembly.GetName().Version; } return version; } }
+
         SREngine SRE;
         DispatcherTimer autoTimer;
         public MainWindow()
@@ -1055,35 +1058,22 @@ namespace 随身袋
         {
             try
             {
-                //var all_list = this.tabMain.FindChildren<Border>();
-
                 var tbox = sender as TextBox;
                 if (string.IsNullOrWhiteSpace(tbox.Text))
                 {
-                    //foreach (var a in all_list.Where(m => m.Visibility != System.Windows.Visibility.Visible))
-                    //{
-                    //    a.Visibility = System.Windows.Visibility.Visible;
-                    //}
-                    fly_Search.IsOpen=false;
+                    fly_Search.Visibility = System.Windows.Visibility.Collapsed;
                     return;
                 }
-                fly_Search.Height=this.ActualHeight-(this.lblTime.ActualHeight+this.txt_Search.ActualHeight+16);
-                fly_Search.IsOpen = true;
                 
-                tbox.Focus();
+                fly_Search.Visibility = System.Windows.Visibility.Visible;
 
-                //foreach (var b in all_list)
-                //{
-                //    b.Visibility = System.Windows.Visibility.Collapsed;
-                //}
+                var findlinks = Helper.Global.AppLinks.FindAll(m => m.Name.ToUpper().Contains(tbox.Text.ToUpper())||m.Tags.ToUpper().Contains(tbox.Text.ToUpper()));
+                lstbox_Search.Items.Clear();
+                foreach (var link in findlinks)
+                {
+                    lstbox_Search.Items.Add(GetImg(link));
+                }
 
-
-                //var blist = all_list.Where(m => (m.Tag as AppLink).Tags.ToUpper().Contains(tbox.Text.ToUpper()) || (m.Tag as AppLink).Name.ToUpper().Contains(tbox.Text.ToUpper())); //查找所有子控件
-
-                //foreach (var b in blist)
-                //{
-                //    b.Visibility = System.Windows.Visibility.Visible;
-                //}
             }
             catch (Exception ex)
             {
@@ -1189,6 +1179,7 @@ namespace 随身袋
                 lbl_say.Visibility = System.Windows.Visibility.Collapsed;
             }
         }
+
 
 
 
