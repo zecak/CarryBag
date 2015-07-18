@@ -38,14 +38,16 @@ namespace 随身袋
 
         void SysRun(bool enable)
         {
+            if (sysrun_first) { sysrun_first = false; return; }
             Microsoft.Win32.RegistryKey HKCU = Microsoft.Win32.Registry.CurrentUser;
             Microsoft.Win32.RegistryKey Run = HKCU.OpenSubKey(@"SOFTWARE\Microsoft\Windows\CurrentVersion\Run", true);
             try
             {
-                var exe = new System.IO.FileInfo(AppDomain.CurrentDomain.FriendlyName);
+                var exe = new System.IO.FileInfo(AppDomain.CurrentDomain.SetupInformation.ApplicationName);
                 if (enable)
                 {
                     Run.SetValue("CarryBag", exe.FullName);
+                    
                 }
                 else
                 {
@@ -54,6 +56,21 @@ namespace 随身袋
             }
             catch { }
             HKCU.Close();
+        }
+
+        bool sysrun_first = true;
+        string GetSysRun()
+        {
+            Microsoft.Win32.RegistryKey HKCU = Microsoft.Win32.Registry.CurrentUser;
+            Microsoft.Win32.RegistryKey Run = HKCU.OpenSubKey(@"SOFTWARE\Microsoft\Windows\CurrentVersion\Run", true);
+            var filename = "";
+            try
+            {
+                 filename= Run.GetValue("CarryBag").ToString();
+                 
+            }
+            catch { return null; }
+            return filename;
         }
 
 
@@ -304,12 +321,12 @@ namespace 随身袋
                     cbx_Import.ItemsSource = null;
                 }
                 txt_Import.Text = "";
-                Flyout_Import.Header = "导入到" + (exp.Tag as RootCategory).Name;
+                Flyout_Import.Header = "导入到" + (exp.Tag as RootCategory).Name+"栏目";
                 Flyout_Import.IsOpen = true;
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message);
+                MessageBox.Show(ex.Message+"\r\n"+ex.StackTrace);
             }
 
         }
@@ -331,7 +348,7 @@ namespace 随身袋
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message);
+                MessageBox.Show(ex.Message+"\r\n"+ex.StackTrace);
             }
 
         }
@@ -356,7 +373,7 @@ namespace 随身袋
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message);
+                MessageBox.Show(ex.Message+"\r\n"+ex.StackTrace);
             }
         }
 
@@ -389,7 +406,7 @@ namespace 随身袋
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message);
+                MessageBox.Show(ex.Message+"\r\n"+ex.StackTrace);
             }
         }
 
@@ -414,7 +431,7 @@ namespace 随身袋
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message);
+                MessageBox.Show(ex.Message+"\r\n"+ex.StackTrace);
             }
         }
 
@@ -470,7 +487,7 @@ namespace 随身袋
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message);
+                MessageBox.Show(ex.Message+"\r\n"+ex.StackTrace);
             }
         }
 
@@ -519,7 +536,7 @@ namespace 随身袋
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message);
+                MessageBox.Show(ex.Message+"\r\n"+ex.StackTrace);
             }
         }
 
@@ -533,8 +550,15 @@ namespace 随身袋
                 if (dir.Exists)
                 {
                     var wrapPanel = this.tabMain.FindChild<Expander>(Helper.Global.EncodeCtrlName(p_cate.ID.ToString())).Content as ListBox;
-                    var files = dir.GetFiles("*.exe", System.IO.SearchOption.AllDirectories);
-                    foreach (var file in files)
+                    var filters = txt_Filter.Text.Split(new string[] { "|",";",","},  StringSplitOptions.RemoveEmptyEntries);
+
+                    List<System.IO.FileInfo> filelist = new List<System.IO.FileInfo>();
+                    foreach (var flt in filters)
+                    {
+                        filelist.AddRange(dir.GetFiles(flt, System.IO.SearchOption.AllDirectories));
+                    }
+                    if (filelist.Count == 0) { filelist.AddRange(dir.GetFiles("*.exe", System.IO.SearchOption.AllDirectories)); }
+                    foreach (var file in filelist)
                     {
                         var isrel = false;
                         var filename = file.FullName;
@@ -558,7 +582,7 @@ namespace 随身袋
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message);
+                MessageBox.Show(ex.Message+"\r\n"+ex.StackTrace);
             }
         }
 
@@ -579,7 +603,7 @@ namespace 随身袋
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message);
+                MessageBox.Show(ex.Message+"\r\n"+ex.StackTrace);
             }
         }
 
@@ -592,7 +616,7 @@ namespace 随身袋
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message);
+                MessageBox.Show(ex.Message+"\r\n"+ex.StackTrace);
             }
         }
 
@@ -651,7 +675,7 @@ namespace 随身袋
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message);
+                MessageBox.Show(ex.Message+"\r\n"+ex.StackTrace);
             }
         }
 
@@ -684,7 +708,7 @@ namespace 随身袋
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message);
+                MessageBox.Show(ex.Message+"\r\n"+ex.StackTrace);
             }
         }
 
@@ -712,7 +736,7 @@ namespace 随身袋
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message);
+                MessageBox.Show(ex.Message+"\r\n"+ex.StackTrace);
             }
         }
         #endregion
@@ -774,7 +798,7 @@ namespace 随身袋
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message);
+                MessageBox.Show(ex.Message+"\r\n"+ex.StackTrace);
             }
         }
 
@@ -797,7 +821,7 @@ namespace 随身袋
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message);
+                MessageBox.Show(ex.Message+"\r\n"+ex.StackTrace);
             }
         }
 
@@ -828,7 +852,7 @@ namespace 随身袋
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message);
+                MessageBox.Show(ex.Message+"\r\n"+ex.StackTrace);
             }
         }
 
@@ -856,7 +880,7 @@ namespace 随身袋
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message);
+                MessageBox.Show(ex.Message+"\r\n"+ex.StackTrace);
             }
         }
 
@@ -902,7 +926,7 @@ namespace 随身袋
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message);
+                MessageBox.Show(ex.Message+"\r\n"+ex.StackTrace);
             }
         }
 
@@ -947,7 +971,7 @@ namespace 随身袋
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message);
+                MessageBox.Show(ex.Message+"\r\n"+ex.StackTrace);
             }
         }
 
@@ -992,10 +1016,13 @@ namespace 随身袋
                     lbl_say.Visibility = System.Windows.Visibility.Collapsed;
                     ts_shibie.IsEnabled = false;
                 }
+
+                ts_SysRun.IsChecked = !string.IsNullOrWhiteSpace(GetSysRun());
+                
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message);
+                MessageBox.Show(ex.Message+"\r\n"+ex.StackTrace);
             }
 
             try
@@ -1025,19 +1052,28 @@ namespace 随身袋
 
                 if (link.IsRelative)
                 {
-                    if (System.IO.File.Exists(Helper.Global.AppPath + link.FileName))
+                    var path = Helper.Global.AppPath + link.FileName;
+                    if (System.IO.File.Exists(path))
                     {
-                        image.Source = Helper.Global.GetIcon(Helper.Global.AppPath + link.FileName);
+                        image.Source = Helper.Global.GetIcon(path);
                     }
-                    else
+                    else if (System.IO.Directory.Exists(path))
                     {
-
+                        image.Source = new BitmapImage(new Uri("Res/folder.png", UriKind.Relative));
                     }
                     
                 }
                 else
                 {
-                    image.Source = Helper.Global.GetIcon(link.FileName);
+                    var path = link.FileName;
+                    if (System.IO.File.Exists(path))
+                    {
+                        image.Source = Helper.Global.GetIcon(path);
+                    }
+                    else if (System.IO.Directory.Exists(path))
+                    {
+                        image.Source = new BitmapImage(new Uri("Res/folder.png", UriKind.Relative));
+                    }
                 }
                 image.Tag = link;
                 //image.MouseLeftButtonUp += image_MouseLeftButtonDown;
@@ -1048,7 +1084,7 @@ namespace 随身袋
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message);
+                MessageBox.Show(ex.Message+"\r\n"+ex.StackTrace);
                 return new Border();
             }
 
@@ -1104,7 +1140,7 @@ namespace 随身袋
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message);
+                MessageBox.Show(ex.Message+"\r\n"+ex.StackTrace);
             }
         }
         /// <summary>
@@ -1140,7 +1176,7 @@ namespace 随身袋
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message);
+                MessageBox.Show(ex.Message+"\r\n"+ex.StackTrace);
             }
         }
 
@@ -1171,7 +1207,7 @@ namespace 随身袋
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message);
+                MessageBox.Show(ex.Message+"\r\n"+ex.StackTrace);
             }
         }
 

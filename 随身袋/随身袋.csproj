@@ -164,9 +164,6 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Res\header1.jpg" />
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="Res\exe.ico" />
   </ItemGroup>
   <ItemGroup>
@@ -195,6 +192,7 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="Res\folder.png" />
     <Content Include="使用说明.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

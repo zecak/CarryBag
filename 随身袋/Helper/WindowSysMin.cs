@@ -49,7 +49,7 @@ namespace 随身袋.Helper
             this.notifyIcon = new System.Windows.Forms.NotifyIcon();
             //this.notifyIcon.BalloonTipText = "你好, 欢迎使用随身袋!";
             this.notifyIcon.Text = window.Title;
-            this.notifyIcon.Icon = System.Drawing.Icon.ExtractAssociatedIcon(AppDomain.CurrentDomain.FriendlyName);
+            this.notifyIcon.Icon = System.Drawing.Icon.ExtractAssociatedIcon(System.IO.Path.Combine(AppDomain.CurrentDomain.SetupInformation.ApplicationBase, AppDomain.CurrentDomain.SetupInformation.ApplicationName));
             this.notifyIcon.Visible = true;
             this.notifyIcon.DoubleClick += new EventHandler(delegate
             {
