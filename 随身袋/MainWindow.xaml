@@ -50,7 +50,7 @@
                         <Label Style="{DynamicResource WhiteFont}">运行库版本:.Net Framework 4.0</Label>
                         <Label Style="{DynamicResource WhiteFont}">Email: zecak@qq.com</Label>
                         <Label Style="{DynamicResource WhiteFont}">Copyright 2015 zecak All Rights Reserved.</Label>
-                        
+
                     </StackPanel>
                 </DockPanel>
             </Controls:Flyout>
@@ -58,7 +58,7 @@
                 <DockPanel>
                     <StackPanel Margin="5,5,5,5">
                         <ComboBox Name="cbx_Import" SelectedValuePath="Name" DisplayMemberPath="Name" Margin="5" DropDownClosed="cbx_Import_DropDownClosed" >
-                            
+
                         </ComboBox>
                         <TextBox Name="txt_Import" Controls:TextBoxHelper.Watermark="要导入的相对位置" Margin="5" Controls:TextBoxHelper.IsWaitingForData="True" TextChanged="txt_Import_TextChanged" ></TextBox>
                         <TextBox Name="txt_Filter" Controls:TextBoxHelper.Watermark="过滤条件(默认 .exe ),如: *.exe;*.lnk" Margin="5" Controls:TextBoxHelper.IsWaitingForData="True"></TextBox>
@@ -104,7 +104,7 @@
                             <Label Margin="5" Style="{DynamicResource WhiteFont}">排序</Label>
                             <Controls:NumericUpDown Name="nud_Sort" Value="1" TextAlignment="Center" Minimum="0" Margin="5" />
                         </DockPanel>
-                        
+
                         <Button Name="btn_AddFileLink" Click="btn_AddFileLink_Click" Margin="5">创建</Button>
                     </StackPanel>
                 </DockPanel>
@@ -113,14 +113,14 @@
                 <DockPanel>
                     <StackPanel Margin="5,5,5,5">
                         <ComboBox Name="cbx_root" SelectedIndex="0" SelectedValuePath="ID" DisplayMemberPath="Name" Margin="5">
-                            
+
                         </ComboBox>
                         <TextBox Name="txt_SubCName" Controls:TextBoxHelper.Watermark="栏目名称,必填" Margin="5" Controls:TextBoxHelper.IsWaitingForData="True" ></TextBox>
                         <DockPanel>
                             <Label Margin="5" Style="{DynamicResource WhiteFont}">排序</Label>
                             <Controls:NumericUpDown Name="nud_SortNum" Value="1" TextAlignment="Center" Minimum="0" Margin="5"/>
                         </DockPanel>
-                        
+
                         <Button Name="btn_AddSubC" Click="btn_AddSubC_Click" Margin="5">创建</Button>
                     </StackPanel>
                 </DockPanel>
@@ -136,7 +136,7 @@
                             <Label Margin="5" Style="{DynamicResource WhiteFont}">排序</Label>
                             <Controls:NumericUpDown Name="nud_SortNum_edit" TextAlignment="Center" Minimum="0" Margin="5"/>
                         </DockPanel>
-                       
+
                         <Button Name="btn_AddSubC_edit" Click="btn_AddSubC_edit_Click" Margin="5">保存</Button>
                     </StackPanel>
                 </DockPanel>
@@ -159,7 +159,7 @@
                 <DockPanel DockPanel.Dock="Bottom" Margin="5" >
                     <DockPanel>
                         <ToolBarPanel Orientation="Horizontal">
-                                <Button DockPanel.Dock="Left" Click="Button_Click" Width="32" Height="32" FontFamily="微软雅黑" FontSize="18" Style="{DynamicResource MetroCircleButtonStyle}" ToolTip="创建栏目">+</Button>
+                            <Button DockPanel.Dock="Left" Click="Button_Click" Width="32" Height="32" FontFamily="微软雅黑" FontSize="18" Style="{DynamicResource MetroCircleButtonStyle}" ToolTip="创建栏目">+</Button>
                             <Label Name="lbl_rez" Margin="25 5 0 5" Foreground="LightGray">识别结果:</Label>
                             <Label Name="lbl_say" Margin="0 5 0 5" Foreground="LightGray">识别中..</Label>
 
@@ -167,30 +167,44 @@
                     </DockPanel>
                 </DockPanel>
                 <DockPanel >
-                <DockPanel DockPanel.Dock="Top">
-                    <Label Name="lblTime" FontSize="28" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Background="#FFF5F4EA" Foreground="#FFE45333">
-                        2015/7/12 13:14
-                    </Label>
-                    
-                    <!--<WrapPanel Margin="12">
+                    <DockPanel DockPanel.Dock="Top">
+                        <Label Name="lblTime" FontSize="28" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Background="#FFF5F4EA" Foreground="#FFE45333">
+                            2015/7/12 13:14
+                        </Label>
+
+                        <!--<WrapPanel Margin="12">
                         <TextBlock Text="&#xf000;" Style="{StaticResource FontAwesome}" />
                         <TextBlock Text="&#xf001;" Style="{DynamicResource FontAwesome}" />
                         
                     </WrapPanel>-->
-                </DockPanel>
+                    </DockPanel>
 
-                <DockPanel Name="dpnl_Search" Margin="2 5 2 5">
-                    <DockPanel DockPanel.Dock="Top" >
-                        <TextBox Name="txt_Search" Controls:TextBoxHelper.Watermark="搜索内容" Controls:TextBoxHelper.IsWaitingForData="True" TextChanged="TextBox_TextChanged" KeyDown="TextBox_KeyDown" />
+                    <DockPanel Name="dpnl_Search" Margin="2 5 2 5">
+                        <DockPanel DockPanel.Dock="Top" >
+                            <TextBox Name="txt_Search" Controls:TextBoxHelper.Watermark="搜索内容" Controls:TextBoxHelper.IsWaitingForData="True" TextChanged="TextBox_TextChanged" KeyDown="TextBox_KeyDown" />
                         </DockPanel>
-                        
-                            <Controls:MetroAnimatedSingleRowTabControl Name="tabMain" Controls:TabControlHelper.IsUnderlined="True" TabStripPlacement="Top"  >
 
-                            </Controls:MetroAnimatedSingleRowTabControl>
-                        
-                    
+                        <Controls:MetroAnimatedSingleRowTabControl Name="tabMain" Controls:TabControlHelper.IsUnderlined="True" TabStripPlacement="Top"  >
+                            <TabItem Header="桌面">
+                                <ListBox>
+                                    <Border Style="{StaticResource LinkBorder}">
+                                        <Label Style="{StaticResource LinkLabel}" Width="64" Height="64" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Background="White" >
+
+                                            <Image Source="Res/folder.png" RenderOptions.BitmapScalingMode="Fant" UseLayoutRounding="True">
+                                                <Image.Effect>
+                                                    <DropShadowEffect ShadowDepth="2" BlurRadius="2" Opacity="0.8"/>
+                                                </Image.Effect>
+                                            </Image>
+
+                                        </Label>
+                                    </Border>
+                                </ListBox>
+                            </TabItem>
+                        </Controls:MetroAnimatedSingleRowTabControl>
+
+
+                    </DockPanel>
                 </DockPanel>
-            </DockPanel>
 
 
             </DockPanel>

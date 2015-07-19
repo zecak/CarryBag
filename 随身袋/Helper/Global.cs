@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Windows;
 using System.Windows.Media;
+using System.Windows.Media.Imaging;
 using 随身袋.Models;
 
 namespace 随身袋.Helper
@@ -136,14 +138,86 @@ namespace 随身袋.Helper
         public static ImageSource GetIcon(string fileName)
         {
             System.Drawing.Icon icon = System.Drawing.Icon.ExtractAssociatedIcon(fileName);
-            return System.Windows.Interop.Imaging.CreateBitmapSourceFromHIcon(
+            var img= System.Windows.Interop.Imaging.CreateBitmapSourceFromHIcon(
                         icon.Handle,
                         new System.Windows.Int32Rect(0, 0, icon.Width, icon.Height),
                         System.Windows.Media.Imaging.BitmapSizeOptions.FromEmptyOptions());
+
+            return img;
+
         }
 
         #region 公共操作方法
+        public static BitmapSource MakePicture(string bgImagePath, string signature)
+        {
 
+            //获取背景图
+            BitmapSource bgImage = new BitmapImage(new Uri(bgImagePath, UriKind.Relative));
+            //获取头像
+            //BitmapSource headerImage = new BitmapImage(new Uri(headerImagePath, UriKind.Relative));
+
+            //创建一个RenderTargetBitmap 对象，将WPF中的Visual对象输出
+            RenderTargetBitmap composeImage = new RenderTargetBitmap(bgImage.PixelWidth, bgImage.PixelHeight, bgImage.DpiX, bgImage.DpiY, PixelFormats.Default);
+
+            FormattedText signatureTxt = new FormattedText(signature,
+                                                   System.Globalization.CultureInfo.CurrentCulture,
+                                                   System.Windows.FlowDirection.LeftToRight,
+                                                   new Typeface(System.Windows.SystemFonts.MessageFontFamily, FontStyles.Normal, FontWeights.Normal, FontStretches.Normal),
+                                                   50,
+                                                   System.Windows.Media.Brushes.White);
+
+
+
+            DrawingVisual drawingVisual = new DrawingVisual();
+            DrawingContext drawingContext = drawingVisual.RenderOpen();
+            drawingContext.DrawImage(bgImage, new Rect(0, 0, bgImage.Width, bgImage.Height));
+
+            //计算头像的位置
+            //double x = (bgImage.Width / 2 - headerImage.Width) / 2;
+            //double y = (bgImage.Height/2 - headerImage.Height) / 2 ;
+            //drawingContext.DrawImage(headerImage, new Rect(x, y, headerImage.Width, headerImage.Height));
+
+            //计算签名的位置
+            double x2 = (bgImage.Width / 2 - signatureTxt.Width) / 2;
+            double y2 = (bgImage.Height / 2 - signatureTxt.Height) / 2;
+            drawingContext.DrawText(signatureTxt, new System.Windows.Point(x2, y2));
+            drawingContext.Close();
+            composeImage.Render(drawingVisual);
+
+            ////定义一个JPG编码器
+            //JpegBitmapEncoder bitmapEncoder = new JpegBitmapEncoder();
+            ////加入第一帧
+            //bitmapEncoder.Frames.Add(BitmapFrame.Create(composeImage));
+
+            ////保存至文件（不会修改源文件，将修改后的图片保存至程序目录下）
+            //string savePath = System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase + @"\合成.jpg";
+            //bitmapEncoder.Save(File.OpenWrite(Path.GetFileName(savePath)));
+            return composeImage;
+        }
+
+        public static BitmapSource Text2Pic(string text)
+        {
+            DrawingVisual drawingVisual = new DrawingVisual();
+            DrawingContext drawingContext = drawingVisual.RenderOpen();
+            // 画矩形
+            Rect rect = new Rect(new Point(2, 2), new Size(32, 16));
+            drawingContext.DrawRectangle(Brushes.LightBlue, (Pen)null, rect);
+            // 画文字
+            drawingContext.DrawText(
+               new FormattedText(text,
+                  System.Globalization.CultureInfo.GetCultureInfo("en-us"),
+                  FlowDirection.LeftToRight,
+                  new Typeface("Verdana"),
+                  36, Brushes.Black),
+                  new Point(100, 60));
+
+            drawingContext.Close();
+
+            // 利用RenderTargetBitmap对象，以保存图片
+            RenderTargetBitmap renderBitmap = new RenderTargetBitmap((int)32, (int)16, 96, 96, PixelFormats.Pbgra32);
+            renderBitmap.Render(drawingVisual);
+            return renderBitmap;
+        }
 
         public static T XMLDes<T>(string filename)
         {

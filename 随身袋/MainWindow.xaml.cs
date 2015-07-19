@@ -1041,14 +1041,18 @@ namespace 随身袋
         {
             try
             {
-                var border = new Border() { Name = Helper.Global.EncodeCtrlName(link.ID.ToString()), Style = (Style)this.FindResource("LinkBorder"), ToolTip = link.Name + "\r\n" + link.FileName, Tag = link, ContextMenu = SubCMenu_App };
+                var border = new Border() { Name = Helper.Global.EncodeCtrlName(link.ID.ToString()), ToolTip = link.Name + "\r\n" + link.FileName, Tag = link, ContextMenu = SubCMenu_App };
+                border.Style = (link.IsRelative) ? (Style)this.FindResource("LinkBorder") : (Style)this.FindResource("LinkBorder2");
                 var label = new Label() { Width = 64, Height = 64, Style = (Style)this.FindResource("LinkLabel"), HorizontalContentAlignment = System.Windows.HorizontalAlignment.Center, VerticalContentAlignment = System.Windows.VerticalAlignment.Center, ToolTip = border.ToolTip, Tag = link };
+                
                 var image = new Image()
                 {
                     ToolTip = border.ToolTip,
                     Width = 32,
                     Height = 32,
                 };
+                image.Effect = new System.Windows.Media.Effects.DropShadowEffect() { ShadowDepth=2, BlurRadius=2, Opacity=0.8 };
+                
 
                 if (link.IsRelative)
                 {
