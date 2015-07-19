@@ -1084,7 +1084,6 @@ namespace 随身袋
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message+"\r\n"+ex.StackTrace);
                 return new Border();
             }
 

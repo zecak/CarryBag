@@ -15,7 +15,7 @@ namespace 随身袋.Helper
         {
             get
             {
-                if (string.IsNullOrWhiteSpace(appPath)) { appPath = AppDomain.CurrentDomain.BaseDirectory; }
+                if (string.IsNullOrWhiteSpace(appPath)) { appPath = AppDomain.CurrentDomain.SetupInformation.ApplicationBase; }
                 return appPath;
             }
         }
@@ -24,7 +24,7 @@ namespace 随身袋.Helper
         {
             get
             {
-                if (string.IsNullOrWhiteSpace(appBagPath)) { appBagPath = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, AppBagName); }
+                if (string.IsNullOrWhiteSpace(appBagPath)) { appBagPath = System.IO.Path.Combine(AppPath, AppBagName); }
                 return appBagPath;
             }
         }
@@ -40,14 +40,14 @@ namespace 随身袋.Helper
                 System.IO.Directory.CreateDirectory(AppBagPath);
             }
 
-            categorys = XMLDes<List<RootCategory>>(SettingFileName);
+            categorys = XMLDes<List<RootCategory>>(System.IO.Path.Combine(AppPath, SettingFileName));
             if (categorys == null || categorys.Count == 0)
             {
                 categorys = GetInitRootCategory();
                 SaveCategorys();
             }
 
-            applinks = XMLDes<List<AppLink>>(ApplinkFileName);
+            applinks = XMLDes<List<AppLink>>(System.IO.Path.Combine(AppPath, ApplinkFileName));
             if (applinks == null)
             {
                 var category = Categorys.FirstOrDefault(m => m.Name == "系统");
@@ -71,7 +71,7 @@ namespace 随身袋.Helper
             get
             {
                 if (categorys != null) { return categorys; }
-                categorys = XMLDes<List<RootCategory>>(SettingFileName);
+                categorys = XMLDes<List<RootCategory>>(System.IO.Path.Combine(AppPath, SettingFileName));
                 if (categorys == null || categorys.Count == 0)
                 {
                     categorys = GetInitRootCategory();
@@ -84,12 +84,12 @@ namespace 随身袋.Helper
 
         public static void SaveCategorys()
         {
-            XMLSer(SettingFileName, categorys);
+            XMLSer(System.IO.Path.Combine(AppPath, SettingFileName), categorys);
         }
 
         public static void SaveAppLinks()
         {
-            XMLSer(ApplinkFileName, applinks);
+            XMLSer(System.IO.Path.Combine(AppPath, ApplinkFileName), applinks);
         }
 
         public static List<AppLink> AppLinks
@@ -97,7 +97,7 @@ namespace 随身袋.Helper
             get
             {
                 if (applinks != null) { return applinks; }
-                applinks = XMLDes<List<AppLink>>(ApplinkFileName);
+                applinks = XMLDes<List<AppLink>>(System.IO.Path.Combine(AppPath, ApplinkFileName));
                 if (applinks == null)
                 {
                     var category = categorys.FirstOrDefault(m => m.Name == "系统");
