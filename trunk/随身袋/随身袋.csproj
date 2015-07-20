@@ -154,6 +154,7 @@
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
     <AppDesigner Include="Properties\" />
+    <Resource Include="Res\Pokemon.ttf" />
     <None Include="随身袋_TemporaryKey.pfx" />
     <Resource Include="Res\fontawesome-webfont.ttf" />
   </ItemGroup>
