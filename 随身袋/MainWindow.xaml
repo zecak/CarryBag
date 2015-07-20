@@ -185,21 +185,7 @@
                         </DockPanel>
 
                         <Controls:MetroAnimatedSingleRowTabControl Name="tabMain" Controls:TabControlHelper.IsUnderlined="True" TabStripPlacement="Top"  >
-                            <TabItem Header="桌面">
-                                <ListBox>
-                                    <Border Style="{StaticResource LinkBorder}">
-                                        <Label Style="{StaticResource LinkLabel}" Width="64" Height="64" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Background="White" >
-
-                                            <Image Source="Res/folder.png" RenderOptions.BitmapScalingMode="Fant" UseLayoutRounding="True">
-                                                <Image.Effect>
-                                                    <DropShadowEffect ShadowDepth="2" BlurRadius="2" Opacity="0.8"/>
-                                                </Image.Effect>
-                                            </Image>
-
-                                        </Label>
-                                    </Border>
-                                </ListBox>
-                            </TabItem>
+                           
                         </Controls:MetroAnimatedSingleRowTabControl>
 
 

@@ -1199,6 +1199,7 @@ namespace 随身袋
                 {
                     if (link.IsRelative == true)
                     {
+                        
                         System.Diagnostics.Process.Start(System.IO.Path.Combine(Helper.Global.AppPath, link.FileName), link.Args);
                     }
                     else
